@@ -1,0 +1,16 @@
+.qodo
+.data
+.keys
+.backup
+.wireguard
+CLAUDE.md
+
+blobs
+target
+
+*/build.zip
+
+*/.env
+*.env
+
+test.js
