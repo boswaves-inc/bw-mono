@@ -11,7 +11,7 @@ export const Popover = forwardRef<HTMLElement, HeadlessProps<InternalPoverProps>
 ))
 
 export const PopoverButton = forwardRef<HTMLButtonElement, HeadlessProps<InternalButtonProps>>(({ children, className, ...props }, ref) => (
-    <InternalButton {...props} ref={ref} className={twMerge("focus:outline-none hover:cursor-pointer text-gray-700 text-sm/5 justify-center items-center inline-flex font-medium", className)}>
+    <InternalButton {...props} ref={ref} className={twMerge("focus:outline-none hover:cursor-pointer dark:text-gray-400 text-gray-700 text-sm/5 justify-center items-center inline-flex font-medium", className)}>
         {children}
     </InternalButton>
 ))
@@ -22,7 +22,7 @@ export const PopoverPanel = forwardRef<HTMLElement, HeadlessProps<InternalPanelP
         ref={ref}
         transition={transition ?? true}
         anchor={anchor ?? "bottom end"}
-        className="[--anchor-gap:--spacing(1)] ring-1 ring-gray-900/5 p-4 transition rounded-md shadow-xl duration-200 data-closed:-translate-y-1 data-closed:opacity-0 block bg-white"
+        className="[--anchor-gap:--spacing(1)] ring-1 dark:ring-white/5 ring-gray-900/5 p-4 transition rounded-md shadow-xl duration-200 data-closed:-translate-y-1 data-closed:opacity-0 block bg-white dark:bg-gray-800"
     >
         {children}
     </InternalPanel>

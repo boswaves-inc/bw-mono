@@ -4,6 +4,9 @@ import { Checkbox } from "~/components/core/checkbox";
 import { Popover, PopoverButton, PopoverPanel } from "~/components/core/popover";
 import { Menu, MenuItem, MenuItems, MenuButton } from "~/components/core/menu";
 import { ChevronDown } from 'lucide-react'
+import Heading from "~/components/core/heading";
+import Paragraph from "~/components/core/paragraph";
+import Label from "~/components/core/label";
 
 const products = [
   {
@@ -81,21 +84,25 @@ export default function renderer() {
   const [searchParams, setSearchParams] = useSearchParams()
 
   return (
-    <div className="bg-white">
-      <div className="bg-gray-50">
+    <div className="">
+      <div className="bg-gray-50 dark:bg-gray-800">
         <div className="text-center px-4 sm:px-6 lg:px-8 lg:max-w-7xl max-w-[40rem] mx-auto">
           <div className="py-24">
-            <h1 className="text-gray-900 tracking-tight font-semibold text-4xl sm:text-5xl">New Arrivals</h1>
-            <p className="text-gray-500 text-base max-w-3xl mt-4 mx-auto">Thoughtfully designed indicators for your strategies</p>
+            <Heading size="h1">
+              New Arrivals
+            </Heading>
+            <Paragraph className="mt-4 mx-auto max-w-3xl">
+              Thoughtfully designed indicators for your strategies
+            </Paragraph>
           </div>
-          <section aria-labelledby="filter-heading" className="py-6 px-4 sm:px-0 border-gray-200 border-t">
+          <section aria-labelledby="filter-heading" className="py-6 px-4 sm:px-0 border-gray-200 dark:border-y-gray-700 border-t">
             <h2 id="filter-heading" className="sr-only">Product filters</h2>
             <div className="justify-between items-center flex">
               <Menu>
                 <MenuButton >
-                  <p className="mr-1">
+                  <Paragraph size="sm" className="mr-1">
                     Sort
-                  </p>
+                  </Paragraph>
                   <ChevronDown className="size-4" />
                 </MenuButton>
                 <MenuItems anchor="bottom start">
@@ -111,31 +118,37 @@ export default function renderer() {
                 </MenuItems>
               </Menu>
 
-              <button className="text-gray-700 font-medium text-sm/5 inline-block sm:hidden">
+              <button className="text-gray-700 dark:text-gray-400 font-medium text-sm/5 inline-block sm:hidden">
                 Filter
               </button>
 
               <div className="hidden sm:flex ">
                 <Popover className={'sm:not-last:mr-8'}>
                   <PopoverButton>
-                    <p className="mr-1">
+                    <Paragraph size="sm" className="mr-1">
                       Category
-                    </p>
+                    </Paragraph>
                     <ChevronDown className="size-4" />
                   </PopoverButton>
                   <PopoverPanel>
                     <Form  >
                       <div className="gap-3 flex h-5 not-last:mb-4 items-center">
                         <Checkbox id='trees' name="category" value="tees" />
-                        <label htmlFor="test" className={'text-gray-900 whitespace-nowrap font-medium text-sm/5/tight pr-6 cursor-default'}>Tees</label>
+                        <Label>
+                          Tees
+                        </Label>
                       </div>
                       <div className="gap-3 flex h-5 not-last:mb-4 items-center">
                         <Checkbox />
-                        <label className={'text-gray-900 whitespace-nowrap font-medium text-sm/5/tight pr-6 cursor-default'}>Crewnecks</label>
+                        <Label>
+                          Crewnecks
+                        </Label>
                       </div>
                       <div className="gap-3 flex h-5 not-last:mb-4 items-center">
                         <Checkbox />
-                        <label className={'text-gray-900 whitespace-nowrap font-medium text-sm/5/tight pr-6 cursor-default'}>Hats</label>
+                        <Label>
+                          Hats
+                        </Label>
                       </div>
                     </Form>
                   </PopoverPanel>
@@ -143,27 +156,32 @@ export default function renderer() {
 
                 <Popover className={'sm:not-last:mr-8'}>
                   <PopoverButton>
-                    <p className="mr-1">
+                    <Paragraph size="sm" className="mr-1">
                       Type
-                    </p>
+                    </Paragraph>
                     <ChevronDown className="size-4" />
                   </PopoverButton>
                   <PopoverPanel>
-                    <Form>
+                    <Form  >
                       <div className="gap-3 flex h-5 not-last:mb-4 items-center">
-                        <Checkbox id="test" name="test" />
-                        <label htmlFor="test" className={'text-gray-900 whitespace-nowrap font-medium text-sm/5/tight pr-6 cursor-default'}>Tees</label>
+                        <Checkbox id='trees' name="category" value="tees" />
+                        <Label>
+                          Tees
+                        </Label>
                       </div>
                       <div className="gap-3 flex h-5 not-last:mb-4 items-center">
                         <Checkbox />
-                        <label className={'text-gray-900 whitespace-nowrap font-medium text-sm/5/tight pr-6 cursor-default'}>Crewnecks</label>
+                        <Label>
+                          Crewnecks
+                        </Label>
                       </div>
                       <div className="gap-3 flex h-5 not-last:mb-4 items-center">
                         <Checkbox />
-                        <label className={'text-gray-900 whitespace-nowrap font-medium text-sm/5/tight pr-6 cursor-default'}>Hats</label>
+                        <Label>
+                          Hats
+                        </Label>
                       </div>
                     </Form>
-
                   </PopoverPanel>
                 </Popover>
 
@@ -195,7 +213,7 @@ export default function renderer() {
                   </h3>
                   <p className="mt-1 text-sm/5 text-gray-500">{product.name}</p>
                 </div>
-                <p className="text-sm/5 font-medium text-gray-900">{product.price}</p>
+                <p className="text-sm/5 font-medium dark:text-white text-gray-900">{product.price}</p>
               </div>
             </div>
           ))}
