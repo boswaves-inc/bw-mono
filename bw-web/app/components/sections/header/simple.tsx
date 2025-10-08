@@ -1,17 +1,18 @@
 import { Dialog, DialogPanel } from "@headlessui/react"
 import { forwardRef, useState } from "react"
+import { Link } from "react-router"
 
-const Header = forwardRef<HTMLDivElement>(({}, ref) => {
+const Header = forwardRef<HTMLDivElement>(({ }, ref) => {
     const [dialog, setDialog] = useState(false)
 
     return (
         <header ref={ref} className=" fixed inset-x-0 top-0 z-50">
             <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
                 <div className="flex lg:flex-1">
-                    <a href="#" className="-m-1.5 p-1.5">
+                    <Link to={'/'} className="-m-1.5 p-1.5">
                         <span className="sr-only">Your Company</span>
                         <img src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=400" alt="" className="h-8 w-auto" />
-                    </a>
+                    </Link>
                 </div>
                 <div className="flex lg:hidden">
                     <button type="button" onClick={() => setDialog(true)} className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700">
@@ -22,16 +23,16 @@ const Header = forwardRef<HTMLDivElement>(({}, ref) => {
                     </button>
                 </div>
                 <div className="hidden lg:flex lg:gap-x-12">
-                    <a href="#" className="text-sm/6 font-semibold dark:text-white text-gray-900">Product</a>
-                    <a href="#" className="text-sm/6 font-semibold dark:text-white text-gray-900">Features</a>
-                    <a href="#" className="text-sm/6 font-semibold dark:text-white text-gray-900">Marketplace</a>
-                    <a href="#" className="text-sm/6 font-semibold dark:text-white text-gray-900">Company</a>
+                    <Link to={'/products'} className="text-sm/6 font-semibold dark:text-white text-gray-900">Products</Link>
+                    <Link to={'/products'} className="text-sm/6 font-semibold dark:text-white text-gray-900">Features</Link>
+                    <Link to={'/products'} className="text-sm/6 font-semibold dark:text-white text-gray-900">Marketplace</Link>
+                    <Link to={'/products'} className="text-sm/6 font-semibold dark:text-white text-gray-900">Company</Link>
                 </div>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                    <a href="#" className="text-sm/6 font-semibold dark:text-white text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
+                    <Link to="/auth/login" className="text-sm/6 font-semibold dark:text-white text-gray-900">Log in <span aria-hidden="true">&rarr;</span></Link>
                 </div>
             </nav>
-            <Dialog className={ 'lg:hidden'} open={dialog} onClose={setDialog}>
+            <Dialog className={'lg:hidden'} open={dialog} onClose={setDialog}>
                 <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
                     <div className="flex items-center justify-between">
                         <a href="#" className="-m-1.5 p-1.5">

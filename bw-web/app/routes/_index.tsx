@@ -65,7 +65,7 @@ export default function renderer() {
               src="https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75"
               width={2432}
               height={1442}
-              className="w-3xl max-w-none z-10 rounded-xl shadow-xl ring-1 ring-white/10 sm:w-228 md:-ml-4 lg:-ml-0"
+              className="w-3xl max-w-none z-10 rounded-xl shadow-xl ring-1 dark:ring-white/5 ring-gray-900/5 sm:w-228 md:-ml-4 lg:-ml-0"
             />
           </div>
         </div>
@@ -80,7 +80,7 @@ export default function renderer() {
                 src="https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Fshowcases%2Fshowcase_6.png&w=3840&q=75"
                 width={2432}
                 height={1442}
-                className="w-3xl max-w-none z-10 rounded-xl shadow-xl ring-1 ring-white/10 sm:w-228 md:-mr-4 lg:-mr-0"
+                className="w-3xl max-w-none z-10 rounded-xl shadow-xl ring-1  dark:ring-white/5 ring-gray-900/5 sm:w-228 md:-mr-4 lg:-mr-0"
               />
 
             </div>

@@ -62,17 +62,17 @@ const ContentTiles = forwardRef<HTMLElement>((props, ref) => {
                 </div>
                 <div className=" lg:-mr-16  lg:col-span-2 pt-16">
                     <div className="xl:gap-8 lg:grid-cols-2 lg:mx-0 z-10 sm:grid-cols-4 sm:-mr-16 gap-4 grid-cols-2 grid -mx-8">
-                        <div className="outline-transparent -outline-offset-1 outline-1 shadow-xl rounded-xl overflow-hidden aspect-square">
-                            <img className=" w-full h-full object-cover aspect-square" src="https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Fshowcases%2Fshowcase_6.png&w=3840&q=75" />
+                        <div className="outline-transparent dark:ring-white/5 ring-gray-900/5 ring-1 shadow-xl rounded-xl overflow-hidden aspect-square">
+                            <img className="w-full h-full ring-1 dark:ring-white/5 ring-gray-900/5 object-cover aspect-square" src="https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Fshowcases%2Fshowcase_6.png&w=3840&q=75" />
                         </div>
-                        <div className="outline-transparent -outline-offset-1 even:-mt-8 even:lg:-mt-40 outline-1 shadow-xl rounded-xl overflow-hidden aspect-square">
-                            <img className=" w-full h-full object-cover aspect-square" src="https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Fshowcases%2Fshowcase_6.png&w=3840&q=75" />
+                        <div className="outline-transparent  dark:ring-white/5 ring-gray-900/5 ring-1 even:-mt-8 even:lg:-mt-40 outline-1 shadow-xl rounded-xl overflow-hidden aspect-square">
+                            <img className="w-full h-full object-cover aspect-square" src="https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Fshowcases%2Fshowcase_6.png&w=3840&q=75" />
                         </div>
-                        <div className="outline-transparent -outline-offset-1 even:-mt-8 even:lg:-mt-40 outline-1 shadow-xl rounded-xl overflow-hidden aspect-square">
-                            <img className=" w-full h-full object-cover aspect-square" src="https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Fshowcases%2Fshowcase_6.png&w=3840&q=75" />
+                        <div className="outline-transparent  dark:ring-white/5 ring-gray-900/5 ring-1  even:-mt-8 even:lg:-mt-40 outline-1 shadow-xl rounded-xl overflow-hidden aspect-square">
+                            <img className="w-full h-full object-cover aspect-square" src="https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Fshowcases%2Fshowcase_6.png&w=3840&q=75" />
                         </div>
-                        <div className="outline-transparent -outline-offset-1 even:-mt-8 even:lg:-mt-40 outline-1 shadow-xl rounded-xl overflow-hidden aspect-square">
-                            <img className=" w-full h-full object-cover aspect-square" src="https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Fshowcases%2Fshowcase_6.png&w=3840&q=75" />
+                        <div className="outline-transparent  dark:ring-white/5 ring-gray-900/5 ring-1  even:-mt-8 even:lg:-mt-40 outline-1 shadow-xl rounded-xl overflow-hidden aspect-square">
+                            <img className="w-full h-full object-cover aspect-square" src="https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Fshowcases%2Fshowcase_6.png&w=3840&q=75" />
                         </div>
                     </div>
                 </div>

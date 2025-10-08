@@ -24,7 +24,7 @@ const HeroScreenshot = forwardRef<HTMLElement>((props, ref) => {
                             <a href="#" className="text-sm/6 font-semibold text-gray-900 dark:text-white">Learn more <span aria-hidden="true">→</span></a>
                         </div>
                     </div>
-                    <img className="h-auto max-w-full mt-16 sm:mt-24 rounded-md shadow-2xl dark:ring-gray-500/10 ring-gray-900/5" src="https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75" />
+                    <img className="h-auto max-w-full mt-16 sm:mt-24 rounded-md shadow-2xl ring-1 dark:ring-white/5 ring-gray-900/5" src="https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75" />
                 </div>
             </div>
         </section>
