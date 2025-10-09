@@ -10,59 +10,59 @@ import Section, { type SectionProps } from "~/components/core/section";
 
 const products = [
     {
-        id: 'test',
-        name: 'test',
+        id: 'Trend Pivots Profile',
+        name: 'Trend Pivots Profile',
         price: '$25',
-        imageSrc: 'image.url',
+        imageSrc: 'https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75',
         imageAlt: 'image'
     },
     {
         id: 'test',
-        name: 'test',
+        name: 'Trend Pivots Profile',
         price: '$25',
-        imageSrc: 'image.url',
+        imageSrc: 'https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75',
         imageAlt: 'image'
     },
     {
         id: 'test',
-        name: 'test',
+        name: 'Trend Pivots Profile',
         price: '$25',
-        imageSrc: 'image.url',
+        imageSrc: 'https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75',
         imageAlt: 'image'
     },
     {
         id: 'test',
-        name: 'Test',
+        name: 'Trend Pivots Profile',
         price: '$25',
-        imageSrc: 'image.url',
+        imageSrc: 'https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75',
         imageAlt: 'image'
     },
     {
         id: 'Test',
-        name: 'test',
+        name: 'Trend Pivots Profile',
         price: '$25',
-        imageSrc: 'image.url',
+        imageSrc: 'https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75',
         imageAlt: 'image'
     },
     {
         id: 'test',
-        name: 'test',
+        name: 'Trend Pivots Profile',
         price: '$25',
-        imageSrc: 'image.url',
+        imageSrc: 'https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75',
         imageAlt: 'image'
     },
     {
         id: 'test',
-        name: 'test',
+        name: 'Trend Pivots Profile',
         price: '$25',
-        imageSrc: 'image.url',
+        imageSrc: 'https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75',
         imageAlt: 'image'
     },
     {
         id: 'test',
-        name: 'Test',
+        name: 'Trend Pivots Profile',
         price: '$25',
-        imageSrc: 'image.url',
+        imageSrc: 'https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75',
         imageAlt: 'image'
     },
 ]
@@ -81,11 +81,11 @@ const ProductList = forwardRef<HTMLElement, ProductListProps>(({ heading, ...pro
             )}
             <div className={twMerge("grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8", heading && 'mt-6')}>
                 {products.slice(0, 10).map((product) => (
-                    <Link key={product.id} to={product.id} className="group">
+                    <Link key={product.id} to={`/products/${product.id}`} className="group">
                         <img
                             alt={product.imageAlt}
                             src={product.imageSrc}
-                            className="aspect-square w-full rounded-lg bg-gray-200 dark:bg-gray-700 object-cover group-hover:opacity-75 xl:aspect-7/8"
+                            className="aspect-square w-full rounded-lg bg-gray-200 dark:bg-gray-800 object-cover group-hover:opacity-75 xl:aspect-[8/7]"
                         />
                         <div>
                             <Paragraph size="sm" className="mt-4">

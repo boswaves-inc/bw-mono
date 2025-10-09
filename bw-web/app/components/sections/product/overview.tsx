@@ -8,66 +8,6 @@ import Paragraph from "~/components/core/paragraph";
 import Section, { type SectionProps } from "~/components/core/section";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "~/components/core/tab";
 
-
-const products = [
-    {
-        id: 'test',
-        name: 'test',
-        price: '$25',
-        imageSrc: 'image.url',
-        imageAlt: 'image'
-    },
-    {
-        id: 'test',
-        name: 'test',
-        price: '$25',
-        imageSrc: 'image.url',
-        imageAlt: 'image'
-    },
-    {
-        id: 'test',
-        name: 'test',
-        price: '$25',
-        imageSrc: 'image.url',
-        imageAlt: 'image'
-    },
-    {
-        id: 'test',
-        name: 'Test',
-        price: '$25',
-        imageSrc: 'image.url',
-        imageAlt: 'image'
-    },
-    {
-        id: 'Test',
-        name: 'test',
-        price: '$25',
-        imageSrc: 'image.url',
-        imageAlt: 'image'
-    },
-    {
-        id: 'test',
-        name: 'test',
-        price: '$25',
-        imageSrc: 'image.url',
-        imageAlt: 'image'
-    },
-    {
-        id: 'test',
-        name: 'test',
-        price: '$25',
-        imageSrc: 'image.url',
-        imageAlt: 'image'
-    },
-    {
-        id: 'test',
-        name: 'Test',
-        price: '$25',
-        imageSrc: 'image.url',
-        imageAlt: 'image'
-    },
-]
-
 interface ProductListProps extends SectionProps {
 }
 
@@ -77,7 +17,7 @@ const ProductOverview = forwardRef<HTMLElement, ProductListProps>(({ ...props },
             <div className=" xl:gap-x-16 lg:gap-y-10 lg:gap-x-8 lg:grid-cols-7 lg:grid-rows-1 grid">
                 {/* Image */}
                 <div className=" lg:row-end-1 lg:col-span-4">
-                    <div className="bg-gray-100 dark:bg-gray-800 rounded-lg w-full h-auto aspect-[4/3]" />
+                    <img className="bg-gray-100 dark:bg-gray-800 rounded-lg w-full h-auto aspect-[4/3]" src="https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75" />
                 </div>
 
                 {/* Details */}
