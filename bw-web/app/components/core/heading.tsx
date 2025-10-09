@@ -10,7 +10,8 @@ const variants = tv({
             h1: 'text-4xl font-semibold tracking-tight sm:text-5xl',
             h2: 'tracking-tight font-semibold text-4xl',
             h3: 'tracking-tight font-semibold text-2xl sm:text-3xl',
-            h4: 'text-base/7 font-semibold dark:text-indigo-400 text-indigo-600'
+            h4: 'text-base/7 font-semibold dark:text-indigo-400 text-indigo-600',
+            h5: 'text-sm/6 font-medium dark:text-white text-gray-900'
         }
     }
 })

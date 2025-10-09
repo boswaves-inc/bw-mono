@@ -6,7 +6,7 @@ const variants = tv({
     base: 'dark:text-gray-400 text-gray-500',
     variants: {
         size: {
-            sm: 'text-sm/6',
+            sm: 'text-sm/5',
             base: 'text-base/7',
             lg: 'text-lg/8',
             xl: 'text-lg/8 sm:text-xl/8 font-medium'
