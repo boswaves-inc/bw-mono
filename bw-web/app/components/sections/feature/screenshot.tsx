@@ -45,7 +45,6 @@ const features = [
 const FeatureScreenshot = forwardRef<HTMLElement>((props, ref) => {
     return (
         <Section ref={ref} {...props}>
-
             <div className="mx-auto max-w-2xl lg:text-center">
                 <h2 className="text-base/7 font-semibold dark:text-indigo-400 text-indigo-600">Everything you need</h2>
                 <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 dark:text-white sm:text-5xl lg:text-balance">

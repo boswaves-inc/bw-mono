@@ -1,15 +1,15 @@
 import { Input } from "@headlessui/react";
 import { forwardRef } from "react";
 import { Form } from "react-router";
-import Card from "~/components/core/card";
+import Panel from "~/components/core/panel";
 import Heading from "~/components/core/heading";
 import Paragraph from "~/components/core/paragraph";
 import Section, { type SectionProps } from "~/components/core/section";
 
-const NewsletterCard = forwardRef<HTMLElement, SectionProps>((props, ref) => {
+const NewsletterPanel = forwardRef<HTMLElement, SectionProps>((props, ref) => {
     return (
         <Section ref={ref} {...props}>
-            <Card color="gradient">
+            <Panel color="gradient">
                 <Heading size="h1" className="text-center max-w-3xl mx-auto">
                     Get notified when we're launching
                 </Heading>
@@ -22,9 +22,9 @@ const NewsletterCard = forwardRef<HTMLElement, SectionProps>((props, ref) => {
                         Notify Me
                     </button>
                 </Form>
-            </Card>
+            </Panel>
         </Section>
     )
 })
 
-export default NewsletterCard;
+export default NewsletterPanel;

@@ -1,5 +1,5 @@
-import type { Route } from "./+types/products._index";
-import { createSearchParams, Form, Link, useFetcher, useSearchParams } from "react-router";
+import type { Route } from "./+types/library._index";
+import { Form, useSearchParams } from "react-router";
 import { Checkbox } from "~/components/core/checkbox";
 import { Popover, PopoverButton, PopoverPanel } from "~/components/core/popover";
 import { Menu, MenuItem, MenuItems, MenuButton } from "~/components/core/menu";
@@ -8,65 +8,6 @@ import Heading from "~/components/core/heading";
 import Paragraph from "~/components/core/paragraph";
 import Label from "~/components/core/label";
 import ProductList from "~/components/sections/product/list";
-
-const products = [
-  {
-    id: 'test',
-    name: 'test',
-    price: '$25',
-    imageSrc: 'image.url',
-    imageAlt: 'image'
-  },
-  {
-    id: 'test',
-    name: 'test',
-    price: '$25',
-    imageSrc: 'image.url',
-    imageAlt: 'image'
-  },
-  {
-    id: 'test',
-    name: 'test',
-    price: '$25',
-    imageSrc: 'image.url',
-    imageAlt: 'image'
-  },
-  {
-    id: 'test',
-    name: 'Test',
-    price: '$25',
-    imageSrc: 'image.url',
-    imageAlt: 'image'
-  },
-  {
-    id: 'Test',
-    name: 'test',
-    price: '$25',
-    imageSrc: 'image.url',
-    imageAlt: 'image'
-  },
-  {
-    id: 'test',
-    name: 'test',
-    price: '$25',
-    imageSrc: 'image.url',
-    imageAlt: 'image'
-  },
-  {
-    id: 'test',
-    name: 'test',
-    price: '$25',
-    imageSrc: 'image.url',
-    imageAlt: 'image'
-  },
-  {
-    id: 'test',
-    name: 'Test',
-    price: '$25',
-    imageSrc: 'image.url',
-    imageAlt: 'image'
-  },
-]
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -194,7 +135,7 @@ export default function renderer() {
         </div>
       </div>
 
-      <ProductList heading="Others also use"/>
+      <ProductList heading="Others also use" />
       <ProductList />
     </div>
   )

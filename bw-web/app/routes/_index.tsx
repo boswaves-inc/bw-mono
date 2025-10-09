@@ -6,7 +6,8 @@ import ContentTiles from "~/components/sections/content/tiles";
 import Button from "~/components/core/button";
 import Heading from "~/components/core/heading";
 import HeroCentered from "~/components/sections/hero/centered";
-import NewsletterCard from "~/components/sections/newsletter/card";
+import NewsletterPanel from "~/components/sections/newsletter/card";
+import ContentPanel from "~/components/sections/content/panel";
 
 
 export function meta({ }: Route.MetaArgs) {
@@ -90,7 +91,7 @@ export default function renderer() {
                   Deploy faster
                 </Heading>
                 <Heading size="h1" className="mt-2">
-                  Build your own toolbox
+                  Pricing that grows with you
                 </Heading>
                 <p className="mt-6 text-lg/8 text-gray-300">
                   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque,
@@ -106,7 +107,8 @@ export default function renderer() {
           </div>
         </div>
       </div>
-      <ContentTiles />
+      <ContentPanel/>
+      {/* <ContentTiles /> */}
       <TestemonialsGrid />
     </div>
   );

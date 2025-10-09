@@ -23,10 +23,10 @@ const Header = forwardRef<HTMLDivElement>(({ }, ref) => {
                     </button>
                 </div>
                 <div className="hidden lg:flex lg:gap-x-12">
-                    <Link to={'/products'} className="text-sm/6 font-semibold dark:text-white text-gray-900">Products</Link>
                     <Link to={'/products'} className="text-sm/6 font-semibold dark:text-white text-gray-900">Features</Link>
-                    <Link to={'/products'} className="text-sm/6 font-semibold dark:text-white text-gray-900">Marketplace</Link>
-                    <Link to={'/products'} className="text-sm/6 font-semibold dark:text-white text-gray-900">Company</Link>
+                    <Link to={'/products'} className="text-sm/6 font-semibold dark:text-white text-gray-900">Resources</Link>
+                    <Link to={'/library'} className="text-sm/6 font-semibold dark:text-white text-gray-900">Library</Link>
+                    <Link to={'/pricing'} className="text-sm/6 font-semibold dark:text-white text-gray-900">Pricing</Link>
                 </div>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
                     <Link to="/auth/login" className="text-sm/6 font-semibold dark:text-white text-gray-900">Log in <span aria-hidden="true">&rarr;</span></Link>
@@ -49,10 +49,10 @@ const Header = forwardRef<HTMLDivElement>(({ }, ref) => {
                     <div className="mt-6 flow-root">
                         <div className="-my-6 divide-y divide-gray-500/10">
                             <div className="space-y-2 py-6">
-                                <a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Product</a>
                                 <a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Features</a>
-                                <a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Marketplace</a>
-                                <a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Company</a>
+                                <a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Resources</a>
+                                <a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Library</a>
+                                <a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Pricing</a>
                             </div>
                             <div className="py-6">
                                 <a href="#" className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Log in</a>

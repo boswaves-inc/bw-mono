@@ -15,12 +15,12 @@ const variants = tv({
     }
 })
 
-export type CardAttributes = HTMLAttributes<HTMLDivElement>
-export interface CardProps extends DetailedHTMLProps<CardAttributes, HTMLDivElement> {
+export type PanelAttributes = HTMLAttributes<HTMLDivElement>
+export interface PanelProps extends DetailedHTMLProps<PanelAttributes, HTMLDivElement> {
     color?: keyof typeof variants['variants']['color']
 }
 
-export default forwardRef<HTMLDivElement, CardProps>(({ color, children, className, ...props }, ref) => (
+export default forwardRef<HTMLDivElement, PanelProps>(({ color, children, className, ...props }, ref) => (
     <div ref={ref} {...props} className={twMerge(variants({ color }), className)} >
         {children}
         <svg  viewBox="0 0 1024 1024" aria-hidden="true" className={twMerge("pointer-events-none blur-3xl size-[64rem] top-1/2 absolute", color !== 'gradient' && 'hidden')}>

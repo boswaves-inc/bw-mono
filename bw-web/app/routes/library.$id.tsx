@@ -1,5 +1,5 @@
 import ProductList from "~/components/sections/product/list";
-import type { Route } from "./+types/products.$id";
+import type { Route } from "./+types/library.$id";
 import ProductOverview from "~/components/sections/product/overview";
 
 export function meta({ }: Route.MetaArgs) {

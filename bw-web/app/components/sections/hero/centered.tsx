@@ -29,7 +29,7 @@ const HeroCentered = forwardRef<HTMLElement>((props, ref) => {
                     </div>
                     <div className="text-center max-w-2xl  mx-auto">
                         <Heading size="title">
-                            Data to enrich your online business
+                            Never pay for what you don't need
                         </Heading>
                         <Paragraph size="xl" className="mt-8 text-pretty">
                             Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat.
