@@ -23,8 +23,8 @@ export interface HeadingProps extends DetailedHTMLProps<HeadingAttributes, HTMLH
 
 export default forwardRef<HTMLHeadingElement, HeadingProps>(({ size, children, className, ...props }, ref) => {
     return createElement(size == 'title' ? 'h1' : size, {
-        ref,
         ...props,
+        ref,
         className: twMerge(variants({ size }), className),
     }, children)
 })

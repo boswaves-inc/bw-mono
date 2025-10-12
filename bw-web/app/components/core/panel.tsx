@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { tv } from "tailwind-variants";
 
 const variants = tv({
-    base: "xl:py-32 group overflow-hidden sm:px-24 sm:rounded-3xl ring-1 dark:ring-white/10 ring-gray-900/10 relative shadow-lg py-24 px-6 bg-white dark:bg-white/5",
+    base: "xl:py-32 group overflow-hidden sm:px-24 rounded-3xl ring-1 dark:ring-white/10 ring-gray-900/10 relative shadow-xl py-24 px-6 bg-white dark:bg-white/5",
     variants: {
         color: {
             solid: "bg-white dark:bg-white/5 [--theme:'solid']",
