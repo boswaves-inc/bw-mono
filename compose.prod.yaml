@@ -1,0 +1,17 @@
+name: boswaves
+
+services:
+  web:
+    build:
+      context: ./bw-web
+      dockerfile: Dockerfile
+    image: bw/website:latest
+    container_name: bw-website
+    networks:
+    - host_net
+    ports:
+    - 3000:3000
+
+networks:
+  host_net:
+    driver: bridge
