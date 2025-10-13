@@ -6,7 +6,7 @@ services:
       context: ./bw-web
       dockerfile: Dockerfile
     image: bw/website:latest
-    container_name: bw-website
+    container_name: bw-web
     networks:
     - host_net
     ports:
