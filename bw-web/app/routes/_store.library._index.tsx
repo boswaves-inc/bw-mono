@@ -8,8 +8,7 @@ import Heading from "~/components/core/heading";
 import Paragraph from "~/components/core/paragraph";
 import Label from "~/components/core/label";
 import ProductList from "~/components/sections/product/list";
-import ContentPanel from "~/components/sections/content/panel";
-import NewsletterPanel from "~/components/sections/newsletter/card";
+
 import Button from "~/components/core/button";
 
 export function meta({ }: Route.MetaArgs) {

@@ -1,5 +1,5 @@
 import ProductList from "~/components/sections/product/list";
-import type { Route } from "./+types/_store.library.$id._index";
+import type { Route } from "./+types/_store.library.$id";
 import ProductOverview from "~/components/sections/product/overview";
 import Section from "~/components/core/section";
 import Paragraph from "~/components/core/paragraph";
@@ -7,7 +7,7 @@ import Heading from "~/components/core/heading";
 import { Check, ChevronLeft, ChevronRight, Flame, LinkIcon, Share, Star } from "lucide-react";
 import ContentPanel from "~/components/sections/content/panel";
 import FaqAccordion from "~/components/sections/faq/accordion";
-import { Link } from "react-router";
+import { data, Link, useFetcher } from "react-router";
 import ContentTiles from "~/components/sections/content/tiles";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "~/components/core/tab";
 import Button from "~/components/core/button";
@@ -20,7 +20,20 @@ export function meta({ }: Route.MetaArgs) {
   ];
 }
 
+export async function loader({ }: Route.LoaderArgs) {
+
+  return data({})
+}
+
+export async function action({ request }: Route.ActionArgs) {
+  // add product to cart
+
+  return data({})
+}
+
 export default function renderer() {
+  const cart = useFetcher({ key: 'cart' })
+
   return (
     <div>
       <Section className=" pt-11 sm:pt-11">
@@ -122,9 +135,11 @@ export default function renderer() {
                   /year
                 </Paragraph>
               </div>
-              <Button className="w-full mt-6">
-                Add to Toolbox
-              </Button>
+              <cart.Form method="post">
+                <Button className="w-full mt-6">
+                  Add to Toolbox
+                </Button>
+              </cart.Form>
               <ul className="xl:mt-10 dark:text-gray-300 text-sm/6 mt-8">
                 <li className="flex gap-x-3 not-last:mb-3">
                   <Check className="text-indigo-400" />

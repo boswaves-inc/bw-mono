@@ -35,7 +35,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="antialiased">
-        <div className="overflow-hidden dark:bg-gray-900 bg-white">
+        <div className="overflow-hidden dark:bg-gray-900 antialiased bg-white">
           <Header />
           <div className="pt-20 isolate relative">
             {children}
