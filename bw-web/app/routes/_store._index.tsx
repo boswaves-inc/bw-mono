@@ -8,6 +8,8 @@ import Heading from "~/components/core/heading";
 import HeroCentered from "~/components/sections/hero/centered";
 import NewsletterPanel from "~/components/sections/newsletter/card";
 import ContentPanel from "~/components/sections/content/panel";
+import database from "~/database/index";
+import { Analytic } from "~/database/schema";
 
 
 export function meta({ }: Route.MetaArgs) {
@@ -18,6 +20,10 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export async function loader({ }: Route.LoaderArgs) {
+  const s = await database().select().from(Analytic)
+
+  console.log(s)
+
   return [
     { title: "New React Router App" },
     { name: "description", content: "Welcome to React Router!" },
@@ -107,7 +113,7 @@ export default function renderer() {
           </div>
         </div>
       </div>
-      <ContentPanel/>
+      <ContentPanel />
       {/* <ContentTiles /> */}
       <TestemonialsGrid />
     </div>

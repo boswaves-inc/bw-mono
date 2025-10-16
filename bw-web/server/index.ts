@@ -4,19 +4,25 @@ import express from "express";
 import postgres from "postgres";
 import "react-router";
 
-import { DatabaseContext } from "~/database/context";
+import { PgContext } from "~/database/index";
 import * as schema from "~/database/schema";
 
-const app = express();
+const router = express();
+const client = postgres({
+  port: process.env.PG_HOST ? Number(process.env.PG_HOST) : 5432,
+  host: process.env.PG_HOST ?? 'localhost',
+  username: process.env.PG_USERNAME,
+  database: process.env.PG_DATABASE,
+  password: process.env.PG_PASSWORD
+});
 
-const client = postgres();
 const db = drizzle(client, { schema });
 
-app.use((_, __, next) => DatabaseContext.run(db, next));
+router.use((_, __, next) => PgContext.run(db, next));
 
-app.use(createRequestHandler({
+router.use(createRequestHandler({
   // @ts-ignore
   build: () => import("virtual:react-router/server-build"),
 }));
 
-export default app
+export default router

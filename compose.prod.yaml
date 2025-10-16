@@ -28,7 +28,7 @@ services:
     networks:
     - postgres_net
     ports:
-    - 4000:5432
+    - 5432:5432
     healthcheck:
       test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${PG_USERNAME} -d ${PG_DATABASE}'" ]
       interval: 10s

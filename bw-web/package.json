@@ -2,12 +2,13 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "dotenv -- node server.js",
     "build": "react-router build",
+    "start": "node server.js",
+    
     "db:generate": "dotenv -- drizzle-kit generate",
     "db:migrate": "dotenv -- drizzle-kit migrate",
-    "dev": "dotenv -- node server.js",
-    "start": "node server.js",
-    "typecheck": "react-router typegen && tsc -b"
+    "db:update": "dotenv -- drizzle-kit up"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
