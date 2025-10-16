@@ -1,4 +1,4 @@
-import type { Route } from "./+types/_index";
+import type { Route } from "./+types/_store._index";
 
 import HeroScreenshot from "~/components/sections/hero/screenshot";
 import TestemonialsGrid from "~/components/sections/testemonials/grid";

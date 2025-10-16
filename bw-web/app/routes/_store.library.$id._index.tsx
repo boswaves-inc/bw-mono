@@ -1,5 +1,5 @@
 import ProductList from "~/components/sections/product/list";
-import type { Route } from "./+types/library.$id._index";
+import type { Route } from "./+types/_store.library.$id._index";
 import ProductOverview from "~/components/sections/product/overview";
 import Section from "~/components/core/section";
 import Paragraph from "~/components/core/paragraph";

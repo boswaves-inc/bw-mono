@@ -1,4 +1,4 @@
-import type { Route } from "./+types/library._index";
+import type { Route } from "./+types/_store.library._index";
 import { Form, Link, useSearchParams } from "react-router";
 import { Checkbox } from "~/components/core/checkbox";
 import { Popover, PopoverButton, PopoverPanel } from "~/components/core/popover";
