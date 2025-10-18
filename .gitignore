@@ -5,6 +5,8 @@
 .wireguard
 CLAUDE.md
 
+/node_modules/
+
 blobs
 target
 

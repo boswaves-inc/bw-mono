@@ -1,1 +1,0 @@
-ALTER TABLE "user_info" RENAME COLUMN "id" TO "uid";

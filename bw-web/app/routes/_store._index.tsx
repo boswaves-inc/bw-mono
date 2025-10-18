@@ -2,15 +2,11 @@ import type { Route } from "./+types/_store._index";
 
 import HeroScreenshot from "~/components/sections/hero/screenshot";
 import TestemonialsGrid from "~/components/sections/testemonials/grid";
-import ContentTiles from "~/components/sections/content/tiles";
 import Button from "~/components/core/button";
 import Heading from "~/components/core/heading";
-import HeroCentered from "~/components/sections/hero/centered";
-import NewsletterPanel from "~/components/sections/newsletter/card";
 import ContentPanel from "~/components/sections/content/panel";
-import database from "~/database/index";
-import { Analytic } from "~/database/schema";
-
+import { postgres } from "~/services";
+import { User } from "~/models/user";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -20,7 +16,7 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export async function loader({ }: Route.LoaderArgs) {
-  const s = await database().select().from(Analytic)
+  const s = await postgres.select().from(User)
 
   console.log(s)
 

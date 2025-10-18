@@ -6,7 +6,8 @@
     "app/**/.server/**/*",
     "app/**/.client/**/*",
     "database/**/*",
-    "server/**/*"
+    "server/**/*",
+    "drizzle/**/*",
   ],
   "compilerOptions": {
     "composite": true,
@@ -20,7 +21,7 @@
     "rootDirs": [".", "./.react-router/types"],
     "baseUrl": ".",
     "paths": {
-      "~/database/*": ["./database/*"],
+      "~/drizzle/*": ["./drizzle/*"],
       "~/*": ["./app/*"]
     },
     "esModuleInterop": true,

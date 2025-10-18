@@ -5,13 +5,16 @@
     "dev": "dotenv -- node server.js",
     "build": "react-router build",
     "start": "node server.js",
-    
     "db:generate": "dotenv -- drizzle-kit generate",
     "db:migrate": "dotenv -- drizzle-kit migrate",
     "db:update": "dotenv -- drizzle-kit up"
   },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
+    "@react-router/express": "^7.9.4",
     "@react-router/fs-routes": "^7.9.4",
     "@react-router/node": "^7.9.2",
     "@react-router/serve": "^7.9.2",
@@ -41,6 +44,7 @@
     "dotenv-cli": "^10.0.0",
     "drizzle-kit": "^0.31.5",
     "tailwindcss": "^4.1.13",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.2",
     "vite": "^7.1.7",
     "vite-tsconfig-paths": "^5.1.4"
