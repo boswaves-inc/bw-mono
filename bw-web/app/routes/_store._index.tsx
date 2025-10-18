@@ -1,5 +1,4 @@
 import type { Route } from "./+types/_store._index";
-
 import HeroScreenshot from "~/components/sections/hero/screenshot";
 import TestemonialsGrid from "~/components/sections/testemonials/grid";
 import Button from "~/components/core/button";
@@ -37,14 +36,13 @@ export default function renderer() {
             <div className="lg:pt-4 lg:pr-8">
               <div className="lg:max-w-lg">
                 <Heading size="h4">
-                  Deploy faster
+                  Industry Leading
                 </Heading>
                 <Heading size="h1" className="mt-2">
-                  Level up your trades
+                  Supercharge your trades
                 </Heading>
                 <p className="mt-6 text-lg/8 text-gray-300">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque,
-                  iste dolor cupiditate blanditiis ratione.
+                  We engineer advanced, data-driven algorithms and modular trading tools that adapt to your strategy - empowering you to trade smarter, faster, and with absolute precision.
                 </p>
                 {/* <dl className="mt-10 max-w-xl space-y-8 text-base/7 text-gray-400 lg:max-w-none">
                   {features.map((feature) => (
@@ -90,14 +88,13 @@ export default function renderer() {
             <div className="lg:pt-4 lg:pr-8">
               <div className="lg:max-w-lg ">
                 <Heading size="h4">
-                  Deploy faster
+                  World's First
                 </Heading>
                 <Heading size="h1" className="mt-2">
                   Pricing that grows with you
                 </Heading>
                 <p className="mt-6 text-lg/8 text-gray-300">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque,
-                  iste dolor cupiditate blanditiis ratione.
+                  You choose the indicators, modules, and insights you need, and only pay for what delivers real value. No clutter. No overpricing. Just precision-built trading - tailored to you
                 </p>
                 <div className="mt-10 flex items-center  gap-x-6">
                   <Button >Get Started</Button>

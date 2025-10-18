@@ -15,9 +15,9 @@ const HeroScreenshot = forwardRef<HTMLElement>((props, ref) => {
                 </div>
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
                     <div className="text-center max-w-2xl  mx-auto">
-                        <Heading size="title">Build your toolbox.</Heading>
+                        <Heading size="title" className="mt-8">Build your toolbox.</Heading>
                         <Paragraph size="xl" className="mt-8 text-pretty">
-                            Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat.
+BOSWaves redefines what a trading toolkit should be - customizable, efficient, and built entirely around your needs. Your toolbox, your strategy, your terms.
                         </Paragraph>
                         <div className="mt-10 flex items-center justify-center gap-x-6">
                             <Button >Get Started</Button>

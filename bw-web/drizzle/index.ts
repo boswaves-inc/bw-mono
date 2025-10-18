@@ -1,1 +1,0 @@
-export { Postgres } from './client'

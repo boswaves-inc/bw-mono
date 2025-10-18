@@ -5,8 +5,6 @@ import { User } from "./models/user";
 export default {
     Cart,
     CartItem,
-    
     Product,
-
     User,
 }

@@ -23,14 +23,14 @@ const TestemonialsGrid = forwardRef<HTMLElement, SectionProps>((props, ref) => {
                 <figure className="sm:col-span-2 xl:row-end-1 xl:col-start-2 dark:ring-white/10 ring-gray-900/10 ring-1 rounded-2xl z-10 bg-white dark:bg-gray-800 shadow-lg">
                     <blockquote className=" sm:text-xl text-lg p-6 sm:p-12 text-gray-900 dark:text-white tracking-tight font-semibold">
                         <p>
-                            “Integer id nunc sit semper purus. Bibendum at lacus ut arcu blandit montes vitae auctor libero. Hac condimentum dignissim nibh vulputate ut nunc. Amet nibh orci mi venenatis blandit vel et proin. Non hendrerit in vel ac diam.”
+                            “I love how modular everything is. I only use the tools I need, and nothing is bloated. It’s efficient, clean, and totally focused on results.”
                         </p>
                     </blockquote>
                     <figcaption className="sm:flex-nowrap py-4 px-6 border-gray-900/10 dark:border-white/10 border-t gap-y-4 gap-x-4 items-center flex-wrap flex">
                         <img src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80" className="size-10 rounded-full ring-1 ring-gray-900/5" />
                         <div className="flex-auto text-gray-900 dark:text-white text-sm/6">
-                            <div className=" font-medium">Brenna Goyette</div>
-                            <div className="text-gray-600 dark:text-gray-400">@brennagoyette</div>
+                            <div className=" font-medium">Emily K.</div>
+                            {/* <div className="text-gray-600 dark:text-gray-400">@brennagoyette</div> */}
                         </div>
                     </figcaption>
                 </figure>
@@ -39,28 +39,28 @@ const TestemonialsGrid = forwardRef<HTMLElement, SectionProps>((props, ref) => {
                         <figure className="p-6 dark:ring-white/10 ring-gray-900/10 dark:bg-gray-800 bg-white ring-1 not-last-of-type:mb-10 rounded-2xl relative z-10 shadow-lg" >
                             <blockquote className="text-gray-900 dark:text-white">
                                 <p>
-                                    “Laborum quis quam. Dolorum et ut quod quia. Voluptas numquam delectus nihil. Aut enim doloremque et ipsam.”
+                                    “Finally, a platform that adapts to my trading style. The toolbox customization is unlike anything I’ve seen.”
                                 </p>
                             </blockquote>
                             <figcaption className="sm:flex-nowrap mt-6 gap-y-4 gap-x-4 items-center flex-wrap flex">
                                 <img src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80" className="size-10 rounded-full ring-1 ring-gray-900/5" />
                                 <div className="flex-auto text-gray-900 dark:text-white text-sm/6">
-                                    <div className=" font-medium">Brenna Goyette</div>
-                                    <div className="text-gray-600 dark:text-gray-400">@brennagoyette</div>
+                                    <div className=" font-medium">Alex R.</div>
+                                    {/* <div className="text-gray-600 dark:text-gray-400">@brennagoyette</div> */}
                                 </div>
                             </figcaption>
                         </figure>
                         <figure className="p-6 dark:ring-white/10 ring-gray-900/10 dark:bg-gray-800 bg-white ring-1 not-last-of-type:mb-10 rounded-2xl relative z-10 shadow-lg" >
                             <blockquote className="text-gray-900 dark:text-white">
                                 <p>
-                                    “Laborum quis quam. Dolorum et ut quod quia. Voluptas numquam delectus nihil. Aut enim doloremque et ipsam.”
+                                    “BOSWaves’ Smart Money indicators helped me spot opportunities I would have completely missed. The insights are incredibly actionable.”
                                 </p>
                             </blockquote>
                             <figcaption className="sm:flex-nowrap mt-6 gap-y-4 gap-x-4 items-center flex-wrap flex">
                                 <img src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80" className="size-10 rounded-full ring-1 ring-gray-900/5" />
                                 <div className="flex-auto text-gray-900 dark:text-white text-sm/6">
-                                    <div className=" font-medium">Brenna Goyette</div>
-                                    <div className="text-gray-600 dark:text-gray-400">@brennagoyette</div>
+                                    <div className=" font-medium">Sofia L.</div>
+                                    {/* <div className="text-gray-600 dark:text-gray-400">@brennagoyette</div> */}
                                 </div>
                             </figcaption>
                         </figure>
@@ -69,14 +69,14 @@ const TestemonialsGrid = forwardRef<HTMLElement, SectionProps>((props, ref) => {
                         <figure className="p-6 dark:ring-white/10 ring-gray-900/10 dark:bg-gray-800 bg-white ring-1 not-last-of-type:mb-10 rounded-2xl relative z-10 shadow-lg" >
                             <blockquote className="text-gray-900 dark:text-white">
                                 <p>
-                                    “Laborum quis quam. Dolorum et ut quod quia. Voluptas numquam delectus nihil. Aut enim doloremque et ipsam.”
+                                    “The private Discord is game-changing. Sharing strategies, getting live feedback, and seeing setups from top traders has improved my trading dramatically.”
                                 </p>
                             </blockquote>
                             <figcaption className="sm:flex-nowrap mt-6 gap-y-4 gap-x-4 items-center flex-wrap flex">
                                 <img src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80" className="size-10 rounded-full ring-1 ring-gray-900/5" />
                                 <div className="flex-auto text-gray-900 dark:text-white text-sm/6">
-                                    <div className=" font-medium">Brenna Goyette</div>
-                                    <div className="text-gray-600 dark:text-gray-400">@brennagoyette</div>
+                                    <div className=" font-medium">Raj P.</div>
+                                    {/* <div className="text-gray-600 dark:text-gray-400">@brennagoyette</div> */}
                                 </div>
                             </figcaption>
                         </figure>
@@ -87,14 +87,14 @@ const TestemonialsGrid = forwardRef<HTMLElement, SectionProps>((props, ref) => {
                         <figure className="p-6 dark:ring-white/10 ring-gray-900/10 dark:bg-gray-800 bg-white ring-1 not-last-of-type:mb-10 rounded-2xl relative z-10 shadow-lg" >
                             <blockquote className="text-gray-900 dark:text-white">
                                 <p>
-                                    “Laborum quis quam. Dolorum et ut quod quia. Voluptas numquam delectus nihil. Aut enim doloremque et ipsam.”
+                                    “The market insights from BOSWaves are invaluable. I’ve been able to make quicker, smarter trades because of their signals and analysis.”
                                 </p>
                             </blockquote>
                             <figcaption className="sm:flex-nowrap mt-6 gap-y-4 gap-x-4 items-center flex-wrap flex">
                                 <img src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80" className="size-10 rounded-full ring-1 ring-gray-900/5" />
                                 <div className="flex-auto text-gray-900 dark:text-white text-sm/6">
-                                    <div className=" font-medium">Brenna Goyette</div>
-                                    <div className="text-gray-600 dark:text-gray-400">@brennagoyette</div>
+                                    <div className=" font-medium">Marcus T.</div>
+                                    {/* <div className="text-gray-600 dark:text-gray-400">@brennagoyette</div> */}
                                 </div>
                             </figcaption>
                         </figure>
@@ -103,28 +103,28 @@ const TestemonialsGrid = forwardRef<HTMLElement, SectionProps>((props, ref) => {
                         <figure className="p-6 dark:ring-white/10 ring-gray-900/10 dark:bg-gray-800 bg-white ring-1 not-last-of-type:mb-10 rounded-2xl relative z-10 shadow-lg" >
                             <blockquote className="text-gray-900 dark:text-white">
                                 <p>
-                                    “Laborum quis quam. Dolorum et ut quod quia. Voluptas numquam delectus nihil. Aut enim doloremque et ipsam.”
+                                    “Being able to mix and match indicators to suit my style is incredible. No other platform lets me build a toolbox this flexible.”
                                 </p>
                             </blockquote>
                             <figcaption className="sm:flex-nowrap mt-6 gap-y-4 gap-x-4 items-center flex-wrap flex">
                                 <img src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80" className="size-10 rounded-full ring-1 ring-gray-900/5" />
                                 <div className="flex-auto text-gray-900 dark:text-white text-sm/6">
-                                    <div className=" font-medium">Brenna Goyette</div>
-                                    <div className="text-gray-600 dark:text-gray-400">@brennagoyette</div>
+                                    <div className=" font-medium">Oscar P.</div>
+                                    {/* <div className="text-gray-600 dark:text-gray-400">@brennagoyette</div> */}
                                 </div>
                             </figcaption>
                         </figure>
                         <figure className="p-6 dark:ring-white/10 ring-gray-900/10 dark:bg-gray-800 bg-white ring-1 not-last-of-type:mb-10 rounded-2xl relative z-10 shadow-lg" >
                             <blockquote className="text-gray-900 dark:text-white">
                                 <p>
-                                    “Laborum quis quam. Dolorum et ut quod quia. Voluptas numquam delectus nihil. Aut enim doloremque et ipsam.”
+                                    “The community alone is worth the premium. Instant support, trade ideas, and real-time discussions - it’s like having a trading mastermind team in my pocket.”
                                 </p>
                             </blockquote>
                             <figcaption className="sm:flex-nowrap mt-6 gap-y-4 gap-x-4 items-center flex-wrap flex">
                                 <img src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80" className="size-10 rounded-full ring-1 ring-gray-900/5" />
                                 <div className="flex-auto text-gray-900 dark:text-white text-sm/6">
-                                    <div className=" font-medium">Brenna Goyette</div>
-                                    <div className="text-gray-600 dark:text-gray-400">@brennagoyette</div>
+                                    <div className=" font-medium">Liam J.</div>
+                                    {/* <div className="text-gray-600 dark:text-gray-400">@brennagoyette</div> */}
                                 </div>
                             </figcaption>
                         </figure>

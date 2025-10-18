@@ -24,7 +24,6 @@ export function loader({ }: Route.LoaderArgs) {
   return {}
 }
 
-
 const products = [
   {
     id: 'Trend Pivots Profile',
