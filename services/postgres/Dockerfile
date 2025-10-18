@@ -4,7 +4,7 @@ FROM timescale/timescaledb:latest-pg16
 # RUN apk update && apk add --no-cache  postgresql-pg_cron
 
 # Copy the schema file
-COPY ./initdb /docker-entrypoint-initdb.d/
+# COPY ./initdb /docker-entrypoint-initdb.d/
 
 # Copy the configuration files
 COPY ./postgresql.conf /etc/postgresql.conf
