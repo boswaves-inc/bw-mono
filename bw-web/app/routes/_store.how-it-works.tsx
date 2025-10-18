@@ -1,5 +1,5 @@
 import FaqAccordion from "~/components/sections/faq/accordion";
-import type { Route } from "./+types/_store.pricing";
+import type { Route } from "./+types/_store.how-it-works";
 import ProductList from "~/components/sections/product/list";
 import ProductOverview from "~/components/sections/product/overview";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
@@ -18,12 +18,12 @@ export function meta({ }: Route.MetaArgs) {
 export default function renderer() {
     return (
         <div>
-            <HeroCentered/>
+            <HeroCentered />
             {/* <FeatureScreenshot/> */}
-            <ContentTiles/>
-            <NewsletterPanel/>
+            <ContentTiles />
+            <NewsletterPanel />
             <FaqAccordion />
-        
+
         </div>
     );
 }

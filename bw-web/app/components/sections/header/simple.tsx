@@ -30,7 +30,7 @@ const Header = forwardRef<HTMLDivElement>(({ }, ref) => {
                     <Link to={'/products'} className="text-sm/6 font-semibold dark:text-white text-gray-900">Features</Link>
                     <Link to={'/products'} className="text-sm/6 font-semibold dark:text-white text-gray-900">Resources</Link>
                     <Link to={'/library'} className="text-sm/6 font-semibold dark:text-white text-gray-900">Library</Link>
-                    <Link to={'/pricing'} className="text-sm/6 font-semibold dark:text-white text-gray-900">Pricing</Link>
+                    <Link to={'/how-it-works'} className="text-sm/6 font-semibold dark:text-white text-gray-900">How It Works</Link>
                 </div>
                 <div className="hidden lg:flex lg:flex-1 items-center gap-x-6 lg:justify-end dark:text-white text-gray-900">
                     <div className="flex items-center gap-x-3">

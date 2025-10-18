@@ -22,34 +22,34 @@ const ContentTiles = forwardRef<HTMLElement>((props, ref) => {
                 <div className="lg:pr-8">
                     <Heading size="h3">How it works</Heading>
                     <Paragraph className="mt-6">
-                        Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus enim. Mattis mauris semper sed amet vitae sed turpis id. Id dolor praesent donec est. Odio penatibus risus viverra tellus varius sit neque erat velit. Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus enim. Mattis mauris semper sed amet vitae sed turpis id.
+                        We empower you to build a trading toolbox tailored to your strategy. Choose only the tools you need, customize them to your workflow, and gain the freedom to trade exactly how you want.
                     </Paragraph>
                     <ul className="text-gray-500 dark:text-gray-400 max-w-xl mt-8 list-none">
                         <li className="gap-x-3 flex not-last:my-8">
                             <CloudUpload className="size-5 shrink-0 dark:text-indigo-400 text-indigo-500" />
                             <span>
                                 <strong className="font-semibold dark:text-white text-gray-900">
-                                    1. Connect your TradingView
+                                    Fully Customizable Tools
                                 </strong>
-                                {" Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione."}
+                                {" Pick from a wide library of indicators and features - build your toolbox one piece at a time."}
                             </span>
                         </li>
                         <li className="gap-x-3 flex not-last:my-8">
                             <Hammer className="size-5 shrink-0 dark:text-indigo-400 text-indigo-500" />
                             <span>
                                 <strong className="font-semibold dark:text-white text-gray-900">
-                                    2. Select your indicators
+                                    Modular Pricing
                                 </strong>
-                                {" Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione."}
+                                {" Only pay for the tools you use - no bloated subscriptions or unnecessary features."}
                             </span>
                         </li>
                         <li className="gap-x-3 flex not-last:my-8">
                             <CloudUpload className="size-5 shrink-0 dark:text-indigo-400 text-indigo-500" />
                             <span>
                                 <strong className="font-semibold dark:text-white text-gray-900">
-                                    3. Improve your trades with BosWaves
+                                    Instant Deployment
                                 </strong>
-                                {" Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione."}
+                                {" Once built, your toolbox is ready to use immediately across any supported charts or timeframes."}
                             </span>
                         </li>
                     </ul>

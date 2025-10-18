@@ -85,10 +85,11 @@ export default function renderer() {
       <div className="px-4 sm:px-6 lg:px-8 sm:max-w-7xl max-w-[40rem] mx-auto">
         <div className="py-24">
           <Heading size="h1">
-            New Arrivals
+            Your Trading Toolbox Starts Here
           </Heading>
           <Paragraph className="mt-4 max-w-3xl">
-            Our thoughtfully designed workspace objects are crafted in limited runs. Improve your productivity and organization with these sale items before we run out.
+            {/* Our thoughtfully designed workspace objects are crafted in limited runs. Improve your productivity and organization with these sale items before we run out. */}
+            Mix, match, and master - customize your indicator setup to perfection.
           </Paragraph>
         </div>
         <section aria-labelledby="filter-heading" className="py-6 px-4 sm:px-0 border-gray-200 dark:border-y-gray-700 border-t">

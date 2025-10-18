@@ -29,10 +29,10 @@ const HeroCentered = forwardRef<HTMLElement>((props, ref) => {
                     </div>
                     <div className="text-center max-w-2xl  mx-auto">
                         <Heading size="title">
-                            Never pay for what you don't need
+                            From Checkout to Chart in Minutes
                         </Heading>
                         <Paragraph size="xl" className="mt-8 text-pretty">
-                            Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat.
+                            Pick you indicators, check out, and start trading with your custom BOSWaves setup - streamlined, precise, and tailored to you
                         </Paragraph>
                         <div className="mt-10 flex items-center justify-center gap-x-6">
                             <Button color="primary">
