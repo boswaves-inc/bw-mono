@@ -27,14 +27,29 @@ services:
     - postgres_vol:/var/lib/postgresql/data
     networks:
     - postgres_net
-    ports:
-    - 5432:5432
     healthcheck:
       test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${PG_USERNAME} -d ${PG_DATABASE}'" ]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: bw-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+    - "5440:80"
+    volumes:
+    - pgadmin_vol:/var/lib/pgadmin
+    networks:
+    - postgres_net
+    - host_net
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   postgres_vol:
@@ -51,4 +66,3 @@ networks:
     driver: bridge
   postgres_net:
     driver: bridge
-    internal: true
