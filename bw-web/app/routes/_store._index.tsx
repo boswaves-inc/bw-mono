@@ -15,9 +15,9 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export async function loader({ }: Route.LoaderArgs) {
-  const s = await postgres.select().from(User)
+  // const s = await postgres.select().from(User)
 
-  console.log(s)
+  // console.log(s)
 
   return [
     { title: "New React Router App" },
