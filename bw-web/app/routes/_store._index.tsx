@@ -4,8 +4,6 @@ import TestemonialsGrid from "~/components/sections/testemonials/grid";
 import Button from "~/components/core/button";
 import Heading from "~/components/core/heading";
 import ContentPanel from "~/components/sections/content/panel";
-import { postgres } from "~/services";
-import { User } from "~/models/user";
 
 export function meta({ }: Route.MetaArgs) {
   return [
