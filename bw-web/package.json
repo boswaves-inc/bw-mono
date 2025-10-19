@@ -2,9 +2,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "dotenv -- node server.js",
     "build": "react-router build",
     "start": "node server.js",
+    "dev": "dotenv -- node server.js",
     "db:generate": "dotenv -- drizzle-kit generate",
     "db:migrate": "dotenv -- drizzle-kit migrate",
     "db:update": "dotenv -- drizzle-kit up"
