@@ -23,6 +23,11 @@ export const links: Route.LinksFunction = () => [
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
+  {
+    rel: "preload",
+    href: "https://js.chargebee.com/v2/chargebee.js",
+    as: "script",
+  },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -35,15 +40,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="antialiased">
-        <div className="overflow-hidden dark:bg-gray-900 antialiased bg-white">
+        <div className="overflow-hidden dark:bg-gray-900 dark:text-white antialiased bg-white">
           <Header />
           <div className="pt-20 isolate relative">
             {children}
           </div>
-          <Footer/>
+          <Footer />
         </div>
         <ScrollRestoration />
         <Scripts />
+        <script src="https://js.chargebee.com/v2/chargebee.js" defer />
       </body>
     </html>
   );

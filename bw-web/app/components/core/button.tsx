@@ -1,4 +1,4 @@
-import type { DetailedHTMLProps, HTMLAttributes } from "react";
+import type { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
 import { forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
 import { tv } from "tailwind-variants";
@@ -22,7 +22,7 @@ const variants = tv({
 })
 
 
-export type ButtonAttributes = HTMLAttributes<HTMLButtonElement>
+export type ButtonAttributes = ButtonHTMLAttributes<HTMLButtonElement>
 export interface ButtonProps extends DetailedHTMLProps<ButtonAttributes, HTMLButtonElement> {
     color?: keyof typeof variants['variants']['color']
     size?: keyof typeof variants['variants']['size']

@@ -1,5 +1,5 @@
 import { Dialog, DialogPanel } from "@headlessui/react"
-import { ChevronRight, MoreVertical, Search, ShoppingBag, ShoppingCart } from "lucide-react"
+import { ChevronRight, Menu, MoreVertical, Search, ShoppingBag, ShoppingCart } from "lucide-react"
 import { forwardRef, useState } from "react"
 import { Link } from "react-router"
 
@@ -23,7 +23,7 @@ const Header = forwardRef<HTMLDivElement>(({ }, ref) => {
                     </button>
                     <button type="button" onClick={() => setDialog(true)} className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 dark:text-gray-300 text-gray-700">
                         <span className="sr-only">Open main menu</span>
-                        <MoreVertical className=" size-5" />
+                        <Menu className=" size-5" />
                     </button>
                 </div>
                 <div className="hidden lg:flex lg:gap-x-12">
@@ -33,10 +33,10 @@ const Header = forwardRef<HTMLDivElement>(({ }, ref) => {
                     <Link to={'/how-it-works'} className="text-sm/6 font-semibold dark:text-white text-gray-900">How It Works</Link>
                 </div>
                 <div className="hidden lg:flex lg:flex-1 items-center gap-x-6 lg:justify-end dark:text-white text-gray-900">
-                    <div className="flex items-center gap-x-3">
-                        <Search className=" size-5" />
+                    <Search className=" size-5" />
+                    <Link to={'/cart'}>
                         <ShoppingCart className=" size-5" />
-                    </div>
+                    </Link>
                     {auth ? (
                         <div className="flex items-center gap-x-3 bg-gray-900/10 dark:bg-white/10 rounded-full h-8 pl-4">
                             <Link to={'/account'} className="text-sm/6 font-semibold py-1 dark:text-white text-gray-900">Seaszn</Link>

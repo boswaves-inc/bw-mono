@@ -7,7 +7,14 @@ import "react-router";
 
 const router = express();
 
-router.use(postgres({ schema }));
+router.use(postgres({
+  schema
+}));
+
+// router.use(chargebee({
+
+// }));
+
 router.use(createRequestHandler({
   // @ts-ignore
   build: () => import("virtual:react-router/server-build"),
