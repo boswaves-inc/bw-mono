@@ -13,6 +13,7 @@ export async function loader() {
 
 export async function action({ request }: Route.ActionArgs) {
     const form = await request.formData()
+    const intent = form.get('intent')?.toString()!;
     const token = form.get('token')?.toString()!;
 
     const source = await chargebee.paymentSource.createUsingToken({
@@ -28,6 +29,7 @@ export async function action({ request }: Route.ActionArgs) {
             quantity: 1,
         }],
         payment_intent: {
+            id: intent,
             gateway_account_id: 'gw_BTLvdtV06HFfy2GI'
         }
     })
@@ -63,6 +65,7 @@ export default function renderer() {
     const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
+        const data = new FormData(event.currentTarget)
         const { intent } = await fetch('/api/checkout', { method: 'post' }).then(x => x.json())
 
         const component = card.component()!;
@@ -87,7 +90,6 @@ export default function renderer() {
             }
         )
 
-        const data = new FormData(event.currentTarget)
         const token = await component.tokenize()
 
         if (!token) {
