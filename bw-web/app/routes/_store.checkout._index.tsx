@@ -37,7 +37,7 @@ export async function action({ request }: Route.ActionArgs) {
     if (subscription.invoice?.status == 'not_paid' || subscription.invoice?.status == 'payment_due') {
         try {
             const collect = await chargebee.invoice.collectPayment(subscription.invoice.id, {
-                amount: 3002,
+                amount: subscription.invoice.amount_due,
                 payment_source_id: source.payment_source.id,
             })
 
