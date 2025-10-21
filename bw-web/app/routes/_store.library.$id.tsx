@@ -1,15 +1,10 @@
-import ProductList from "~/components/sections/product/list";
 import type { Route } from "./+types/_store.library.$id";
-import ProductOverview from "~/components/sections/product/overview";
 import Section from "~/components/core/section";
 import Paragraph from "~/components/core/paragraph";
 import Heading from "~/components/core/heading";
-import { Check, ChevronLeft, ChevronRight, Flame, LinkIcon, Share, Star } from "lucide-react";
-import ContentPanel from "~/components/sections/content/panel";
+import { Check, ChevronLeft, Flame, Star } from "lucide-react";
 import FaqAccordion from "~/components/sections/faq/accordion";
 import { data, Link, useFetcher } from "react-router";
-import ContentTiles from "~/components/sections/content/tiles";
-import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "~/components/core/tab";
 import Button from "~/components/core/button";
 import Panel from "~/components/core/panel";
 

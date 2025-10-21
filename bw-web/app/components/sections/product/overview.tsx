@@ -1,7 +1,5 @@
-import { CloudUpload, Hammer, LucidePackageOpen, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { forwardRef } from "react";
-import { Link } from "react-router";
-import { twMerge } from "tailwind-merge";
 import Button from "~/components/core/button";
 import Heading from "~/components/core/heading";
 import Paragraph from "~/components/core/paragraph";
