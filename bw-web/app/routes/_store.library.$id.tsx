@@ -3,7 +3,7 @@ import Section from "~/components/section";
 import Paragraph from "~/components/paragraph";
 import Heading from "~/components/heading";
 import { Check, ChevronLeft, Flame, Star } from "lucide-react";
-import FaqAccordion from "~/components/sections/faq/accordion";
+import FaqAccordion from "~/sections/faq/accordion";
 import { data, Link, useFetcher } from "react-router";
 import Button from "~/components/button";
 import Panel from "~/components/panel";

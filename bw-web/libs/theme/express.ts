@@ -1,7 +1,14 @@
 import express from "express"
-import type { Cookie, RouterContext } from "react-router";
+import { createCookie } from "react-router";
+import type { Theme } from "./types";
 
-export default ({ cookie }: { cookie: Cookie }) => {
+const cookie = createCookie('theme', {
+    httpOnly: true,
+    sameSite: 'lax',
+    secrets: ['theme']
+})
+
+export default () => {
     const router = express.Router();
 
     router.use(express.json());
@@ -18,4 +25,10 @@ export default ({ cookie }: { cookie: Cookie }) => {
     })
 
     return router
+}
+
+export const getTheme = async (req: express.Request): Promise<Theme> => {
+    const theme = await cookie.parse(req.headers.cookie ?? '').then(x => x ?? 'dark')
+
+    return theme
 }

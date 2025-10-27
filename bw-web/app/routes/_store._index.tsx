@@ -1,9 +1,9 @@
 import type { Route } from "./+types/_store._index";
-import HeroScreenshot from "~/components/sections/hero/screenshot";
-import TestemonialsGrid from "~/components/sections/testemonials/grid";
+import HeroScreenshot from "~/sections/hero/screenshot";
+import TestemonialsGrid from "~/sections/testemonials/grid";
 import Button from "~/components/button";
 import Heading from "~/components/heading";
-import ContentPanel from "~/components/sections/content/panel";
+import ContentPanel from "~/sections/content/panel";
 
 export function meta({ }: Route.MetaArgs) {
   return [

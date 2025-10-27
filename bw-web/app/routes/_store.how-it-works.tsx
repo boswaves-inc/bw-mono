@@ -1,12 +1,12 @@
-import FaqAccordion from "~/components/sections/faq/accordion";
+import FaqAccordion from "~/sections/faq/accordion";
 import type { Route } from "./+types/_store.how-it-works";
-import ProductList from "~/components/sections/product/list";
-import ProductOverview from "~/components/sections/product/overview";
+import ProductList from "~/sections/product/list";
+import ProductOverview from "~/sections/product/overview";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
-import FeatureScreenshot from "~/components/sections/feature/screenshot";
-import HeroCentered from "~/components/sections/hero/centered";
-import NewsletterPanel from "~/components/sections/newsletter/card";
-import ContentTiles from "~/components/sections/content/tiles";
+import FeatureScreenshot from "~/sections/feature/screenshot";
+import HeroCentered from "~/sections/hero/centered";
+import NewsletterPanel from "~/sections/newsletter/card";
+import ContentTiles from "~/sections/content/tiles";
 
 export function meta({ }: Route.MetaArgs) {
     return [

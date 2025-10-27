@@ -14,6 +14,8 @@ import "./app.css";
 import { twMerge } from "tailwind-merge";
 import Header from "./sections/header/simple";
 import Footer from "./sections/footer/simple";
+import { themeCookie } from "./cookie";
+import { ThemeProvider } from "~/libs/theme/react";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -33,17 +35,15 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-export async function loader({ context }: Route.LoaderArgs) {
-  const { theme } = context;
-
-  return data({ theme })
+export async function loader({ request, context }: Route.LoaderArgs) {
+  return data({ theme: context.theme })
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { theme } = useLoaderData<typeof loader>()
+  const data = useLoaderData<typeof loader>()
 
   return (
-    <html lang="en" className={twMerge(theme, '')}>
+    <html lang="en" className={twMerge(data?.theme, '')}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -51,13 +51,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="antialiased">
-        <div className="overflow-hidden dark:bg-gray-900 dark:text-white antialiased bg-white">
-          <Header />
-          <div className="pt-20 isolate relative">
-            {children}
+        <ThemeProvider theme={data?.theme}>
+          <div className="overflow-hidden dark:bg-gray-900 dark:text-white antialiased bg-white">
+            <Header />
+            <div className="pt-20 isolate relative">
+              {children}
+            </div>
+            <Footer />
           </div>
-          <Footer />
-        </div>
+        </ThemeProvider>
         <ScrollRestoration />
         <Scripts />
         <script src="https://js.chargebee.com/v2/chargebee.js" defer />

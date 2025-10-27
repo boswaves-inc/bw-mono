@@ -4,48 +4,54 @@ import { data, useFetcher } from "react-router";
 import Button from "~/components/button";
 import { type FormEvent } from "react";
 import { Card, CardCvv, CardExpiry, useCard, CardNumber } from "~/libs/chargebee/react";
-import { chargebee } from "~/services";
 
 export async function loader() {
     return data({})
 }
 
+export async function action({ request, context }: Route.ActionArgs) {
 
-export async function action({ request }: Route.ActionArgs) {
-    const form = await request.formData()
-    const intent = form.get('intent')?.toString()!;
+    switch (request.method) {
+        case 'POST': {
+            const form = await request.formData()
+            const intent = form.get('intent')?.toString()!;
 
-    const subscription = await chargebee.subscription.createWithItems('cbdemo_peter', {
-        subscription_items: [{
-            item_price_id: 'cbdemo_business-suite-monthly',
-            quantity: 1,
-        }],
-        payment_intent: {
-            id: intent,
-            // gw_token: token,
-            // gateway_account_id: 'gw_BTLvdtV06HFfy2GI'
-        },
-    })
-
-    if (subscription.invoice?.status == 'not_paid' || subscription.invoice?.status == 'payment_due') {
-        try {
-            const collect = await chargebee.invoice.collectPayment(subscription.invoice.id, {
-                amount: subscription.invoice.amount_due,
-                // payment_source_id: source.payment_source.id,
+            const subscription = await context.chargebee.subscription.createWithItems('cbdemo_peter', {
+                subscription_items: [{
+                    item_price_id: 'cbdemo_business-suite-monthly',
+                    quantity: 1,
+                }],
+                payment_intent: {
+                    id: intent,
+                    // gw_token: token,
+                    // gateway_account_id: 'gw_BTLvdtV06HFfy2GI'
+                },
             })
 
-            console.log(collect)
-        }
-        catch (error: any) {
-            if (error.api_error_code == 'payment_processing_failed' && error.payment_intent?.redirect_url) {
-                console.log(error)
-            }
+            if (subscription.invoice?.status == 'not_paid' || subscription.invoice?.status == 'payment_due') {
+                try {
+                    const collect = await context.chargebee.invoice.collectPayment(subscription.invoice.id, {
+                        amount: subscription.invoice.amount_due,
+                        // payment_source_id: source.payment_source.id,
+                    })
 
-            console.error(error)
+                    console.log(collect)
+                }
+                catch (error: any) {
+                    if (error.api_error_code == 'payment_processing_failed' && error.payment_intent?.redirect_url) {
+                        console.log(error)
+                    }
+
+                    console.error(error)
+                }
+            }
+            else {
+                console.log('payment succesfull')
+            }
+        }; break;
+        case 'PUT': {
+
         }
-    }
-    else {
-        console.log('payment succesfull')
     }
 
     return data({})
@@ -96,7 +102,7 @@ export default function renderer() {
         // data.append('token', token.token)
         data.append('intent', auth.id)
 
-        await fetcher.submit(data, { method: 'post' })
+        await fetcher.submit(data, { method: 'POST' })
     }
 
     return (
