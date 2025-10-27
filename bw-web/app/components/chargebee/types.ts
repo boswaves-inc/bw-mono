@@ -60,3 +60,9 @@ declare global {
         Chargebee: Module
     }
 }
+
+export interface CardApi {
+    component: () => Component | null
+    // tokenize: () => Promise<Token>,
+    // components: () => any
+}

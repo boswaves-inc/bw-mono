@@ -15,7 +15,6 @@ import { twMerge } from "tailwind-merge";
 import Header from "./sections/header/simple";
 import Footer from "./sections/footer/simple";
 import { themeCookie } from "./cookie";
-import { ThemeProvider } from "~/libs/theme/react";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -51,7 +50,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="antialiased">
-        <ThemeProvider theme={data?.theme}>
           <div className="overflow-hidden dark:bg-gray-900 dark:text-white antialiased bg-white">
             <Header />
             <div className="pt-20 isolate relative">
@@ -59,7 +57,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
             </div>
             <Footer />
           </div>
-        </ThemeProvider>
         <ScrollRestoration />
         <Scripts />
         <script src="https://js.chargebee.com/v2/chargebee.js" defer />

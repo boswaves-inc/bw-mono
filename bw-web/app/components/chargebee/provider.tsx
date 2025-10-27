@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type PropsWithChildren } from "react"
-import type { Client } from "../types"
+import type { Client } from "./types"
 
 const context = createContext<{
     instance: Client | null

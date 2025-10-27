@@ -1,12 +1,9 @@
 import { createRequestHandler } from "@react-router/express";
 import Chargebee from 'chargebee';
-import postgres from "~/libs/postgres/express";
 import express from "express";
 import schema from '~/schema'
-import theme, { getTheme } from "~/libs/theme/express";
-
-import { themeCookie } from "~/cookie";
-import { Postgres } from "~/libs/postgres";
+import theme, { getTheme } from "./theme";
+import postgres, { Postgres } from "./postgres";
 
 import "react-router";
 
@@ -21,10 +18,7 @@ if (!process.env.CB_API_KEY) {
 const router = express();
 
 router.use(theme());
-
-router.use(postgres({
-  schema
-}));
+router.use(postgres({ schema }));
 
 router.use(createRequestHandler({
   // @ts-ignore

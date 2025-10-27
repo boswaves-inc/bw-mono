@@ -1,10 +1,9 @@
 import { createContext, createRef, useContext, useEffect, useRef, useState, type PropsWithChildren, type RefObject } from "react";
-import type { Component, Field, } from "../types";
-import type { CardApi } from "./types";
+import type { CardApi, Component } from "./types";
 import { useChargebee } from "./provider";
-import { useTheme } from "~/libs/theme/react";
+import { useTheme } from "~/hooks/theme";
 
-const CONTEXT = createContext<{ component: Component | null }>(null as any)
+const context = createContext<{ component: Component | null }>(null as any)
 
 export const useCard = () => {
     const ref = createRef<CardApi>()
@@ -16,7 +15,7 @@ export const useCard = () => {
 }
 
 export const Card = ({ ref, children }: PropsWithChildren<{ ref?: RefObject<CardApi | null> }>) => {
-    const theme = useTheme()
+    const { theme } = useTheme()
     const chargebee = useChargebee();
 
     const [component, setComponent] = useState<Component | null>(null)
@@ -76,14 +75,14 @@ export const Card = ({ ref, children }: PropsWithChildren<{ ref?: RefObject<Card
     }, [component])
 
     return (
-        <CONTEXT.Provider value={{ component }}>
+        <context.Provider value={{ component }}>
             {children}
-        </CONTEXT.Provider>
+        </context.Provider>
     )
 }
 
 export const CardNumber = () => {
-    const { component } = useContext(CONTEXT)
+    const { component } = useContext(context)
     const ref = useRef<HTMLDivElement>(null)
 
     const [mounted, setMounted] = useState<boolean>(false)
@@ -112,7 +111,7 @@ export const CardNumber = () => {
 }
 
 export const CardExpiry = () => {
-    const { component } = useContext(CONTEXT)
+    const { component } = useContext(context)
     const ref = useRef<HTMLDivElement>(null)
 
     const [mounted, setMounted] = useState<boolean>(false)
@@ -141,7 +140,7 @@ export const CardExpiry = () => {
 }
 
 export const CardCvv = () => {
-    const { component } = useContext(CONTEXT)
+    const { component } = useContext(context)
     const ref = useRef<HTMLDivElement>(null)
 
     const [mounted, setMounted] = useState<boolean>(false)

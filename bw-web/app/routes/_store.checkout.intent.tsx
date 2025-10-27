@@ -1,5 +1,5 @@
 import { data } from "react-router"
-import type { Route } from "./+types/api.checkout"
+import type { Route } from "./+types/_store.checkout.intent"
 
 export async function action({ context }: Route.ActionArgs) {
     const intent = await context.chargebee.paymentIntent.create({

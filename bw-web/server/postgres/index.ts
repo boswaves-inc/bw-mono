@@ -4,6 +4,8 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import context from "./context";
 import postgres from 'postgres';
 
+export { Postgres } from './client'
+
 export default <TSchema extends Record<string, unknown> = Record<string, never>>({ schema }: { schema: TSchema }) => {
     const client = postgres({
         port: process.env.PG_HOST ? Number(process.env.PG_HOST) : 5432,
