@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
-import Button from "~/components/core/button";
-import Heading from "~/components/core/heading";
-import Paragraph from "~/components/core/paragraph";
+import Button from "~/components/button";
+import Heading from "~/components/heading";
+import Paragraph from "~/components/paragraph";
 
 const HeroScreenshot = forwardRef<HTMLElement>((props, ref) => {
     return (

@@ -24,11 +24,11 @@ export default forwardRef<HTMLDivElement, PanelProps>(({ color, children, classN
     <div ref={ref} {...props} className={twMerge(variants({ color }), className)} >
         {children}
         <svg  viewBox="0 0 1024 1024" aria-hidden="true" className={twMerge("pointer-events-none blur-3xl size-[64rem] top-1/2 absolute", color !== 'gradient' && 'hidden')}>
-            <circle r="512" cx="512" cy="512" className="" fill="url(#8d958450-c69f-4251-94bc-4e091a323369)" fill-opacity="0.7"></circle>
+            <circle r="512" cx="512" cy="512" className="" fill="url(#8d958450-c69f-4251-94bc-4e091a323369)" fillOpacity="0.7"></circle>
             <defs>
                 <radialGradient id="8d958450-c69f-4251-94bc-4e091a323369">
-                    <stop stop-color="#7775D6" stopOpacity={1}></stop>
-                    <stop offset="1" stop-color="#E935C1" stopOpacity={0}></stop>
+                    <stop stopColor="#7775D6" stopOpacity={1}></stop>
+                    <stop offset="1" stopColor="#E935C1" stopOpacity={0}></stop>
                 </radialGradient>
             </defs>
         </svg>

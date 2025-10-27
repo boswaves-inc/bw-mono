@@ -1,7 +1,7 @@
 import type { Route } from "./+types/_store.library.$id";
-import Section from "~/components/core/section";
+import Section from "~/components/section";
 import { data, Form, Link, useFetcher } from "react-router";
-import Button from "~/components/core/button";
+import Button from "~/components/button";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -11,12 +11,12 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export async function loader({ }: Route.LoaderArgs) {
-    
+
     return data({})
 }
 
 export async function action({ request }: Route.ActionArgs) {
-    
+
 
     return data({})
 }
@@ -27,9 +27,9 @@ export default function renderer() {
     return (
         <div>
             <Section>
-                    <Form action="./" method="post">
-                        <Button>test</Button>
-                    </Form>
+                <Link to={'/checkout'}>
+                    <Button>Checkout</Button>
+                </Link>
             </Section>
         </div>
     );

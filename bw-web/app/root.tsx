@@ -1,16 +1,19 @@
 import {
+  data,
   isRouteErrorResponse,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "react-router";
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import Header from "./components/sections/header/simple";
-import Footer from "./components/sections/footer/simple";
+import { twMerge } from "tailwind-merge";
+import Header from "./sections/header/simple";
+import Footer from "./sections/footer/simple";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -30,9 +33,17 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+export async function loader({ context }: Route.LoaderArgs) {
+  const { theme } = context;
+
+  return data({ theme })
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  const { theme } = useLoaderData<typeof loader>()
+
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className={twMerge(theme, '')}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

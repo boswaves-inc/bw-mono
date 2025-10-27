@@ -1,5 +1,5 @@
 import { forwardRef } from "react"
-import Paragraph from "~/components/core/paragraph"
+import Paragraph from "~/components/paragraph"
 
 const Footer = forwardRef<HTMLDivElement>(({ }, ref) => {
     return (

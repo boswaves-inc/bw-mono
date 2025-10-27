@@ -1,8 +1,8 @@
 import { forwardRef } from "react";
 import { CloudUpload, Fingerprint, LockIcon, RefreshCw } from "lucide-react";
-import Paragraph from "~/components/core/paragraph";
-import type { SectionProps } from "~/components/core/section";
-import Section from "~/components/core/section";
+import Paragraph from "~/components/paragraph";
+import type { SectionProps } from "~/components/section";
+import Section from "~/components/section";
 
 const features = [
     {

@@ -1,15 +1,15 @@
 import type { Route } from "./+types/_store.library._index";
 import { Form, Link, useSearchParams } from "react-router";
-import { Checkbox } from "~/components/core/checkbox";
-import { Popover, PopoverButton, PopoverPanel } from "~/components/core/popover";
-import { Menu, MenuItem, MenuItems, MenuButton } from "~/components/core/menu";
+import { Checkbox } from "~/components/checkbox";
+import { Popover, PopoverButton, PopoverPanel } from "~/components/popover";
+import { Menu, MenuItem, MenuItems, MenuButton } from "~/components/menu";
 import { ChevronDown } from 'lucide-react'
-import Heading from "~/components/core/heading";
-import Paragraph from "~/components/core/paragraph";
-import Label from "~/components/core/label";
-import ProductList from "~/components/sections/product/list";
+import Heading from "~/components/heading";
+import Paragraph from "~/components/paragraph";
+import Label from "~/components/label";
 
-import Button from "~/components/core/button";
+import Button from "~/components/button";
+import ProductList from "~/sections/product/list";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -19,8 +19,6 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export function loader({ }: Route.LoaderArgs) {
-  console.log('test')
-
   return {}
 }
 

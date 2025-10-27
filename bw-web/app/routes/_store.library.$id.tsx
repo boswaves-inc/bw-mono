@@ -1,12 +1,12 @@
 import type { Route } from "./+types/_store.library.$id";
-import Section from "~/components/core/section";
-import Paragraph from "~/components/core/paragraph";
-import Heading from "~/components/core/heading";
+import Section from "~/components/section";
+import Paragraph from "~/components/paragraph";
+import Heading from "~/components/heading";
 import { Check, ChevronLeft, Flame, Star } from "lucide-react";
 import FaqAccordion from "~/components/sections/faq/accordion";
 import { data, Link, useFetcher } from "react-router";
-import Button from "~/components/core/button";
-import Panel from "~/components/core/panel";
+import Button from "~/components/button";
+import Panel from "~/components/panel";
 
 export function meta({ }: Route.MetaArgs) {
   return [

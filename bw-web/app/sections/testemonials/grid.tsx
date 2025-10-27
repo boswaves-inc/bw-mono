@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
-import Heading from "~/components/core/heading";
-import type { SectionProps } from "~/components/core/section";
-import Section from "~/components/core/section";
+import Heading from "~/components/heading";
+import type { SectionProps } from "~/components/section";
+import Section from "~/components/section";
 
 const TestemonialsGrid = forwardRef<HTMLElement, SectionProps>((props, ref) => {
     return (

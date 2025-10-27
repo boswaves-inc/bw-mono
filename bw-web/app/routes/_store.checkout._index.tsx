@@ -1,7 +1,7 @@
 import type { Route } from "./+types/_store.library.$id";
-import Section from "~/components/core/section";
+import Section from "~/components/section";
 import { data, useFetcher } from "react-router";
-import Button from "~/components/core/button";
+import Button from "~/components/button";
 import { type FormEvent } from "react";
 import { Card, CardCvv, CardExpiry, useCard, CardNumber } from "~/libs/chargebee/react";
 import { chargebee } from "~/services";
@@ -14,14 +14,6 @@ export async function loader() {
 export async function action({ request }: Route.ActionArgs) {
     const form = await request.formData()
     const intent = form.get('intent')?.toString()!;
-    const token = form.get('token')?.toString()!;
-
-    const source = await chargebee.paymentSource.createUsingToken({
-        replace_primary_payment_source: true,
-        customer_id: 'cbdemo_peter',
-        token_id: token,
-
-    })
 
     const subscription = await chargebee.subscription.createWithItems('cbdemo_peter', {
         subscription_items: [{
@@ -30,15 +22,16 @@ export async function action({ request }: Route.ActionArgs) {
         }],
         payment_intent: {
             id: intent,
-            gateway_account_id: 'gw_BTLvdtV06HFfy2GI'
-        }
+            // gw_token: token,
+            // gateway_account_id: 'gw_BTLvdtV06HFfy2GI'
+        },
     })
 
     if (subscription.invoice?.status == 'not_paid' || subscription.invoice?.status == 'payment_due') {
         try {
             const collect = await chargebee.invoice.collectPayment(subscription.invoice.id, {
                 amount: subscription.invoice.amount_due,
-                payment_source_id: source.payment_source.id,
+                // payment_source_id: source.payment_source.id,
             })
 
             console.log(collect)
@@ -50,9 +43,10 @@ export async function action({ request }: Route.ActionArgs) {
 
             console.error(error)
         }
-
     }
-
+    else {
+        console.log('payment succesfull')
+    }
 
     return data({})
 }
@@ -69,6 +63,7 @@ export default function renderer() {
         const { intent } = await fetch('/api/checkout', { method: 'post' }).then(x => x.json())
 
         const component = card.component()!;
+
         const auth = await component.authorizeWith3ds(
             intent,
             {
@@ -78,11 +73,12 @@ export default function renderer() {
                 }
             },
             {
-                change: (paymentIntent: any) => {
-                    console.log('📝 3DS state changed:', paymentIntent.status)
+                change: ({ status, id }: { status: string, id: string }) => {
+                    console.log('📝 3DS state changed:', status)
                 },
-                success: (paymentIntent: any) => {
+                success: ({ status, id }: { status: string, id: string }) => {
                     console.log('✅ 3DS authorized successfully')
+
                 },
                 error: (paymentIntent: any, error: any) => {
                     console.error('❌ 3DS error:', error)
@@ -90,14 +86,14 @@ export default function renderer() {
             }
         )
 
-        const token = await component.tokenize()
+        // const token = await component.tokenize()
 
-        if (!token) {
-            console.log(token)
-            return
-        }
+        // if (!token) {
+        //     console.log(token)
+        //     return
+        // }
 
-        data.append('token', token.token)
+        // data.append('token', token.token)
         data.append('intent', auth.id)
 
         await fetcher.submit(data, { method: 'post' })
@@ -112,29 +108,21 @@ export default function renderer() {
                             <label className="block mb-2 font-semibold text-gray-700">
                                 Card Number
                             </label>
-                            <div className="px-4 py-2 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent">
-                                <CardNumber />
-                            </div>
+                            <CardNumber />
                         </div>
-
                         <div className="grid grid-cols-2 gap-4 mb-6">
                             <div>
                                 <label className="block mb-2 font-semibold text-gray-700">
                                     Expiry Date
                                 </label>
-                                <div className="px-4 py-2 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent">
-                                    <CardExpiry />
-                                </div>
+                                <CardExpiry />
                             </div>
                             <div>
                                 <label className="block mb-2 font-semibold text-gray-700">
                                     CVC
                                 </label>
-                                <div className="px-4 py-2 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent">
-                                    <CardCvv />
-                                </div>
+                                <CardCvv />
                             </div>
-
                         </div>
                     </Card>
                     <Button >test</Button>

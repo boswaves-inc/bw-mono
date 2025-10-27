@@ -37,6 +37,7 @@ export interface $3DSHandler {
 export interface Client {
     load: <K extends 'components' | '3ds-handler'>(module: K) => Promise<K extends 'components' ? Component : any>,
     load3DSHandler: () => Promise<$3DSHandler>
+    createComponent: (type: 'card', options?: any) => Component,
     authorizeWith3ds: (
         intent: PaymentIntent,
         data?: {},
@@ -47,7 +48,6 @@ export interface Client {
             error?: (intent: any, error: any) => any
         }
     ) => Promise<void>
-    createComponent: (type: 'card', options?: {}) => Component,
 }
 
 export interface Module {
