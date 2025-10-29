@@ -2,6 +2,8 @@ import { createContext, createRef, useContext, useEffect, useRef, useState, type
 import type { CardApi, Component } from "./types";
 import { useChargebee } from "./provider";
 import { useTheme } from "~/hooks/theme";
+import type { DivProps } from "../types";
+import { twMerge } from "tailwind-merge";
 
 const context = createContext<{ component: Component | null }>(null as any)
 
@@ -14,7 +16,21 @@ export const useCard = () => {
     }
 }
 
-export const Card = ({ ref, children }: PropsWithChildren<{ ref?: RefObject<CardApi | null> }>) => {
+export const Card = ({ className, ref, ...props }: Omit<DivProps, 'children' | 'ref'> & { ref?: RefObject<CardApi | null> }) => {
+    return (
+        <div {...props} className={twMerge("rounded-md overflow-hidden outline-1 dark:outline-white/10 outline-gray-900", className)}>
+            <CardGroup ref={ref}>
+                <CardNumber className=" rounded-none outline-none border-b dark:border-white/10 border-gray-900/10 " />
+                <div className=" flex divide-x dark:divide-white/10 divide-gray-900/10">
+                    <CardExpiry className="rounded-none outline-none" />
+                    <CardCvc className=" outline-none rounded-none" />
+                </div>
+            </CardGroup >
+        </div>
+    )
+}
+
+export const CardGroup = ({ ref, children }: PropsWithChildren<{ ref?: RefObject<CardApi | null> }>) => {
     const { theme } = useTheme()
     const chargebee = useChargebee();
 
@@ -26,7 +42,7 @@ export const Card = ({ ref, children }: PropsWithChildren<{ ref?: RefObject<Card
                 placeholder: {
                     number: "Number",
                     expiry: "Expiry",
-                    cvv: "CVV",
+                    cvv: "CVC",
                 },
                 style: {
                     // override styles for default state
@@ -81,7 +97,7 @@ export const Card = ({ ref, children }: PropsWithChildren<{ ref?: RefObject<Card
     )
 }
 
-export const CardNumber = () => {
+export const CardNumber = ({ className, ...props }: Omit<DivProps, 'children'>) => {
     const { component } = useContext(context)
     const ref = useRef<HTMLDivElement>(null)
 
@@ -104,13 +120,13 @@ export const CardNumber = () => {
     }, [component, ref.current])
 
     return (
-        <div data-loading={mounted == false} className="sm:text-sm/6 py-2 outline-gray-900/10 dark:outline-white/10 data-[loading=true]:bg-red-400 -outline-offset-1 outline-1 text-gray-900 dark:text-white select-none text-base/6 px-3 dark:bg-gray-800 bg-white rounded-md w-full">
+        <div {...props} data-loading={mounted == false} className={twMerge("sm:text-sm/6 py-2 outline-gray-900/10 dark:outline-white/10 data-[loading=true]:bg-red-400 -outline-offset-1 outline-1 text-gray-900 dark:text-white select-none text-base/6 px-3 dark:bg-gray-800 bg-white rounded-md w-full", className)}>
             <div ref={ref} className="h-6 flex items-center text-inherit" />
         </div>
     )
 }
 
-export const CardExpiry = () => {
+export const CardExpiry = ({ className, ...props }: Omit<DivProps, 'children'>) => {
     const { component } = useContext(context)
     const ref = useRef<HTMLDivElement>(null)
 
@@ -133,13 +149,13 @@ export const CardExpiry = () => {
     }, [component, ref.current])
 
     return (
-        <div data-loading={mounted == false} className="sm:text-sm/6 py-2 outline-gray-900/10 dark:outline-white/10 data-[loading=true]:bg-red-400 -outline-offset-1 outline-1 text-gray-900 dark:text-white select-none text-base/6 px-3 dark:bg-gray-800 bg-white rounded-md w-full">
+        <div {...props} data-loading={mounted == false} className={twMerge("sm:text-sm/6 py-2 outline-gray-900/10 dark:outline-white/10 data-[loading=true]:bg-red-400 -outline-offset-1 outline-1 text-gray-900 dark:text-white select-none text-base/6 px-3 dark:bg-gray-800 bg-white rounded-md w-full", className)}>
             <div ref={ref} className="h-6 flex items-center text-inherit" />
         </div>
     )
 }
 
-export const CardCvv = () => {
+export const CardCvc = ({ className, ...props }: Omit<DivProps, 'children'>) => {
     const { component } = useContext(context)
     const ref = useRef<HTMLDivElement>(null)
 
@@ -163,7 +179,7 @@ export const CardCvv = () => {
     }, [component, ref.current])
 
     return (
-        <div data-loading={mounted == false} className="sm:text-sm/6 py-2 outline-gray-900/10 dark:outline-white/10 data-[loading=true]:bg-red-400 -outline-offset-1 outline-1 text-gray-900 dark:text-white select-none text-base/6 px-3 dark:bg-gray-800 bg-white rounded-md w-full">
+        <div {...props} data-loading={mounted == false} className={twMerge("sm:text-sm/6 py-2 outline-gray-900/10 dark:outline-white/10 data-[loading=true]:bg-red-400 -outline-offset-1 outline-1 text-gray-900 dark:text-white select-none text-base/6 px-3 dark:bg-gray-800 bg-white rounded-md w-full", className)}>
             <div ref={ref} className="h-6 flex items-center text-inherit" />
         </div>
     )

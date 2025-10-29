@@ -1,9 +1,10 @@
 import ChargebeeProvider, { useChargebee } from "./provider"
-import { CardNumber, Card, CardCvv, CardExpiry, useCard } from "./card"
+import { Card, CardNumber, CardGroup, CardCvc, CardExpiry, useCard } from "./card"
 
 export {
     Card,
-    CardCvv,
+    CardGroup,
+    CardCvc ,
     CardExpiry,
     CardNumber,
 

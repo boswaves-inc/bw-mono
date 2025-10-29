@@ -1,22 +1,18 @@
-import type { Route } from "./+types/_store._index";
 import HeroScreenshot from "~/sections/hero/screenshot";
 import TestemonialsGrid from "~/sections/testemonials/grid";
 import Button from "~/components/button";
 import Heading from "~/components/heading";
 import ContentPanel from "~/sections/content/panel";
+import type { LoaderFunctionArgs, MetaArgs } from "react-router";
 
-export function meta({ }: Route.MetaArgs) {
+export function meta({ }: MetaArgs) {
   return [
     { title: "New React Router App" },
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
 
-export async function loader({ }: Route.LoaderArgs) {
-  // const s = await postgres.select().from(User)
-
-  // console.log(s)
-
+export async function loader({ }: LoaderFunctionArgs) {
   return [
     { title: "New React Router App" },
     { name: "description", content: "Welcome to React Router!" },

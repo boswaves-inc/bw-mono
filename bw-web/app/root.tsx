@@ -49,14 +49,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="antialiased">
-          <div className="overflow-hidden dark:bg-gray-900 dark:text-white antialiased bg-white">
-            <Header />
-            <div className="pt-20 isolate relative">
-              {children}
-            </div>
-            <Footer />
+      <body className="antialiased dark:bg-gray-900 dark:text-white text-gray-900 bg-white">
+        <div className="overflow-hidden antialiased">
+          <Header />
+          <div className="relative">
+            {children}
           </div>
+          {/* <Footer /> */}
+        </div>
         <ScrollRestoration />
         <Scripts />
         <script src="https://js.chargebee.com/v2/chargebee.js" defer />

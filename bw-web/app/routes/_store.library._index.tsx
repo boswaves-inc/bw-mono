@@ -10,6 +10,7 @@ import Label from "~/components/label";
 
 import Button from "~/components/button";
 import ProductList from "~/sections/product/list";
+import Section from "~/components/section";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -77,11 +78,11 @@ export default function renderer() {
   const [searchParams, setSearchParams] = useSearchParams()
 
   return (
-    <div className="">
+    <Section className="">
 
       {/* toolbar */}
       <div className="px-4 sm:px-6 lg:px-8 sm:max-w-7xl max-w-[40rem] mx-auto">
-        <div className="py-24">
+        <div className="pb-24 mt-13">
           <Heading size="h1">
             Your Trading Toolbox Starts Here
           </Heading>
@@ -226,6 +227,6 @@ export default function renderer() {
 
       <ProductList />
       {/* <ProductList /> */}
-    </div>
+    </Section>
   )
 }

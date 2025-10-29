@@ -1,6 +1,6 @@
 import { ChargebeeProvider } from "~/components/chargebee";
 import type { Route } from "./+types/_store.library.$id";
-import { data, Outlet, } from "react-router";
+import { data, Link, Outlet, } from "react-router";
 
 export function meta({ }: Route.MetaArgs) {
     return [

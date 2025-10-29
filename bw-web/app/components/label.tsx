@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { tv } from "tailwind-variants";
 
 const variants = tv({
-    base: 'text-gray-900 dark:text-white whitespace-nowrap font-medium text-sm/5/tight pr-6 cursor-default',
+    base: 'text-gray-900 dark:text-white whitespace-nowrap font-medium text-sm/6 pr-6 cursor-default',
 })
 
 export type LabelAttributes = HTMLAttributes<HTMLLabelElement>

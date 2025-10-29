@@ -31,7 +31,7 @@ export default function renderer() {
 
   return (
     <div>
-      <Section className=" pt-11 sm:pt-11">
+      <Section className="" >
         <Link relative="path" to='..' className="block w-fit">
           <Heading size="h4" className="w-fit">
             <span className=" flex gap-x-2 items-center w-fit">

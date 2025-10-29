@@ -54,15 +54,12 @@ export interface Module {
     init: (options: { site: string, publishableKey: string, enableTestCards?: boolean }) => Client,
 }
 
+export interface CardApi {
+    component: () => Component | null
+}
 
 declare global {
     interface Window {
         Chargebee: Module
     }
-}
-
-export interface CardApi {
-    component: () => Component | null
-    // tokenize: () => Promise<Token>,
-    // components: () => any
 }

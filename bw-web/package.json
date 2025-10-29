@@ -13,6 +13,7 @@
     "seed": "node prisma/seed.js"
   },
   "dependencies": {
+    "@coingecko/cryptoformat": "^0.8.2",
     "@headlessui/react": "^2.2.9",
     "@react-router/express": "^7.9.4",
     "@react-router/fs-routes": "^7.9.4",
