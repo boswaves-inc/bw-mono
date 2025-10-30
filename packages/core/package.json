@@ -2,16 +2,16 @@
     "name": "@bw/core",
     "private": true,
     "type": "module",
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
+    "main": "./build/index.js",
+    "types": "./build/index.d.ts",
     "exports": {
-        ".": "./dist/index.js",
-        "./db": "./dist/db/index.js",
-        "./types": "./dist/types/index.js"
+        ".": "./build/index.js",
+        "./db": "./build/db/index.js",
+        "./types": "./build/types/index.js"
     },
     "scripts": {
-        "build": "tsc",
-        "dev": "tsc --watch",
+        "build": "tsc -p tsconfig.lib.json",
+        "dev": "tsc -p tsconfig.lib.json --watch",
         "db:generate": "dotenv -- drizzle-kit generate",
         "db:migrate": "dotenv -- drizzle-kit migrate",
         "db:update": "dotenv -- drizzle-kit up"
