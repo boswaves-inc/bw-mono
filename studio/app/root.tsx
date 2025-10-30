@@ -1,20 +1,14 @@
 import {
-  data,
   isRouteErrorResponse,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
 } from "react-router";
 
-import type { Route } from "./+types/root";
 import "./app.css";
-import { twMerge } from "tailwind-merge";
-import Header from "./sections/header/simple";
-import Footer from "./sections/footer/simple";
-import { themeCookie } from "./cookie";
+import type { Route } from "./+types/root";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -34,32 +28,20 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-export async function loader({ request, context }: Route.LoaderArgs) {
-  return data({ theme: context.theme })
-}
-
 export function Layout({ children }: { children: React.ReactNode }) {
-  const data = useLoaderData<typeof loader>()
 
   return (
-    <html lang="en" className={twMerge(data?.theme, '')}>
+    <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
       </head>
-      <body className="antialiased dark:bg-gray-900 dark:text-white text-gray-900 bg-white">
-        <div className="overflow-hidden antialiased">
-          <Header />
-          <div className="relative">
-            {children}
-          </div>
-          {/* <Footer /> */}
-        </div>
+      <body >
+        {children}
         <ScrollRestoration />
         <Scripts />
-        <script src="https://js.chargebee.com/v2/chargebee.js" defer />
       </body>
     </html>
   );
