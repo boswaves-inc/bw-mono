@@ -43,7 +43,7 @@ services:
     image: bw/website:latest
     container_name: bw-web
     build:
-      context: ./bw-web
+      context: ./web
       dockerfile: Dockerfile
     environment:
     - PG_PORT=5432

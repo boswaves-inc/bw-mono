@@ -1,7 +1,0 @@
-target
-logs
-media
-
-.DS_Store
-.vscode
-.env
