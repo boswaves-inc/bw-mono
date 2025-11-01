@@ -1,6 +1,6 @@
 import "react-router";
 import type Chargebee from "chargebee";
-import type { Postgres } from "@bw/core/postgres";
+import type { Postgres } from "./postgres";
 
 declare module "react-router" {
   interface AppLoadContext {

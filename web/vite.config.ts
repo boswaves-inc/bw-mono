@@ -12,9 +12,12 @@ export default defineConfig(({ isSsrBuild }) => ({
   build: {
     rollupOptions: isSsrBuild ? { input: "./server/index.ts" } : undefined,
   },
-  
+
   optimizeDeps: {
     exclude: ["virtual:react-router/server-build"],
+  },
+  ssr: {
+    // external: ['async_hooks'],
   },
   plugins: [
     tailwindcss(),

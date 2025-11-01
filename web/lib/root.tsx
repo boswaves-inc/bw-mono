@@ -9,12 +9,12 @@ import {
   useLoaderData,
 } from "react-router";
 
-import type { Route } from "./+types/root";
-import "./app.css";
+import "./root.css";
 import { twMerge } from "tailwind-merge";
-import Header from "./sections/header/simple";
-import Footer from "./sections/footer/simple";
+// import Header from "./sections/header/simple";
+// import Footer from "./sections/footer/simple";
 import { themeCookie } from "./cookie";
+import type { Route } from "./+types/root";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -51,7 +51,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body className="antialiased dark:bg-gray-900 dark:text-white text-gray-900 bg-white">
         <div className="overflow-hidden antialiased">
-          <Header />
+          {/* <Header /> */}
           <div className="relative">
             {children}
           </div>

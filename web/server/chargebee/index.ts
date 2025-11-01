@@ -1,7 +1,7 @@
 import express from "express"
 import plans from "./plans";
 import addon from "./addon";
-import type { Postgres } from "@bw/core/postgres";
+import type { Postgres } from "../postgres";
 
 export default ({ postgres }: { postgres: Postgres }) => {
     const router = express.Router()

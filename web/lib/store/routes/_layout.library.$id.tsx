@@ -1,4 +1,4 @@
-import type { Route } from "./+types/_store.library.$id";
+import type { Route } from "./+types/_layout.library.$id";
 import Section from "~/components/section";
 import Paragraph from "~/components/paragraph";
 import Heading from "~/components/heading";

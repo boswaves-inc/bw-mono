@@ -6,21 +6,20 @@ const BUILD_PATH = "./build/server/index.js";
 const DEVELOPMENT = process.env.NODE_ENV === "development";
 const PORT = Number.parseInt(process.env.PORT || "3000");
 
-const app = express();
+const store = express();
 
-app.use(compression());
-app.disable("x-powered-by");
+store.use(compression());
+store.disable("x-powered-by");
 
 if (DEVELOPMENT) {
     console.log("Starting development server");
 
     const viteDevServer = await import("vite").then((vite) => vite.createServer({
         server: { middlewareMode: true },
-
     }));
 
-    app.use(viteDevServer.middlewares);
-    app.use(async (req, res, next) => {
+    store.use(viteDevServer.middlewares);
+    store.use(async (req, res, next) => {
         try {
             const source = await viteDevServer.ssrLoadModule("./server/index.ts");
 
@@ -38,17 +37,17 @@ if (DEVELOPMENT) {
 else {
     console.log("Starting production server");
 
-    app.use("/assets", express.static("build/client/assets", {
+    store.use("/assets", express.static("build/client/assets", {
         immutable: true,
         maxAge: "1y"
     }));
 
-    app.use(morgan("tiny"));
-    app.use(express.static("build/client", { maxAge: "1h" }));
+    store.use(morgan("tiny"));
+    store.use(express.static("build/client", { maxAge: "1h" }));
 
-    app.use(await import(BUILD_PATH).then((mod) => mod.default));
+    store.use(await import(BUILD_PATH).then((mod) => mod.default));
 }
 
-app.listen(PORT, "0.0.0.0", () => {
+store.listen(PORT, "0.0.0.0", () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
