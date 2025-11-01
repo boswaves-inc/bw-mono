@@ -1,4 +1,4 @@
-import type { Route } from "./+types/_store.library.$id";
+import type { Route } from "./+types/_layout.checkout._index";
 import Section from "~/components/section";
 import { data, Link, useFetcher, useLoaderData } from "react-router";
 import Button from "~/components/button";
