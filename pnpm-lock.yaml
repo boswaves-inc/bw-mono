@@ -166,9 +166,6 @@ importers:
 
   web:
     dependencies:
-      '@bw/core':
-        specifier: workspace:^
-        version: link:../core
       '@coingecko/cryptoformat':
         specifier: ^0.8.2
         version: 0.8.2
@@ -214,12 +211,6 @@ importers:
       morgan:
         specifier: ^1.10.1
         version: 1.10.1
-      node-cache:
-        specifier: ^5.1.2
-        version: 5.1.2
-      p-map:
-        specifier: ^7.0.3
-        version: 7.0.3
       postgres:
         specifier: ^3.4.7
         version: 3.4.7

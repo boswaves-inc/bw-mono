@@ -3,8 +3,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "react-router build",
-    "start": "node server.js",
+    "build": "npm run build:store && npm run build:studio",
+    "build:admin": "react-router build --mode=admin",
+    "build:store": "react-router build --mode=store",
+
+    "start:admin": "node server.js --mode=admin",
+    "start:public": "node server.js --mode=store",
+    
     "dev": "dotenv -- node server.js"
   },
   "dependencies": {
@@ -23,8 +28,6 @@
     "isbot": "^5.1.31",
     "lucide-react": "^0.545.0",
     "morgan": "^1.10.1",
-    "node-cache": "^5.1.2",
-    "p-map": "^7.0.3",
     "postgres": "^3.4.7",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

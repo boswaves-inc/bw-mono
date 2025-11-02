@@ -9,30 +9,9 @@ import {
   useLoaderData,
 } from "react-router";
 
-import "./app.css";
+import "./root.css";
 import { twMerge } from "tailwind-merge";
-// import Header from "./sections/header/simple";
-// import Footer from "./sections/footer/simple";
-import { themeCookie } from "./cookie";
-import type { Route } from "./+types/root";
-
-export const links: Route.LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
-  {
-    rel: "preload",
-    href: "https://js.chargebee.com/v2/chargebee.js",
-    as: "script",
-  },
-];
+import type { Route } from "../+types/root";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   return data({ theme: context.theme })
@@ -49,15 +28,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="antialiased dark:bg-gray-900 dark:text-white text-gray-900 bg-white">
+      <body className="antialiased">
         <div className="overflow-hidden antialiased">
-          {/* <Header /> */}
-          <div className="relative">
             {children}
-          </div>
-          {/* <Footer /> */}
         </div>
+        <ScrollRestoration />
         <Scripts />
+        <script src="https://js.chargebee.com/v2/chargebee.js" defer />
       </body>
     </html>
   );

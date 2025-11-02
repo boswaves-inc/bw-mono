@@ -11,6 +11,7 @@ import {
     type LoaderFunctionArgs,
 } from "react-router";
 
+
 import "./root.css";
 import { twMerge } from "tailwind-merge";
 import { Fragment } from "react/jsx-runtime";
@@ -37,32 +38,32 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     return data({ theme: context.theme })
 }
 
-export function Layout({ children }: { children: React.ReactNode }) {
-  const data = useLoaderData<typeof loader>()
+// export function Layout({ children }: { children: React.ReactNode }) {
+//   const data = useLoaderData<typeof loader>()
 
-  return (
-    <html lang="en" className={twMerge(data?.theme, '')}>
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <Meta />
-        <Links />
-      </head>
-      <body className="antialiased dark:bg-gray-900 dark:text-white text-gray-900 bg-white">
-        <div className="overflow-hidden antialiased">
-          {/* <Header /> */}
-          <div className="relative">
-            {children}
-          </div>
-          {/* <Footer /> */}
-        </div>
-        <ScrollRestoration />
-        <Scripts />
-        <script src="https://js.chargebee.com/v2/chargebee.js" defer />
-      </body>
-    </html>
-  );
-}
+//   return (
+//     <html lang="en" className={twMerge(data?.theme, '')}>
+//       <head>
+//         <meta charSet="utf-8" />
+//         <meta name="viewport" content="width=device-width, initial-scale=1" />
+//         <Meta />
+//         <Links />
+//       </head>
+//       <body className="antialiased dark:bg-gray-900 dark:text-white text-gray-900 bg-white">
+//         <div className="overflow-hidden antialiased">
+//           {/* <Header /> */}
+//           <div className="relative">
+//             {children}
+//           </div>
+//           {/* <Footer /> */}
+//         </div>
+//         <ScrollRestoration />
+//         <Scripts />
+//         <script src="https://js.chargebee.com/v2/chargebee.js" defer />
+//       </body>
+//     </html>
+//   );
+// }
 
 export default function App() {
     return (
