@@ -5,10 +5,10 @@
   "scripts": {
     "build": "npm run build:store && npm run build:studio",
     "build:admin": "react-router build --mode=admin",
-    "build:store": "react-router build --mode=store",
+    "build:public": "react-router build --mode=public",
 
     "start:admin": "node server.js --mode=admin",
-    "start:public": "node server.js --mode=store",
+    "start:public": "node server.js --mode=public",
     
     "dev": "dotenv -- node server.js"
   },
