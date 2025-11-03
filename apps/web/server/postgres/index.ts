@@ -11,7 +11,7 @@ import type { NextFunction, Request, Response } from "express";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from 'postgres';
 import storage from './storage'
-import schema from '../../../../core/schema'
+import schema from '~/core/src/schema'
 
 export class Postgres {
     private get _store() {

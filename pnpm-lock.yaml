@@ -40,6 +40,124 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
 
+  apps/admin:
+    dependencies:
+      '@coingecko/cryptoformat':
+        specifier: ^0.8.2
+        version: 0.8.2
+      '@headlessui/react':
+        specifier: ^2.2.9
+        version: 2.2.9(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@react-router/express':
+        specifier: ^7.9.4
+        version: 7.9.5(express@5.1.0)(react-router@7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(typescript@5.9.3)
+      '@react-router/fs-routes':
+        specifier: ^7.9.4
+        version: 7.9.5(@react-router/dev@7.9.5(@react-router/serve@7.9.5(react-router@7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(typescript@5.9.3))(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(react-router@7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(tsx@4.20.6)(typescript@5.9.3)(vite@7.1.12(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)))(typescript@5.9.3)
+      '@react-router/node':
+        specifier: ^7.9.2
+        version: 7.9.5(react-router@7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(typescript@5.9.3)
+      '@react-router/serve':
+        specifier: ^7.9.2
+        version: 7.9.5(react-router@7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(typescript@5.9.3)
+      async_hooks:
+        specifier: ^1.0.0
+        version: 1.0.0
+      chargebee:
+        specifier: ^3.14.0
+        version: 3.15.1
+      compression:
+        specifier: ^1.8.1
+        version: 1.8.1
+      drizzle-orm:
+        specifier: ^0.44.6
+        version: 0.44.7(postgres@3.4.7)
+      drizzle-zod:
+        specifier: ^0.8.3
+        version: 0.8.3(drizzle-orm@0.44.7(postgres@3.4.7))(zod@4.1.12)
+      express:
+        specifier: ^5.1.0
+        version: 5.1.0
+      isbot:
+        specifier: ^5.1.31
+        version: 5.1.31
+      lucide-react:
+        specifier: ^0.545.0
+        version: 0.545.0(react@19.2.0)
+      morgan:
+        specifier: ^1.10.1
+        version: 1.10.1
+      postgres:
+        specifier: ^3.4.7
+        version: 3.4.7
+      react:
+        specifier: ^19.1.1
+        version: 19.2.0
+      react-dom:
+        specifier: ^19.1.1
+        version: 19.2.0(react@19.2.0)
+      react-router:
+        specifier: ^7.9.5
+        version: 7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      stripe:
+        specifier: ^19.1.0
+        version: 19.2.0(@types/node@22.18.13)
+      tailwind-merge:
+        specifier: ^3.3.1
+        version: 3.3.1
+      tailwind-variants:
+        specifier: ^3.1.1
+        version: 3.1.1(tailwind-merge@3.3.1)(tailwindcss@4.1.16)
+    devDependencies:
+      '@react-router/dev':
+        specifier: ^7.9.1
+        version: 7.9.5(@react-router/serve@7.9.5(react-router@7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(typescript@5.9.3))(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(react-router@7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(tsx@4.20.6)(typescript@5.9.3)(vite@7.1.12(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6))
+      '@tailwindcss/vite':
+        specifier: ^4.1.13
+        version: 4.1.16(vite@7.1.12(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6))
+      '@types/compression':
+        specifier: ^1.8.1
+        version: 1.8.1
+      '@types/express':
+        specifier: ^5.0.3
+        version: 5.0.5
+      '@types/express-serve-static-core':
+        specifier: ^5.1.0
+        version: 5.1.0
+      '@types/morgan':
+        specifier: ^1.9.10
+        version: 1.9.10
+      '@types/node':
+        specifier: ^22.18.10
+        version: 22.18.13
+      '@types/react':
+        specifier: ^19.1.13
+        version: 19.2.2
+      '@types/react-dom':
+        specifier: ^19.1.9
+        version: 19.2.2(@types/react@19.2.2)
+      dotenv-cli:
+        specifier: ^10.0.0
+        version: 10.0.0
+      drizzle-kit:
+        specifier: ^0.31.5
+        version: 0.31.6
+      tailwindcss:
+        specifier: ^4.1.13
+        version: 4.1.16
+      tsx:
+        specifier: ^4.20.6
+        version: 4.20.6
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vite:
+        specifier: ^7.1.12
+        version: 7.1.12(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)
+      vite-tsconfig-paths:
+        specifier: ^5.1.4
+        version: 5.1.4(typescript@5.9.3)(vite@7.1.12(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6))
+
   apps/web:
     dependencies:
       '@coingecko/cryptoformat':
@@ -2978,7 +3096,7 @@ snapshots:
   '@types/compression@1.8.1':
     dependencies:
       '@types/express': 5.0.5
-      '@types/node': 22.18.13
+      '@types/node': 24.9.2
 
   '@types/connect@3.4.38':
     dependencies:
@@ -2988,7 +3106,7 @@ snapshots:
 
   '@types/express-serve-static-core@5.1.0':
     dependencies:
-      '@types/node': 22.18.13
+      '@types/node': 24.9.2
       '@types/qs': 6.14.0
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
@@ -3005,7 +3123,7 @@ snapshots:
 
   '@types/morgan@1.9.10':
     dependencies:
-      '@types/node': 22.18.13
+      '@types/node': 24.9.2
 
   '@types/node@22.18.13':
     dependencies:
@@ -3034,7 +3152,7 @@ snapshots:
 
   '@types/send@1.2.1':
     dependencies:
-      '@types/node': 22.18.13
+      '@types/node': 24.9.2
 
   '@types/serve-static@1.15.10':
     dependencies:
