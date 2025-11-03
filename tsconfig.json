@@ -1,55 +1,30 @@
 {
   "files": [],
   "references": [
-    {
-      "path": "./apps/web/tsconfig.json"
-    },
-  ],
-  "include": [
-    "./core/**/*"
-  ],
-  "exclude": [
-    "node_modules",
+    { "path": "./apps/web/tsconfig.vite.json" },
+    { "path": "./apps/web/tsconfig.node.json" },
   ],
   "compilerOptions": {
-    "lib": [
-      "ES2022"
-    ],
-    "target": "ES2022",
-    "module": "ES2022",
-    "moduleResolution": "bundler",
+    // "lib": [
+    //   "ES2022"
+    // ],
+    // "target": "ES2022",
+    // "module": "ES2022",
+    // "moduleResolution": "bundler",
+    // "composite": true,
+    // "checkJs": true,
+    // "verbatimModuleSyntax": true,
+    // "skipLibCheck": true,
+    // "strict": true,
+    // "paths": {
+    //   "~/": [
+    //     "./core/*"
+    //   ]
+    // }
     "checkJs": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "strict": true,
-    "noEmit": true,
-    "paths": {
-      "~/": [
-        "./core/*"
-      ]
-    }
+    "noEmit": true
   },
 }
-// {
-//   "references": [
-//     { "path": "./apps/web/tsconfig.node.json" },
-//     { "path": "./apps/web/tsconfig..json" },
-//   ],
-//   "include": [
-//     "drizzle.config.ts",
-//   ],
-//   "compilerOptions": {
-//     "checkJs": true,
-//     "verbatimModuleSyntax": true,
-//     "skipLibCheck": true,
-//     "strict": true,
-//     "noEmit": true,
-//     "baseUrl": ".",
-//     "lib": [
-//       "ES2022"
-//     ],
-//     "target": "ES2022",
-//     "module": "ES2022",
-//     "moduleResolution": "bundler"
-//   },
-// }
