@@ -9,6 +9,9 @@
         },
         {
             "path": "./apps/web/tsconfig.react.json"
+        },
+        {
+            "path": "./apps/admin/tsconfig.react.json"
         }
     ],
     "compilerOptions": {

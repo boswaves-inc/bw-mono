@@ -3,6 +3,9 @@
     "references": [
         {
             "path": "./apps/web/tsconfig.node.json"
+        },
+        {
+            "path": "./apps/admin/tsconfig.node.json"
         }
     ],
     "compilerOptions": {

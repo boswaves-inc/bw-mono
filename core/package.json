@@ -2,8 +2,8 @@
   "name": "@bw/core",
   "private": true,
   "type": "module",
-  "scripts": {
-    "build": "tsc"
+  "exports": {
+    "./schema": "./src/schema.ts"
   },
   "dependencies": {
     "async_hooks": "^1.0.0",

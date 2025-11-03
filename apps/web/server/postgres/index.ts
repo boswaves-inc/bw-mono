@@ -12,7 +12,6 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from 'postgres';
 import storage from './storage'
 import schema from '@bw/core/schema'
-// import schema from '~/core/schema'
 
 export class Postgres {
     private get _store() {
