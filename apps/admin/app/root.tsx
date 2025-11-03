@@ -13,6 +13,7 @@ import {
 
 import "./root.css";
 import { twMerge } from "tailwind-merge";
+import type { Route } from "./+types/root";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
