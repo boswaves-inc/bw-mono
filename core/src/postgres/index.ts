@@ -1,5 +1,5 @@
 
-import type { PostgresJsDatabase, PostgresJsQueryResultHKT } from "drizzle-orm/postgres-js";
+import { drizzle, type PostgresJsQueryResultHKT } from "drizzle-orm/postgres-js";
 import type { ExtractTablesWithRelations, SQL, SQLWrapper, WithSubquery, Assume, ColumnsSelection, WithSubqueryWithoutSelection } from "drizzle-orm";
 import type { PgSession, PgTable, PgSelectBuilder, SelectedFields, PgColumn, PgUpdateBuilder, PgInsertBuilder, PgDeleteBase, PgMaterializedView, PgRefreshMaterializedView, PgTransaction, PgTransactionConfig, QueryBuilder, WithSubqueryWithSelection } from "drizzle-orm/pg-core";
 import type { PgCountBuilder } from "drizzle-orm/pg-core/query-builders/count";
@@ -10,6 +10,8 @@ import type { RowList, Row } from "postgres";
 
 import schema from '../schema'
 import storage from './storage'
+import postgres from 'postgres';
+import type { NextFunction, Request, Response } from "express";
 
 export class Postgres {
     private get _store() {
@@ -19,7 +21,7 @@ export class Postgres {
             throw new Error("postgres context not set")
         }
 
-        return store as PostgresJsDatabase<typeof schema>
+        return store
     }
 
     public get _() {
@@ -112,4 +114,11 @@ export class Postgres {
         return this._store.transaction<T>(transaction)
     }
 
+}
+
+export default <T extends Record<string, postgres.PostgresType>>(options?: postgres.Options<T> | undefined) => {
+    const client = postgres(options);
+    const store = drizzle(client, { schema });
+
+    return (req: Request, res: Response, next: NextFunction) => storage.run(store, next)
 }

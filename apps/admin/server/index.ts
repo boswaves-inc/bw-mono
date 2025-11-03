@@ -1,8 +1,7 @@
 import { createRequestHandler } from "@react-router/express";
 import express from "express";
 import Chargebee from 'chargebee';
-import theme, { getTheme } from "./theme";
-import postgres, { Postgres } from "./postgres";
+import postgres, { Postgres } from "@bw/core/postgres";
 
 import "react-router";
 
@@ -22,7 +21,6 @@ const cb_client = new Chargebee({
   apiKey: process.env.CB_API_KEY!
 })
 
-router.use(theme());
 router.use(postgres({
   port: process.env.PG_HOST ? Number(process.env.PG_HOST) : 5432,
   host: process.env.PG_HOST ?? 'localhost',
@@ -33,12 +31,10 @@ router.use(postgres({
 
 
 router.use(createRequestHandler({
+  // @ts-ignore
   build: () => import("virtual:react-router/server-build"),
   getLoadContext: async (req, res) => {
-    const theme = await getTheme(req)
-
     return {
-      theme,
       postgres: pg_client,
       chargebee: cb_client
     }

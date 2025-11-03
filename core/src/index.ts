@@ -1,1 +1,3 @@
-export { }
+import schema from './schema'
+
+export { schema }

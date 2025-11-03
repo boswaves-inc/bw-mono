@@ -2,7 +2,7 @@ import { createRequestHandler } from "@react-router/express";
 import express from "express";
 import Chargebee from 'chargebee';
 import theme, { getTheme } from "./theme";
-import postgres, { Postgres } from "./postgres";
+import postgres, { Postgres } from "@bw/core/postgres";
 
 import "react-router";
 

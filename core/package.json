@@ -3,7 +3,9 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./schema": "./src/schema.ts"
+    ".": "./src/index.ts",
+    "./*": "./src/*/index.ts",
+    "./*.ts": "./src/*.ts"
   },
   "dependencies": {
     "async_hooks": "^1.0.0",
@@ -20,11 +22,8 @@
   "devDependencies": {
     "@types/compression": "^1.8.1",
     "@types/express": "^5.0.3",
-    "@types/express-serve-static-core": "^5.1.0",
     "@types/morgan": "^1.9.10",
     "@types/node": "^22.18.10",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^19.1.9",
     "dotenv-cli": "^10.0.0",
     "drizzle-kit": "^0.31.5",
     "tsx": "^4.20.6",
