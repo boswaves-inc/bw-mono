@@ -1,24 +1,16 @@
 {
-    "name": "@bw/core",
     "private": true,
-    "type": "module",
     "scripts": {
         "db:generate": "dotenv -- drizzle-kit generate",
         "db:migrate": "dotenv -- drizzle-kit migrate",
         "db:update": "dotenv -- drizzle-kit up"
     },
     "dependencies": {
-        "drizzle-orm": "^0.44.6",
-        "drizzle-zod": "^0.8.3",
-        "express": "^5.1.0",
-        "postgres": "^3.4.7"
+        "drizzle-orm": "^0.44.6"
     },
     "devDependencies": {
-        "@types/express": "^5.0.3",
-        "@types/node": "^24.9.0",
         "drizzle-kit": "^0.31.5",
         "dotenv-cli": "^10.0.0",
-        "tsx": "^4.20.6",
         "typescript": "^5.9.2"
     }
 }

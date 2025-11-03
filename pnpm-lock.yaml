@@ -160,6 +160,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@bw/core':
+        specifier: workspace:*
+        version: link:../../core
       '@coingecko/cryptoformat':
         specifier: ^0.8.2
         version: 0.8.2
@@ -278,9 +281,6 @@ importers:
 
   core:
     dependencies:
-      '@coingecko/cryptoformat':
-        specifier: ^0.8.2
-        version: 0.8.2
       async_hooks:
         specifier: ^1.0.0
         version: 1.0.0
@@ -299,18 +299,12 @@ importers:
       express:
         specifier: ^5.1.0
         version: 5.1.0
-      lucide-react:
-        specifier: ^0.545.0
-        version: 0.545.0(react@19.2.0)
       morgan:
         specifier: ^1.10.1
         version: 1.10.1
       postgres:
         specifier: ^3.4.7
         version: 3.4.7
-      stripe:
-        specifier: ^19.1.0
-        version: 19.2.0(@types/node@22.18.13)
       tailwind-merge:
         specifier: ^3.3.1
         version: 3.3.1
@@ -318,9 +312,6 @@ importers:
         specifier: ^3.1.1
         version: 3.1.1(tailwind-merge@3.3.1)(tailwindcss@4.1.16)
     devDependencies:
-      '@tailwindcss/vite':
-        specifier: ^4.1.13
-        version: 4.1.16(vite@7.1.12(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6))
       '@types/compression':
         specifier: ^1.8.1
         version: 1.8.1
@@ -348,9 +339,6 @@ importers:
       drizzle-kit:
         specifier: ^0.31.5
         version: 0.31.6
-      tailwindcss:
-        specifier: ^4.1.13
-        version: 4.1.16
       tsx:
         specifier: ^4.20.6
         version: 4.20.6

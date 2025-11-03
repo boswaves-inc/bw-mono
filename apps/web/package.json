@@ -8,6 +8,7 @@
     "dev": "dotenv -- node server.js"
   },
   "dependencies": {
+    "@bw/core": "workspace:*",
     "@coingecko/cryptoformat": "^0.8.2",
     "@headlessui/react": "^2.2.9",
     "@react-router/express": "^7.9.4",
