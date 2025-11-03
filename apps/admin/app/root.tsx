@@ -14,6 +14,15 @@ import {
 import "./root.css";
 import { twMerge } from "tailwind-merge";
 import type { Route } from "./+types/root";
+import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
+import { Refine } from "@refinedev/core";
+import routerProvider, {
+  DocumentTitleHandler,
+  NavigateToResource,
+  UnsavedChangesNotifier,
+} from "@refinedev/react-router";
+import { Sidebar, SidebarInset, SidebarProvider } from "./components/sidebar";
+import { cn } from "./utils";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -43,10 +52,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
+      
       <body className="antialiased">
-        <div className="overflow-hidden antialiased">
-          {children}
-        </div>
+        {children}
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -56,7 +64,103 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <Outlet />
+    <RefineKbarProvider>
+      <Refine
+        // notificationProvider={useNotificationProvider()}
+        routerProvider={routerProvider}
+        // dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
+        resources={[
+          {
+            name: "products",
+            list: "/blog-posts",
+            create: "/blog-posts/create",
+            edit: "/blog-posts/edit/:id",
+            show: "/blog-posts/show/:id",
+            meta: {
+              canDelete: true,
+            },
+          },
+          {
+            name: "categories",
+            list: "/categories",
+            create: "/categories/create",
+            edit: "/categories/edit/:id",
+            show: "/categories/show/:id",
+            meta: {
+              canDelete: true,
+            },
+          },
+        ]}
+        options={{
+          syncWithLocation: true,
+          warnWhenUnsavedChanges: true,
+          projectId: "BFoPS7-foKdd1-GQ4vpm",
+        }}
+      >
+        <SidebarProvider>
+          <Sidebar />
+          <SidebarInset>
+            {/* <Header /> */}
+            <main
+              className={cn(
+                "@container/main",
+                "container",
+                "mx-auto",
+                "relative",
+                "w-full",
+                "flex",
+                "flex-col",
+                "flex-1",
+                "px-2",
+                "pt-4",
+                "md:p-4",
+                "lg:px-6",
+                "lg:pt-6"
+              )}
+            >
+              <Outlet />
+            </main>
+          </SidebarInset>
+        </SidebarProvider>
+
+
+
+
+
+
+        {/* <Routes>
+        <Route
+          element={
+            <Layout>
+            </Layout>
+          }
+        >
+          <Route
+            index
+            element={<NavigateToResource resource="blog_posts" />}
+          />
+          <Route path="/blog-posts">
+            <Route index element={<BlogPostList />} />
+            <Route path="create" element={<BlogPostCreate />} />
+            <Route path="edit/:id" element={<BlogPostEdit />} />
+            <Route path="show/:id" element={<BlogPostShow />} />
+          </Route>
+          <Route path="/categories">
+            <Route index element={<CategoryList />} />
+            <Route path="create" element={<CategoryCreate />} />
+            <Route path="edit/:id" element={<CategoryEdit />} />
+            <Route path="show/:id" element={<CategoryShow />} />
+          </Route>
+          <Route path="*" element={<ErrorComponent />} />
+        </Route>
+      </Routes> */}
+
+        {/* <Toaster /> */}
+        <RefineKbar />
+        <UnsavedChangesNotifier />
+        <DocumentTitleHandler />
+      </Refine>
+    </RefineKbarProvider>
   );
 }
 
