@@ -2,7 +2,6 @@
     "extends": "./tsconfig.json",
     "include": [
         ".react-router/types/**/*",
-        "core/**/*",
     ],
     "references": [
         {
@@ -27,13 +26,5 @@
             "DOM.Iterable",
             "ES2022"
         ],
-        "rootDirs": [
-            "./core"
-        ],
-        "paths": {
-            "~/core/*": [
-                "./core/*"
-            ]
-        },
     }
 }
