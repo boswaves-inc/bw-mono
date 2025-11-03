@@ -1,8 +1,15 @@
 {
   "files": [],
   "references": [
-    { "path": "./apps/web/tsconfig.json" },
-    { "path": "./apps/admin/tsconfig.json" },
+    {
+      "path": "./core/tsconfig.json"
+    },
+    {
+      "path": "./apps/web/tsconfig.json"
+    },
+    {
+      "path": "./apps/admin/tsconfig.json"
+    },
   ],
   "compilerOptions": {
     "checkJs": true,
