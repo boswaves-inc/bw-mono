@@ -6,6 +6,9 @@
     ],
     "references": [
         {
+            "path": "./core/tsconfig.json"
+        },
+        {
             "path": "./apps/web/tsconfig.react.json"
         }
     ],
