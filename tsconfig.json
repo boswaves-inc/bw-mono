@@ -1,0 +1,36 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./apps/web/tsconfig.json" },
+  ],
+  "compilerOptions": {
+    "checkJs": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true
+  }
+}
+// {
+//   "references": [
+//     { "path": "./apps/web/tsconfig.node.json" },
+//     { "path": "./apps/web/tsconfig..json" },
+//   ],
+//   "include": [
+//     "drizzle.config.ts",
+//   ],
+//   "compilerOptions": {
+//     "checkJs": true,
+//     "verbatimModuleSyntax": true,
+//     "skipLibCheck": true,
+//     "strict": true,
+//     "noEmit": true,
+//     "baseUrl": ".",
+//     "lib": [
+//       "ES2022"
+//     ],
+//     "target": "ES2022",
+//     "module": "ES2022",
+//     "moduleResolution": "bundler"
+//   },
+// }

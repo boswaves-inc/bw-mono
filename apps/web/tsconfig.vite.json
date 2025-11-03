@@ -1,10 +1,10 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "../../tsconfig.json",
   "include": [
     ".react-router/types/**/*",
-    "lib/**/*",
-    "lib/**/.server/**/*",
-    "lib/**/.client/**/*",
+    "app/**/*",
+    "app/**/.server/**/*",
+    "app/**/.client/**/*",
     "server/**/*",
   ],
   "compilerOptions": {
@@ -27,15 +27,9 @@
       "./.react-router/types"
     ],
     "paths": {
-      "~/shared/*": [
-        "./lib/shared/*"
+      "~/*": [
+        "./app/*"
       ],
-      "~/public/*": [
-        "./lib/public/*"
-      ],
-      "~/admin/*": [
-        "./lib/admin/*"
-      ]
     },
     "esModuleInterop": true,
     "resolveJsonModule": true

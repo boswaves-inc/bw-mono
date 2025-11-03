@@ -1,5 +1,4 @@
 import FaqAccordion from "~/sections/faq/accordion";
-import type { Route } from "./+types/_store.how-it-works";
 import ProductList from "~/sections/product/list";
 import ProductOverview from "~/sections/product/overview";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
@@ -7,6 +6,7 @@ import FeatureScreenshot from "~/sections/feature/screenshot";
 import HeroCentered from "~/sections/hero/centered";
 import NewsletterPanel from "~/sections/newsletter/card";
 import ContentTiles from "~/sections/content/tiles";
+
 
 export function meta({ }: Route.MetaArgs) {
     return [
