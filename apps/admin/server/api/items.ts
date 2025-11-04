@@ -51,7 +51,7 @@ export default ({ postgres, chargebee }: { postgres: Postgres, chargebee: Charge
 
         try {
             const data = await schema.parseAsync(req.body)
-            const result = await postgres.update(Item).set(data).where(eq(Item.id, req.params.id))
+            const result = await postgres.update(Item).set({ ...data, updated_at: new Date() }).where(eq(Item.id, req.params.id))
 
             return res.json(result).sendStatus(200)
         }

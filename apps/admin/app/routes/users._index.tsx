@@ -31,10 +31,15 @@ export default () => {
                 header: "UID",
                 enableSorting: false,
             }),
-            columnHelper.accessor('name', {
-                id: "name",
-                header: "Name",
-                enableSorting: true,
+            columnHelper.accessor("cbid", {
+                id: "cbid",
+                header: "CBID",
+                enableSorting: false,
+            }),
+            columnHelper.accessor("role", {
+                id: "role",
+                header: "Role",
+                enableSorting: false,
             }),
             columnHelper.accessor('email', {
                 id: "email",

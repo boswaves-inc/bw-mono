@@ -7,6 +7,7 @@ import { Button } from "~/components/core/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/core/form";
 import { Input } from "~/components/core/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/core/select";
+import { Switch } from "~/components/core/switch";
 import { EditView, EditViewHeader } from "~/components/refine/views/edit";
 
 export default () => {
@@ -35,16 +36,34 @@ export default () => {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormField
                         control={form.control}
-                        name="name"
-                        rules={{ required: "Name is required" }}
+                        name="first_name"
+                        rules={{ required: "First name is required" }}
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Name</FormLabel>
+                                <FormLabel>First Name</FormLabel>
                                 <FormControl>
                                     <Input
                                         {...field}
                                         value={field.value || ""}
-                                        placeholder="Enter name"
+                                        placeholder="Enter first name"
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="last_name"
+                        rules={{ required: "Last name is required" }}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Last Name</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        {...field}
+                                        value={field.value || ""}
+                                        placeholder="Enter last name"
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -65,6 +84,29 @@ export default () => {
                                         placeholder="Enter email"
                                     />
                                 </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="role"
+                        rules={{ required: "Role is required" }}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Role</FormLabel>
+                                <Select value={field.value} onValueChange={field.onChange}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select role" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {User.role.enumValues.map(value => (
+                                            <SelectItem value={value}>{_.upperFirst(value)}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                                 <FormMessage />
                             </FormItem>
                         )}

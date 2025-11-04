@@ -1,5 +1,6 @@
 CREATE TYPE "public"."status" AS ENUM('archived', 'public');--> statement-breakpoint
 CREATE TYPE "public"."user_provider" AS ENUM('internal', 'google');--> statement-breakpoint
+CREATE TYPE "public"."user_role" AS ENUM('admin', 'user');--> statement-breakpoint
 CREATE TABLE "item_info" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"title" text NOT NULL,
@@ -19,8 +20,11 @@ CREATE TABLE "item_script" (
 --> statement-breakpoint
 CREATE TABLE "user_info" (
 	"uid" uuid PRIMARY KEY NOT NULL,
-	"name" varchar(255) NOT NULL,
+	"cbid" text NOT NULL,
+	"role" "user_role" DEFAULT 'user' NOT NULL,
 	"email" "citext" NOT NULL,
+	"first_name" varchar(255) NOT NULL,
+	"last_name" varchar(255) NOT NULL,
 	"provider" "user_provider" DEFAULT 'internal' NOT NULL,
 	"provider_id" varchar(255),
 	"created_at" timestamp DEFAULT now() NOT NULL,

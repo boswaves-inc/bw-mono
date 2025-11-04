@@ -1,4 +1,4 @@
-import { Item, User } from '@bw/core'
+import { User } from '@bw/core'
 import type { Postgres } from '@bw/core/postgres'
 import type Chargebee from 'chargebee'
 import express from 'express'
@@ -20,23 +20,34 @@ export default ({ postgres, chargebee }: { postgres: Postgres, chargebee: Charge
     })
 
     router.post('/', async (req, res) => {
-        const schema = createInsertSchema(User)
+        const schema = createInsertSchema(User).omit({ cbid: true })
+
+        console.log(req.body)
 
         try {
             const data = await schema.parseAsync(req.body)
-            const result = await postgres.insert(User).values(data)
+            const cb = await chargebee.customer.create({
+                email: data.email,
+                first_name: data.first_name,
+                last_name: data.last_name,
+            });
+
+            const result = await postgres.insert(User).values({
+                cbid: cb.customer.id,
+                ...data,
+            })
 
             return res.json(result).sendStatus(200)
         }
         catch (err) {
+            console.error(err)
+
             return res.destroy(err as any)
         }
     })
 
     router.get('/:id', async (req, res) => {
         const schema = createSelectSchema(User)
-
-        console.log('test')
 
         try {
             const [result] = await postgres.selectDistinct().from(User).where(eq(User.uid, req.params.id)).limit(1)
@@ -53,7 +64,7 @@ export default ({ postgres, chargebee }: { postgres: Postgres, chargebee: Charge
 
         try {
             const data = await schema.parseAsync(req.body)
-            const result = await postgres.update(User).set(data).where(eq(User.uid, req.params.id))
+            const result = await postgres.update(User).set({ ...data, updated_at: new Date() }).where(eq(User.uid, req.params.id))
 
             return res.json(result).sendStatus(200)
         }

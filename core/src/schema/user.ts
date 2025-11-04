@@ -7,13 +7,22 @@ export const UserProvider = pgEnum('user_provider', [
     'google'
 ])
 
+export const UserRole = pgEnum('user_role', [
+    'admin',
+    'user'
+])
+
 export const User = pgTable("user_info", (t) => ({
     // Unique id
     uid: t.uuid().primaryKey().notNull().$defaultFn(() => crypto.randomUUID()),
+    cbid: t.text().notNull(),
+
+    role: UserRole().default('user').notNull(),
 
     // User Info
-    name: t.varchar({ length: 255 }).notNull(),
     email: citext('email').unique().notNull(),
+    first_name: t.varchar({ length: 255 }).notNull(),
+    last_name: t.varchar({ length: 255 }).notNull(),
 
     // Authentication provider
     provider: UserProvider().default('internal').notNull(),
@@ -34,6 +43,7 @@ export const UserCredentials = pgTable("user_credentials", (t) => ({
 }));
 
 export type User = typeof User.$inferSelect;
+export type UserRole = InferEnum<typeof UserRole>
 export type UserProvider = InferEnum<typeof UserProvider>
 export type UserCredentials = typeof UserCredentials.$inferSelect;
 
