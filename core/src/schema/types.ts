@@ -1,5 +1,12 @@
 import type { InferEnum } from "drizzle-orm";
-import { pgEnum } from "drizzle-orm/pg-core";
+import { customType, pgEnum } from "drizzle-orm/pg-core";
+
+
+export const citext = customType<{ data: string }>({
+    dataType() {
+        return 'citext';
+    },
+});
 
 export const Status = pgEnum('status', [
     'archived',

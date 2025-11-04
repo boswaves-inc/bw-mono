@@ -1,4 +1,5 @@
-FROM timescale/timescaledb:latest-pg16
+FROM postgres:16
+# FROM timescale/timescaledb:latest-pg16
 
 # Install pg_cron using apk (Alpine package manager)
 # RUN apk update && apk add --no-cache  postgresql-pg_cron

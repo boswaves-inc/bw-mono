@@ -6,6 +6,7 @@ import postgres, { Postgres } from "@bw/core/postgres";
 import "react-router";
 import theme, { getTheme } from "./theme";
 import items from "./api/items";
+import users from "./api/users";
 
 if (!process.env.CB_SITE) {
   throw new Error('CB_SITE variable not set')
@@ -34,6 +35,11 @@ router.use(postgres({
 router.use(theme())
 
 router.use('/api/items', items({
+  postgres: pg_client,
+  chargebee: cb_client
+}))
+
+router.use('/api/users', users({
   postgres: pg_client,
   chargebee: cb_client
 }))

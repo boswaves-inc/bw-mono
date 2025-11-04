@@ -18,8 +18,15 @@ export const Item = pgTable("item_info", (t) => ({
     updated_at: t.timestamp().defaultNow().notNull()
 }));
 
+export const ItemScript = pgTable("item_script", (t) => ({
+    id: t.uuid().primaryKey().references(() => Item.id),
+    script: t.text().unique().notNull(),
+    created_at: t.timestamp().defaultNow().notNull(),
+    updated_at: t.timestamp().defaultNow().notNull()
+}));
 
 export type Item = InferSelectModel<typeof Item>
+export type ItemScript = InferSelectModel<typeof ItemScript>
 // export const ItemPrice = pgTable("item_price", (t) => ({
 //     id: t.uuid().primaryKey().references(() => Item.id, {
 //         onUpdate: 'cascade',

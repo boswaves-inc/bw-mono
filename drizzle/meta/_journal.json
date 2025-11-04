@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1762258784869,
-      "tag": "0000_lean_maginty",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1762262104528,
-      "tag": "0001_exotic_talkback",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1762263552035,
-      "tag": "0002_worried_silver_centurion",
+      "when": 1762265760563,
+      "tag": "0000_powerful_stark_industries",
       "breakpoints": true
     }
   ]
