@@ -8,12 +8,11 @@ export function useMobile() {
     );
 
     React.useEffect(() => {
-        const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
-
         const onChange = () => {
             setMobile(window.innerWidth < MOBILE_BREAKPOINT);
         };
         
+        const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
         mql.addEventListener("change", onChange);
        
         setMobile(window.innerWidth < MOBILE_BREAKPOINT);
