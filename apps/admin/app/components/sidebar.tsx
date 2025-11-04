@@ -12,6 +12,19 @@ import { Button } from "./core/button";
 import { DropdownMenu, DropdownMenuItem, DropdownMenuPanel, DropdownMenuTrigger } from "./core/dropdown";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./core/collapsible";
 
+type ItemProps = {
+    item: TreeMenuItem;
+    selectedKey?: string;
+};
+
+type ButtonProps = React.ComponentProps<typeof Button> & {
+    item: TreeMenuItem;
+    isSelected?: boolean;
+    rightIcon?: React.ReactNode;
+    asLink?: boolean;
+    onClick?: () => void;
+};
+
 export function Sidebar() {
     const { title } = useRefineOptions();
     const { open, mobile } = usePrimitive();
@@ -96,12 +109,7 @@ export function Sidebar() {
     );
 }
 
-type MenuItemProps = {
-    item: TreeMenuItem;
-    selectedKey?: string;
-};
-
-const Item = ({ item, selectedKey }: MenuItemProps) => {
+const Item = ({ item, selectedKey }: ItemProps) => {
     const { open } = usePrimitive();
 
     if (item.meta?.group) {
@@ -115,10 +123,10 @@ const Item = ({ item, selectedKey }: MenuItemProps) => {
         return <ItemDropdown item={item} selectedKey={selectedKey} />;
     }
 
-    return <SidebarButton item={item} isSelected={item.key === selectedKey} asLink={true} />
+    return <ItemButton item={item} isSelected={item.key === selectedKey} asLink={true} />
 }
 
-function ItemGroup({ item, selectedKey }: MenuItemProps) {
+function ItemGroup({ item, selectedKey }: ItemProps) {
     const { children } = item;
     const { open } = usePrimitive();
 
@@ -144,7 +152,7 @@ function ItemGroup({ item, selectedKey }: MenuItemProps) {
                     }
                 )}
             >
-                {getDisplayName(item)}
+                {item.meta?.label ?? item.label ?? item.name}
             </span>
             {children && children.length > 0 && (
                 <div className={cn("flex", "flex-col")}>
@@ -161,7 +169,7 @@ function ItemGroup({ item, selectedKey }: MenuItemProps) {
     );
 }
 
-function ItemCollapsible({ item, selectedKey }: MenuItemProps) {
+function ItemCollapsible({ item, selectedKey }: ItemProps) {
     const { name, children } = item;
 
     const chevronIcon = (
@@ -181,7 +189,7 @@ function ItemCollapsible({ item, selectedKey }: MenuItemProps) {
     return (
         <Collapsible key={`collapsible-${name}`} className={cn("w-full", "group")}>
             <CollapsibleTrigger asChild>
-                <SidebarButton item={item} rightIcon={chevronIcon} />
+                <ItemButton item={item} rightIcon={chevronIcon} />
             </CollapsibleTrigger>
             <CollapsibleContent className={cn("ml-6", "flex", "flex-col", "gap-2")}>
                 {children?.map((child: TreeMenuItem) => (
@@ -196,14 +204,14 @@ function ItemCollapsible({ item, selectedKey }: MenuItemProps) {
     );
 }
 
-function ItemDropdown({ item, selectedKey }: MenuItemProps) {
+function ItemDropdown({ item, selectedKey }: ItemProps) {
     const { children } = item;
     const Link = useLink();
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <SidebarButton item={item} />
+                <ItemButton item={item} />
             </DropdownMenuTrigger>
             <DropdownMenuPanel side="right" align="start">
                 {children?.map((child: TreeMenuItem) => {
@@ -224,7 +232,7 @@ function ItemDropdown({ item, selectedKey }: MenuItemProps) {
                                 })}>
                                     {child.meta?.icon ?? child.icon ?? <ListIcon />}
                                 </div>
-                                <span>{getDisplayName(child)}</span>
+                                <span>{child.meta?.label ?? child.label ?? child.name}</span>
                             </Link>
                         </DropdownMenuItem>
                     );
@@ -234,19 +242,7 @@ function ItemDropdown({ item, selectedKey }: MenuItemProps) {
     );
 }
 
-function getDisplayName(item: TreeMenuItem) {
-    return item.meta?.label ?? item.label ?? item.name;
-}
-
-type SidebarButtonProps = React.ComponentProps<typeof Button> & {
-    item: TreeMenuItem;
-    isSelected?: boolean;
-    rightIcon?: React.ReactNode;
-    asLink?: boolean;
-    onClick?: () => void;
-};
-
-function SidebarButton({
+function ItemButton({
     item,
     isSelected = false,
     rightIcon,
@@ -254,7 +250,7 @@ function SidebarButton({
     className,
     onClick,
     ...props
-}: SidebarButtonProps) {
+}: ButtonProps) {
     const Link = useLink();
 
     const buttonContent = (
@@ -277,7 +273,7 @@ function SidebarButton({
                     "text-foreground": !isSelected,
                 })}
             >
-                {getDisplayName(item)}
+                {item.meta?.label ?? item.label ?? item.name}
             </span>
             {rightIcon}
         </>
