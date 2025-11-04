@@ -1,10 +1,11 @@
-"use client";
+// "use client";
 
 import type { PropsWithChildren } from "react";
 import { useResourceParams, useUserFriendlyName } from "@refinedev/core";
 import { cn } from "~/utils";
 import { Breadcrumb } from "~/components/core/breadcrumb";
 import { Separator } from "~/components/core/separator";
+import { CreateButton } from "../button/create";
 
 type ListViewProps = PropsWithChildren<{
     className?: string;
@@ -36,13 +37,9 @@ export const ListViewHeader = ({
     const { resource, identifier } = useResourceParams({
         resource: resourceFromProps,
     });
-    const resourceName = identifier ?? resource?.name;
-    const isCreateButtonVisible = canCreate ?? !!resource?.create;
 
-    const title = titleFromProps ?? getUserFriendlyName(
-        resource?.meta?.label ?? identifier ?? resource?.name,
-        "plural"
-    );
+    const createable = canCreate ?? !!resource?.create;
+    const title = titleFromProps ?? getUserFriendlyName(resource?.meta?.label ?? identifier ?? resource?.name, "plural");
 
     return (
         <div className={cn("flex flex-col", "gap-4", wrapperClassName)}>
@@ -53,10 +50,14 @@ export const ListViewHeader = ({
                 <Separator className={cn("absolute", "left-0", "right-0", "z-1")} />
             </div>
             <div className={cn("flex", "justify-between", "gap-4", headerClassName)}>
-                <h2 className="text-2xl font-bold">{title}</h2>
-                {isCreateButtonVisible && (
+                <h2 className="text-2xl font-bold">
+                    {title || (
+                        <div className="w-40 animate-pulse ease-in-out duration-100 h-9 rounded-lg bg-muted" />
+                    )}
+                </h2>
+                {createable && (
                     <div className="flex items-center gap-2">
-                        <CreateButton resource={resourceName} />
+                        <CreateButton resource={identifier ?? resource?.name} />
                     </div>
                 )}
             </div>

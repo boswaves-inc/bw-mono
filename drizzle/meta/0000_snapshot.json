@@ -1,5 +1,5 @@
 {
-  "id": "44a15646-698a-478f-9ccf-901a0d0f08ab",
+  "id": "6fb5fa28-91ed-41eb-ae86-74c226204c75",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -14,24 +14,19 @@
           "primaryKey": true,
           "notNull": true
         },
-        "price": {
-          "name": "price",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "currncy": {
-          "name": "currncy",
+        "title": {
+          "name": "title",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "period": {
-          "name": "period",
-          "type": "period_unit",
+        "status": {
+          "name": "status",
+          "type": "status",
           "typeSchema": "public",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "'pending'"
         }
       },
       "indexes": {},
@@ -41,76 +36,15 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
-    },
-    "public.item_price": {
-      "name": "item_price",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "price": {
-          "name": "price",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "currncy": {
-          "name": "currncy",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "period": {
-          "name": "period",
-          "type": "period_unit",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "item_price_id_item_info_id_fk": {
-          "name": "item_price_id_item_info_id_fk",
-          "tableFrom": "item_price",
-          "tableTo": "item_info",
-          "columnsFrom": [
-            "id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
     }
   },
   "enums": {
-    "public.item_type": {
-      "name": "item_type",
+    "public.status": {
+      "name": "status",
       "schema": "public",
       "values": [
-        "script"
-      ]
-    },
-    "public.period_unit": {
-      "name": "period_unit",
-      "schema": "public",
-      "values": [
-        "day",
-        "week",
-        "month",
-        "year"
+        "pending",
+        "published"
       ]
     }
   },

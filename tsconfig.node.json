@@ -1,5 +1,6 @@
 {
     "extends": "./tsconfig.json",
+    "include": ["drizzle.config.ts"],
     "references": [
         {
             "path": "./apps/web/tsconfig.node.json"
@@ -11,6 +12,7 @@
     "compilerOptions": {
         "composite": true,
         "strict": true,
+        "noEmit": false,
         "types": [
             "node"
         ],

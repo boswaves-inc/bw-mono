@@ -1,14 +1,15 @@
 "use client";
 
 import { Check, ChevronDown, Monitor, Moon, Sun } from "lucide-react";
-import React, { useMemo } from "react";
+import React from "react";
 import { useTheme } from "./provider";
 import { DropdownMenu, DropdownMenuPanel, DropdownMenuItem, DropdownMenuTrigger } from "../core/dropdown";
 import { Button } from "../core/button";
 import { cn } from "~/utils";
+import type { Theme } from "~/types";
 
 type ThemeOption = {
-  value: "light" | "dark" | "system";
+  value: Theme;
   label: string;
   icon: React.ReactNode;
 };

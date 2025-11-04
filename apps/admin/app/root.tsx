@@ -21,10 +21,12 @@ import routerProvider, {
   NavigateToResource,
   UnsavedChangesNotifier,
 } from "@refinedev/react-router";
-import { Sidebar, SidebarInset, SidebarProvider } from "./components/core/sidebar";
+import { SidebarInset, SidebarProvider } from "./components/core/sidebar";
 import { cn } from "./utils";
 import { Header } from "./components/header";
 import { ThemeProvider } from "./components/theme/provider";
+import { Sidebar } from "./components/sidebar";
+import dataProvider from "@refinedev/simple-rest";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -39,8 +41,10 @@ export const links: LinksFunction = () => [
   },
 ];
 
-export async function loader({ request, context }: LoaderFunctionArgs) {
-  return data({ theme: context.theme })
+export function loader({ request, context }: Route.LoaderArgs) {
+  const { origin } = new URL(request.url)
+
+  return data({ origin, theme: context.theme })
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -56,7 +60,75 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
 
       <body className="antialiased">
-        {children}
+        <RefineKbarProvider>
+          <ThemeProvider theme={data?.theme}>
+            <Refine
+              // notificationProvider={useNotificationProvider()}
+              routerProvider={routerProvider}
+              dataProvider={dataProvider('http://localhost:3000/api')}
+              resources={[
+                {
+                  name: "items",
+                  list: "/items",
+                  show: "/items/:id",
+                  edit: "/items/:id",
+                  create: "/items/create",
+                  meta: {
+                    canDelete: true,
+                  },
+                },
+                {
+                  name: "users",
+                  list: "/users",
+                  show: "/users/:id",
+                  edit: "/users/:id/edit",
+                  create: "/users/create",
+                  meta: {
+                    canDelete: true,
+                  },
+                },
+              ]}
+              options={{
+                title: {
+                  text: "BOSWaves Admin"
+                },
+                syncWithLocation: true,
+                warnWhenUnsavedChanges: true,
+                projectId: "BFoPS7-foKdd1-GQ4vpm",
+              }}
+            >
+              <SidebarProvider>
+                <Sidebar />
+                <SidebarInset>
+                  <Header />
+                  <main
+                    className={cn(
+                      "@container/main",
+                      "container",
+                      "mx-auto",
+                      "relative",
+                      "w-full",
+                      "flex",
+                      "flex-col",
+                      "flex-1",
+                      "px-2",
+                      "pt-4",
+                      "md:p-4",
+                      "lg:px-6",
+                      "lg:pt-6"
+                    )}
+                  >
+                    {children}
+                  </main>
+                </SidebarInset>
+              </SidebarProvider>
+              {/* <Toaster /> */}
+              <RefineKbar />
+              <UnsavedChangesNotifier />
+              <DocumentTitleHandler />
+            </Refine>
+          </ThemeProvider>
+        </RefineKbarProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -66,106 +138,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <RefineKbarProvider>
-      <ThemeProvider>
-
-        <Refine
-          // notificationProvider={useNotificationProvider()}
-          routerProvider={routerProvider}
-          // dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
-          resources={[
-            {
-              name: "products",
-              list: "/blog-posts",
-              create: "/blog-posts/create",
-              edit: "/blog-posts/edit/:id",
-              show: "/blog-posts/show/:id",
-              meta: {
-                canDelete: true,
-              },
-            },
-            {
-              name: "categories",
-              list: "/categories",
-              create: "/categories/create",
-              edit: "/categories/edit/:id",
-              show: "/categories/show/:id",
-              meta: {
-                canDelete: true,
-              },
-            },
-          ]}
-          options={{
-            syncWithLocation: true,
-            warnWhenUnsavedChanges: true,
-            projectId: "BFoPS7-foKdd1-GQ4vpm",
-          }}
-        >
-          <SidebarProvider>
-            <Sidebar />
-            <SidebarInset>
-              <Header />
-              <main
-                className={cn(
-                  "@container/main",
-                  "container",
-                  "mx-auto",
-                  "relative",
-                  "w-full",
-                  "flex",
-                  "flex-col",
-                  "flex-1",
-                  "px-2",
-                  "pt-4",
-                  "md:p-4",
-                  "lg:px-6",
-                  "lg:pt-6"
-                )}
-              >
-                <Outlet />
-              </main>
-            </SidebarInset>
-          </SidebarProvider>
-
-
-
-
-
-
-          {/* <Routes>
-        <Route
-          element={
-            <Layout>
-            </Layout>
-          }
-        >
-          <Route
-            index
-            element={<NavigateToResource resource="blog_posts" />}
-          />
-          <Route path="/blog-posts">
-            <Route index element={<BlogPostList />} />
-            <Route path="create" element={<BlogPostCreate />} />
-            <Route path="edit/:id" element={<BlogPostEdit />} />
-            <Route path="show/:id" element={<BlogPostShow />} />
-          </Route>
-          <Route path="/categories">
-            <Route index element={<CategoryList />} />
-            <Route path="create" element={<CategoryCreate />} />
-            <Route path="edit/:id" element={<CategoryEdit />} />
-            <Route path="show/:id" element={<CategoryShow />} />
-          </Route>
-          <Route path="*" element={<ErrorComponent />} />
-        </Route>
-      </Routes> */}
-
-          {/* <Toaster /> */}
-          <RefineKbar />
-          <UnsavedChangesNotifier />
-          <DocumentTitleHandler />
-        </Refine>
-      </ThemeProvider>
-    </RefineKbarProvider>
+    <Outlet />
   );
 }
 

@@ -2,7 +2,8 @@
   "extends": "../../tsconfig.node.json",
   "include": [
     "server.js",
-    "vite.config.ts"
+    "vite.config.ts",
+    "drizzle.config.ts"
   ],
   "compilerOptions": {
     "composite": true,

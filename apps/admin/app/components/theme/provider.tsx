@@ -1,56 +1,41 @@
-"use client";
+import { createContext, useContext, useEffect, useState, type PropsWithChildren } from "react";
+import type { Theme } from "~/types";
 
-import { createContext, useContext, useEffect, useState } from "react";
-
-type Theme = "dark" | "light" | "system";
-
-type ThemeProviderProps = {
-    children: React.ReactNode;
-    defaultTheme?: Theme;
-    storageKey?: string;
-};
-
-type ThemeProviderState = {
+const CONTEXT = createContext<{
     theme: Theme;
     setTheme: (theme: Theme) => void;
-};
+}>({} as any);
 
-const CONTEXT = createContext<ThemeProviderState>({
-    theme: "system",
-    setTheme: () => null,
-});
+export function ThemeProvider({ children, theme }: PropsWithChildren<{ theme: Theme }>) {
+    const [inner, setInner] = useState<Theme>(theme);
 
-export function ThemeProvider({ children, defaultTheme = "system", storageKey = "refine-ui-theme", ...props }: ThemeProviderProps) {
-    const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem(storageKey) as Theme) || defaultTheme);
+    const setTheme = async (theme: Theme) => {
+        localStorage.setItem("refine-ui-theme", theme);
+
+        setInner(theme);
+
+        fetch('/theme', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ theme })
+        })
+    }
 
     useEffect(() => {
         const root = window.document.documentElement;
 
         root.classList.remove("light", "dark");
 
-        if (theme === "system") {
-            const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-                .matches
-                ? "dark"
-                : "light";
+        const system = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        const current = inner === 'system' ? system : inner
 
-            root.classList.add(systemTheme);
-            return;
-        }
-
-        root.classList.add(theme);
-    }, [theme]);
-
-    const value = {
-        theme,
-        setTheme: (theme: Theme) => {
-            localStorage.setItem(storageKey, theme);
-            setTheme(theme);
-        },
-    };
+        root.classList.add(current);
+    }, [inner]);
 
     return (
-        <CONTEXT.Provider {...props} value={value}>
+        <CONTEXT.Provider value={{ theme: inner, setTheme }}>
             {children}
         </CONTEXT.Provider>
     );

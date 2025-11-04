@@ -1,4 +1,5 @@
-"use client";
+
+import type { PropsWithChildren } from "react";
 
 import {
     useBack,
@@ -6,37 +7,36 @@ import {
     useUserFriendlyName,
 } from "@refinedev/core";
 import { ArrowLeftIcon } from "lucide-react";
-import type { PropsWithChildren } from "react";
-import { Breadcrumb } from "~/components/core/breadcrumb";
-import { Button } from "~/components/core/button";
-import { Separator } from "~/components/core/separator";
 import { cn } from "~/utils";
+import { Breadcrumb } from "~/components/core/breadcrumb";
+import { Separator } from "~/components/core/separator";
+import { Button } from "~/components/core/button";
+import { RefreshButton } from "../button/refresh";
+import { EditButton } from "../button/edit";
 
-type EditViewProps = PropsWithChildren<{
+type ShowViewProps = PropsWithChildren<{
     className?: string;
 }>;
 
-export const EditView = ({ children, className }: EditViewProps) => (
-    <div className={cn("flex flex-col", "gap-4", className)}>
-        {children}
-    </div>
-)
+export function ShowView({ children, className }: ShowViewProps) {
+    return (
+        <div className={cn("flex flex-col", "gap-4", className)}>{children}</div>
+    );
+}
 
-type EditViewHeaderProps = PropsWithChildren<{
+type ShowViewHeaderProps = PropsWithChildren<{
     resource?: string;
     title?: string;
     wrapperClassName?: string;
     headerClassName?: string;
-    actionsSlot?: React.ReactNode;
 }>;
 
-export const EditViewHeader = ({
+export const ShowViewHeader = ({
     resource: resourceFromProps,
     title: titleFromProps,
-    actionsSlot,
     wrapperClassName,
     headerClassName,
-}: EditViewHeaderProps) => {
+}: ShowViewHeaderProps) => {
     const back = useBack();
     const getUserFriendlyName = useUserFriendlyName();
 
@@ -46,10 +46,9 @@ export const EditViewHeader = ({
     });
 
     const resourceName = resource?.name ?? identifier;
-
     const title = titleFromProps ?? getUserFriendlyName(
         resource?.meta?.label ?? identifier ?? resource?.name,
-        "plural"
+        "singular"
     );
 
     return (
@@ -74,12 +73,20 @@ export const EditViewHeader = ({
                     <Button variant="ghost" size="icon" onClick={back}>
                         <ArrowLeftIcon className="h-4 w-4" />
                     </Button>
-                    <h2 className="text-2xl font-bold">{title}</h2>
+                    <h2 className="text-2xl font-bold">
+                        {title || (
+                            <div className="w-40 animate-pulse ease-in-out duration-100 h-9 rounded-lg bg-white/20" />
+                        )}
+                    </h2>
                 </div>
 
                 <div className="flex items-center gap-2">
-                    {actionsSlot}
                     <RefreshButton
+                        variant="outline"
+                        recordItemId={recordItemId}
+                        resource={resourceName}
+                    />
+                    <EditButton
                         variant="outline"
                         recordItemId={recordItemId}
                         resource={resourceName}
@@ -89,3 +96,5 @@ export const EditViewHeader = ({
         </div>
     );
 };
+
+ShowView.displayName = "ShowView";

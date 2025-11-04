@@ -16,8 +16,15 @@ export default defineConfig(({ isSsrBuild }) => ({
   optimizeDeps: {
     exclude: ["virtual:react-router/server-build"],
   },
+  ssr: {
+    noExternal: [
+      '@refinedev/react-table',
+      '@refinedev/core',
+    ]
+  },
   resolve: {
     alias: {
+      'lodash': 'lodash-es',
       '~': path.resolve(__dirname, './app')
     }
   },

@@ -16,11 +16,12 @@ import { SidebarTrigger, useSidebar } from "./core/sidebar";
 import { LogOutIcon } from "lucide-react";
 import { cn } from "../utils";
 import { ThemeToggle } from "./theme/toggle";
+import { Fragment } from "react/jsx-runtime";
 
 export const Header = () => {
-  const { mobile: isMobile } = useSidebar();
+  const { mobile } = useSidebar();
 
-  return <>{isMobile ? <MobileHeader /> : <DesktopHeader />}</>;
+  return <>{mobile ? <MobileHeader /> : <DesktopHeader />}</>;
 };
 
 function DesktopHeader() {
@@ -43,14 +44,13 @@ function DesktopHeader() {
       )}
     >
       <ThemeToggle />
-      <UserDropdown />
+      {/* <UserDropdown /> */}
     </header>
   );
 }
 
 function MobileHeader() {
   const { open, mobile: isMobile } = useSidebar();
-
   const { title } = useRefineOptions();
 
   return (
@@ -119,34 +119,34 @@ function MobileHeader() {
   );
 }
 
-const UserDropdown = () => {
-  const { mutate: logout, isPending: isLoggingOut } = useLogout();
+// const UserDropdown = () => {
+//   const { mutate: logout, isPending: isLoggingOut } = useLogout();
 
-  const authProvider = useActiveAuthProvider();
+//   const authProvider = useActiveAuthProvider();
 
-  if (!authProvider?.getIdentity) {
-    return null;
-  }
+//   if (!authProvider?.getIdentity) {
+//     return null;
+//   }
 
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        {/* <UserAvatar /> */}
-      </DropdownMenuTrigger>
-      <DropdownMenuPanel align="end">
-        <DropdownMenuItem
-          onClick={() => {
-            logout();
-          }}
-        >
-          <LogOutIcon
-            className={cn("text-destructive", "hover:text-destructive")}
-          />
-          <span className={cn("text-destructive", "hover:text-destructive")}>
-            {isLoggingOut ? "Logging out..." : "Logout"}
-          </span>
-        </DropdownMenuItem>
-      </DropdownMenuPanel>
-    </DropdownMenu>
-  );
-};
+//   return (
+//     <DropdownMenu>
+//       <DropdownMenuTrigger>
+//         {/* <UserAvatar /> */}
+//       </DropdownMenuTrigger>
+//       <DropdownMenuPanel align="end">
+//         <DropdownMenuItem
+//           onClick={() => {
+//             logout();
+//           }}
+//         >
+//           <LogOutIcon
+//             className={cn("text-destructive", "hover:text-destructive")}
+//           />
+//           <span className={cn("text-destructive", "hover:text-destructive")}>
+//             {isLoggingOut ? "Logging out..." : "Logout"}
+//           </span>
+//         </DropdownMenuItem>
+//       </DropdownMenuPanel>
+//     </DropdownMenu>
+//   );
+// };
