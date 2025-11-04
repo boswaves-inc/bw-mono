@@ -1,4 +1,5 @@
 // import { Textarea } from "@/components/ui/textarea";
+import { Item, Status } from "@bw/core";
 import { useSelect } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
 import { useNavigate } from "react-router";
@@ -8,7 +9,7 @@ import { Input } from "~/components/core/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/core/select";
 import { Textarea } from "~/components/core/textarea";
 import { CreateView, CreateViewHeader } from "~/components/refine/views/create";
-
+import _ from 'lodash';
 
 export default () => {
     const navigate = useNavigate();
@@ -105,16 +106,16 @@ export default () => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Status</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={"draft"}>
+                                <Select onValueChange={field.onChange}>
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select status" />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        <SelectItem value="draft">Draft</SelectItem>
-                                        <SelectItem value="published">Published</SelectItem>
-                                        <SelectItem value="rejected">Rejected</SelectItem>
+                                        {Item.status.enumValues.map(value => (
+                                            <SelectItem value={value}>{_.upperFirst(value)}</SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />

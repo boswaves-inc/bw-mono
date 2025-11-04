@@ -2,6 +2,8 @@ import { Item } from '@bw/core'
 import type { Postgres } from '@bw/core/postgres'
 import type Chargebee from 'chargebee'
 import express from 'express'
+import { createInsertSchema, createSelectSchema, createUpdateSchema } from "drizzle-zod";
+import { eq } from 'drizzle-orm';
 
 export default ({ postgres, chargebee }: { postgres: Postgres, chargebee: Chargebee }) => {
     const router = express()
@@ -17,29 +19,58 @@ export default ({ postgres, chargebee }: { postgres: Postgres, chargebee: Charge
         return res.json(data)
     })
 
-    router.post('/', (req, res) => {
-        console.log('create')
+    router.post('/', async (req, res) => {
+        const schema = createInsertSchema(Item)
 
-        return res.sendStatus(200)
+        try {
+            const data = await schema.parseAsync(req.body)
+            const result = await postgres.insert(Item).values(data)
+
+            return res.json(result).sendStatus(200)
+        }
+        catch (err) {
+            return res.destroy(err as any)
+        }
     })
 
-    router.get('/:id', (req, res) => {
-        console.log('show')
+    router.get('/:id', async (req, res) => {
+        const schema = createSelectSchema(Item)
 
-        return res.sendStatus(200)
+        try {
+            const [result] = await postgres.selectDistinct().from(Item).where(eq(Item.id, req.params.id)).limit(1)
+
+            return res.json(result).sendStatus(200)
+        }
+        catch (err) {
+            return res.destroy(err as any)
+        }
     })
 
-    router.post('/:id', (req, res) => {
-        console.log('edit')
+    router.patch('/:id', async (req, res) => {
+        const schema = createUpdateSchema(Item)
 
-        return res.sendStatus(200)
+        try {
+            const data = await schema.parseAsync(req.body)
+            const result = await postgres.update(Item).set(data).where(eq(Item.id, req.params.id))
+
+            return res.json(result).sendStatus(200)
+        }
+        catch (err) {
+            return res.destroy(err as any)
+        }
     })
 
-    router.delete('/:id', (req, res) => {
-        console.log('delete')
+    router.delete('/:id', async (req, res) => {
+        try {
+            const result = await postgres.delete(Item).where(eq(Item.id, req.params.id))
 
-        return res.sendStatus(200)
+            return res.json(result).sendStatus(200)
+        }
+        catch (err) {
+            return res.destroy(err as any)
+        }
     })
+
 
     return router
 }

@@ -71,7 +71,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   name: "items",
                   list: "/items",
                   show: "/items/:id",
-                  edit: "/items/:id",
+                  edit: "/items/:id/edit",
                   create: "/items/create",
                   meta: {
                     canDelete: true,
