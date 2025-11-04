@@ -1,11 +1,11 @@
-import { Item, ItemScript, Script, type TvScript } from '@bw/core'
-import type { Postgres } from '@bw/core/postgres'
-import type Chargebee from 'chargebee'
-import express from 'express'
-import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
-import { eq } from 'drizzle-orm';
 import _ from 'lodash';
-import type { TradingView, TvError } from '@bw/core/tradingview';
+import express from 'express'
+import { eq } from 'drizzle-orm';
+import type Chargebee from 'chargebee'
+import type { Postgres } from '@bw/core/postgres'
+import { Item, ItemScript, Script } from '@bw/core'
+import type { TradingView } from '@bw/core/tradingview';
+import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 
 export default ({ family, postgres, tradingview, chargebee }: { family: string, postgres: Postgres, chargebee: Chargebee, tradingview: TradingView }) => {
     const router = express()
