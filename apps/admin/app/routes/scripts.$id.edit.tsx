@@ -1,4 +1,4 @@
-import { Item } from "@bw/core";
+import { Item, ItemScript } from "@bw/core";
 import { useForm } from "@refinedev/react-hook-form";
 import _ from "lodash";
 import { useNavigate } from "react-router";
@@ -56,6 +56,32 @@ export default () => {
                                         placeholder="Enter script uuid"
                                     />
                                 </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="type"
+                        rules={{ required: "Type is required" }}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Type</FormLabel>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value || ""}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select type" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {ItemScript.type.enumValues.map(value => (
+                                            <SelectItem value={value}>{_.upperFirst(value)}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                                 <FormMessage />
                             </FormItem>
                         )}

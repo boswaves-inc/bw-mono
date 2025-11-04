@@ -1,7 +1,6 @@
-import type { InferEnum, InferSelectModel } from "drizzle-orm";
-import { pgEnum, pgTable } from "drizzle-orm/pg-core";
-import { Status } from "./types";
-import { createInsertSchema } from "drizzle-zod";
+import type { InferSelectModel } from "drizzle-orm";
+import {  pgTable } from "drizzle-orm/pg-core";
+import { ScriptType, Status } from "./types";
 
 // export const PeriodUnit = pgEnum('period_unit', [
 //     "day",
@@ -21,6 +20,7 @@ export const Item = pgTable("item_info", (t) => ({
 export const ItemScript = pgTable("item_script", (t) => ({
     id: t.uuid().primaryKey().references(() => Item.id, { onDelete: 'cascade', onUpdate: 'cascade'}),
     uuid: t.text("uuid").unique().notNull(),
+    type: ScriptType("type").notNull(),
     created_at: t.timestamp().defaultNow().notNull(),
     updated_at: t.timestamp().defaultNow().notNull()
 }));
