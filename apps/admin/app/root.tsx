@@ -67,22 +67,32 @@ export function Layout({ children }: { children: React.ReactNode }) {
               routerProvider={routerProvider}
               dataProvider={dataProvider('http://localhost:3000/api')}
               resources={[
-                {
-                  name: "items",
-                  list: "/items",
-                  show: "/items/:id",
-                  edit: "/items/:id/edit",
-                  create: "/items/create",
-                  meta: {
-                    canDelete: true,
-                  },
-                },
+                // {
+                //   name: "items",
+                //   list: "/items",
+                //   show: "/items/:id",
+                //   edit: "/items/:id/edit",
+                //   create: "/items/create",
+                //   meta: {
+                //     canDelete: true,
+                //   },
+                // },
                 {
                   name: "users",
                   list: "/users",
                   show: "/users/:id",
                   edit: "/users/:id/edit",
                   create: "/users/create",
+                  meta: {
+                    canDelete: true,
+                  },
+                },
+                {
+                  name: "scripts",
+                  list: "/scripts",
+                  show: "/scripts/:id",
+                  edit: "/scripts/:id/edit",
+                  create: "/scripts/create",
                   meta: {
                     canDelete: true,
                   },

@@ -1,6 +1,6 @@
 {
-  "id": "182ea31e-eedc-4c63-a776-325ed59fdf6e",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "661695b7-faa8-4b5c-ac9a-9b64b69d032c",
+  "prevId": "182ea31e-eedc-4c63-a776-325ed59fdf6e",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -102,8 +102,8 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -312,9 +312,16 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
-      "definition": "select \"item_info\".\"id\", \"item_info\".\"title\", \"item_info\".\"status\", \"item_script\".\"script\" from \"item_script\" inner join \"item_info\" on \"item_script\".\"id\" = \"item_info\".\"id\"",
+      "definition": "select \"item_info\".\"id\", \"item_info\".\"title\", \"item_info\".\"status\", \"item_script\".\"script\", \"item_info\".\"created_at\", \"item_info\".\"updated_at\" > \"item_script\".\"updated_at\" as \"updated_at\" from \"item_script\" inner join \"item_info\" on \"item_script\".\"id\" = \"item_info\".\"id\"",
       "name": "script_info",
       "schema": "public",
       "isExisting": false,

@@ -1,6 +1,9 @@
-CREATE TYPE "public"."status" AS ENUM('archived', 'public');--> statement-breakpoint
-CREATE TYPE "public"."user_provider" AS ENUM('internal', 'google');--> statement-breakpoint
-CREATE TYPE "public"."user_role" AS ENUM('admin', 'user');--> statement-breakpoint
+CREATE TYPE "public"."status" AS ENUM('archived', 'public');
+--> statement-breakpoint
+CREATE TYPE "public"."user_provider" AS ENUM('internal', 'google');
+--> statement-breakpoint
+CREATE TYPE "public"."user_role" AS ENUM('admin', 'user');
+--> statement-breakpoint
 CREATE TABLE "item_info" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"title" text NOT NULL,
@@ -38,5 +41,17 @@ CREATE TABLE "user_credentials" (
 	"password" text NOT NULL
 );
 --> statement-breakpoint
-ALTER TABLE "item_script" ADD CONSTRAINT "item_script_id_item_info_id_fk" FOREIGN KEY ("id") REFERENCES "public"."item_info"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "user_credentials" ADD CONSTRAINT "user_credentials_uid_user_info_uid_fk" FOREIGN KEY ("uid") REFERENCES "public"."user_info"("uid") ON DELETE no action ON UPDATE no action;
+ALTER TABLE "item_script"
+ADD CONSTRAINT "item_script_id_item_info_id_fk" FOREIGN KEY ("id") REFERENCES "public"."item_info"("id") ON DELETE no action ON UPDATE no action;
+--> statement-breakpoint
+ALTER TABLE "user_credentials"
+ADD CONSTRAINT "user_credentials_uid_user_info_uid_fk" FOREIGN KEY ("uid") REFERENCES "public"."user_info"("uid") ON DELETE no action ON UPDATE no action;
+--> statement-breakpoint
+CREATE MATERIALIZED VIEW "public"."script_info" AS (
+	select "item_info"."id",
+		"item_info"."title",
+		"item_info"."status",
+		"item_script"."script"
+	from "item_script"
+		inner join "item_info" on "item_script"."id" = "item_info"."id"
+);

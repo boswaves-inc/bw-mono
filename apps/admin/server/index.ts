@@ -2,14 +2,19 @@ import { createRequestHandler } from "@react-router/express";
 import express from "express";
 import Chargebee from 'chargebee';
 import postgres, { Postgres } from "@bw/core/postgres";
+import { TradingView } from "@bw/core/tradingview";
 
 import "react-router";
 import theme, { getTheme } from "./theme";
-import items from "./api/items";
 import users from "./api/users";
+import scripts from "./api/scripts";
 
 if (!process.env.CB_SITE) {
   throw new Error('CB_SITE variable not set')
+}
+
+if (!process.env.CB_FAMILY) {
+  throw new Error('CB_FAMILY variable not set')
 }
 
 if (!process.env.CB_API_KEY) {
@@ -18,10 +23,11 @@ if (!process.env.CB_API_KEY) {
 
 const router = express();
 
+const tv_client = new TradingView();
 const pg_client = new Postgres()
 const cb_client = new Chargebee({
-  site: process.env.CB_SITE!,
-  apiKey: process.env.CB_API_KEY!
+  site: process.env.CB_SITE,
+  apiKey: process.env.CB_API_KEY
 })
 
 router.use(postgres({
@@ -34,9 +40,16 @@ router.use(postgres({
 
 router.use(theme())
 
-router.use('/api/items', items({
+// router.use('/api/items', items({
+//   postgres: pg_client,
+//   chargebee: cb_client
+// }))
+
+router.use('/api/scripts', scripts({
+  family: process.env.CB_FAMILY,
   postgres: pg_client,
-  chargebee: cb_client
+  chargebee: cb_client,
+  tradingview: tv_client,
 }))
 
 router.use('/api/users', users({

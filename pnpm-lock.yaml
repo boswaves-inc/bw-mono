@@ -11,6 +11,9 @@ importers:
       drizzle-orm:
         specifier: ^0.44.6
         version: 0.44.7(postgres@3.4.7)
+      postgres:
+        specifier: ^3.4.7
+        version: 3.4.7
     devDependencies:
       '@types/node':
         specifier: ^22.18.10
@@ -21,6 +24,9 @@ importers:
       drizzle-kit:
         specifier: ^0.31.5
         version: 0.31.6
+      tsx:
+        specifier: ^4.20.6
+        version: 4.20.6
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
@@ -243,6 +249,9 @@ importers:
       vaul:
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      zod:
+        specifier: ^4.1.12
+        version: 4.1.12
     devDependencies:
       '@react-router/dev':
         specifier: ^7.9.1
@@ -455,6 +464,9 @@ importers:
       tailwind-variants:
         specifier: ^3.1.1
         version: 3.1.1(tailwind-merge@3.3.1)(tailwindcss@4.1.16)
+      zod:
+        specifier: ^4.1.12
+        version: 4.1.12
     devDependencies:
       '@types/compression':
         specifier: ^1.8.1

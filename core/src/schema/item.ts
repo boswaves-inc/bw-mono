@@ -12,21 +12,22 @@ import { createInsertSchema } from "drizzle-zod";
 
 export const Item = pgTable("item_info", (t) => ({
     id: t.uuid().primaryKey().notNull().$defaultFn(() => crypto.randomUUID()),
-    title: t.text().unique().notNull(),
+    title: t.text("title").unique().notNull(),
     status: Status().default('archived').notNull(),
     created_at: t.timestamp().defaultNow().notNull(),
     updated_at: t.timestamp().defaultNow().notNull()
 }));
 
 export const ItemScript = pgTable("item_script", (t) => ({
-    id: t.uuid().primaryKey().references(() => Item.id),
-    script: t.text().unique().notNull(),
+    id: t.uuid().primaryKey().references(() => Item.id, { onDelete: 'cascade', onUpdate: 'cascade'}),
+    uuid: t.text("uuid").unique().notNull(),
     created_at: t.timestamp().defaultNow().notNull(),
     updated_at: t.timestamp().defaultNow().notNull()
 }));
 
 export type Item = InferSelectModel<typeof Item>
 export type ItemScript = InferSelectModel<typeof ItemScript>
+
 // export const ItemPrice = pgTable("item_price", (t) => ({
 //     id: t.uuid().primaryKey().references(() => Item.id, {
 //         onUpdate: 'cascade',

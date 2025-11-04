@@ -3,15 +3,18 @@
     "scripts": {
         "db:generate": "dotenv -- drizzle-kit generate",
         "db:migrate": "dotenv -- drizzle-kit migrate",
-        "db:update": "dotenv -- drizzle-kit up"
+        "db:update": "dotenv -- drizzle-kit up",
+        "db:seed": "dotenv -- tsx scripts/seed.ts"
     },
     "dependencies": {
-        "drizzle-orm": "^0.44.6"
+        "drizzle-orm": "^0.44.6",
+        "postgres": "^3.4.7"
     },
     "devDependencies": {
         "@types/node": "^22.18.10",
         "dotenv-cli": "^10.0.0",
         "drizzle-kit": "^0.31.5",
+        "tsx": "^4.20.6",
         "typescript": "^5.9.2"
     }
 }

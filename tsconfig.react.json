@@ -29,5 +29,10 @@
             "DOM.Iterable",
             "ES2022"
         ],
+        "paths": {
+            "~/core/*": [
+                "./core/src*"
+            ]
+        }
     }
 }
