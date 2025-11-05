@@ -27,6 +27,7 @@ import { Header } from "./components/header";
 import { ThemeProvider } from "./components/theme/provider";
 import { Sidebar } from "./components/sidebar";
 import dataProvider from "@refinedev/simple-rest";
+import { Box, FileText, Users } from "lucide-react";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -67,16 +68,32 @@ export function Layout({ children }: { children: React.ReactNode }) {
               routerProvider={routerProvider}
               dataProvider={dataProvider('http://localhost:3000/api')}
               resources={[
-                // {
-                //   name: "items",
-                //   list: "/items",
-                //   show: "/items/:id",
-                //   edit: "/items/:id/edit",
-                //   create: "/items/create",
-                //   meta: {
-                //     canDelete: true,
-                //   },
-                // },
+                {
+                  name: 'CMS',
+                  meta: {
+                    icon: <FileText />,
+                    label: "CMS"
+                  }
+                },
+                {
+                  name: "images",
+                  list: "/images",
+                  show: "/images/:id",
+                  edit: "/images/:id/edit",
+                  create: "/images/create",
+                  meta: {
+                    parent: 'CMS',
+                    canDelete: true,
+                  },
+                },
+                {
+                  name: 'CRM',
+                  meta: {
+
+                    icon: <Users />,
+                    label: "CRM"
+                  }
+                },
                 {
                   name: "users",
                   list: "/users",
@@ -84,8 +101,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   edit: "/users/:id/edit",
                   create: "/users/create",
                   meta: {
+                    parent: 'CRM',
                     canDelete: true,
                   },
+                },
+                {
+                  name: 'PIM',
+                  meta: {
+
+                    icon: <Box />,
+                    label: "PIM"
+                  }
                 },
                 {
                   name: "scripts",
@@ -94,6 +120,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   edit: "/scripts/:id/edit",
                   create: "/scripts/create",
                   meta: {
+                    parent: 'PIM',
                     canDelete: true,
                   },
                 },
