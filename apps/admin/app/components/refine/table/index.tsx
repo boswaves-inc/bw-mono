@@ -9,6 +9,7 @@ import { cn } from "~/utils";
 import { TablePagination } from "./pagnation";
 import { getCommonStyles } from "./utils";
 import type { TableProps } from "./types";
+import { DataTableSorter } from "./sorter";
 
 export default <TData extends BaseRecord>({ table }: TableProps<TData>) => {
     const {
@@ -86,6 +87,9 @@ export default <TData extends BaseRecord>({ table }: TableProps<TData>) => {
                                                     {flexRender(
                                                         header.column.columnDef.header,
                                                         header.getContext()
+                                                    )}
+                                                    {header.column.getCanSort() && (
+                                                        <DataTableSorter column={header.column} />
                                                     )}
                                                 </div>
                                             )}

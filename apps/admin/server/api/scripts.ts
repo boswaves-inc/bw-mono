@@ -36,7 +36,8 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
             .omit({
                 id: true,
                 created_at: true,
-                updated_at: true
+                updated_at: true,
+                archived_at: true
             })
 
         try {
@@ -56,10 +57,10 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                 await chargebee.item.create({
                     type: 'plan',
                     id: item.id,
-                    name: _.snakeCase(data.title),
+                    name: _.snakeCase(data.name),
                     // included_in_mrr: true,
                     item_family_id: family,
-                    external_name: data.title,
+                    external_name: data.name,
                 })
 
                 return _.merge(item, item_script)
@@ -93,7 +94,8 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
             .omit({
                 id: true,
                 created_at: true,
-                updated_at: true
+                updated_at: true,
+                archived_at: true
             })
 
         try {
@@ -102,15 +104,15 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                 const { id } = req.params
 
                 await Promise.all([
-                    tx.update(Item).set({ title: data.title, status: data.status, updated_at: new Date() }).where(eq(Item.id, id)),
-                    tx.update(ItemScript).set({ uuid: data.uuid, updated_at: new Date() }).where(eq(ItemScript.id, id))
+                    tx.update(Item).set({ name: data.name, status: data.status, updated_at: new Date() }).where(eq(Item.id, id)),
+                    tx.update(ItemScript).set({ uuid: data.uuid }).where(eq(ItemScript.id, id))
                 ])
 
                 await tx.refreshMaterializedView(Script)
 
                 await chargebee.item.update(id, {
-                    name: _.snakeCase(data.title),
-                    external_name: data.title
+                    name: _.snakeCase(data.name),
+                    external_name: data.name
                 })
             })
 

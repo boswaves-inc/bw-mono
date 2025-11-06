@@ -16,6 +16,23 @@ export const ScriptType = pgEnum('script_type', [
 ])
 
 
+export const CouponType = pgEnum('coupon_type', [
+    "fixed",
+    "percentage",
+])
+
+
+export const CouponDuration = pgEnum('coupon_duration', [
+    "one_time",
+    "forever",
+    "limited_period"
+])
+
+export const CouponApplication = pgEnum('coupon_application', [
+    "invoice",
+    "item",
+])
+
 export const Status = pgEnum('status', [
     'archived',
     'public'
@@ -23,3 +40,6 @@ export const Status = pgEnum('status', [
 
 export type Status = InferEnum<typeof Status>
 export type ScriptType = InferEnum<typeof ScriptType>
+export type CouponType = InferEnum<typeof CouponType>
+export type CouponDuration = InferEnum<typeof CouponDuration>
+export type CouponApplication = InferEnum<typeof CouponApplication>

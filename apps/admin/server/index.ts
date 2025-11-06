@@ -8,6 +8,7 @@ import "react-router";
 import theme, { getTheme } from "./theme";
 import users from "./api/users";
 import scripts from "./api/scripts";
+import coupons from "./api/coupons";
 
 if (!process.env.CB_SITE) {
   throw new Error('CB_SITE variable not set')
@@ -40,21 +41,21 @@ router.use(postgres({
 
 router.use(theme())
 
-// router.use('/api/items', items({
-//   postgres: pg_client,
-//   chargebee: cb_client
-// }))
-
 router.use('/api/scripts', scripts({
   family: process.env.CB_FAMILY,
-  postgres: pg_client,
-  chargebee: cb_client,
   tradingview: tv_client,
+  chargebee: cb_client,
+  postgres: pg_client,
+}))
+
+router.use('/api/coupons', coupons({
+  chargebee: cb_client,
+  postgres: pg_client
 }))
 
 router.use('/api/users', users({
-  postgres: pg_client,
-  chargebee: cb_client
+  chargebee: cb_client,
+  postgres: pg_client
 }))
 
 router.use(createRequestHandler({
@@ -64,9 +65,9 @@ router.use(createRequestHandler({
     const theme = await getTheme(req)
 
     return {
-      theme,
+      chargebee: cb_client,
       postgres: pg_client,
-      chargebee: cb_client
+      theme,
     }
   }
 }));

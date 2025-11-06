@@ -1,0 +1,4 @@
+DROP MATERIALIZED VIEW "public"."coupon_info";--> statement-breakpoint
+DROP MATERIALIZED VIEW "public"."script_info";--> statement-breakpoint
+CREATE MATERIALIZED VIEW "public"."coupon_info" AS (select "item_info"."id", "item_info"."name", "item_info"."status", "item_coupon"."type", "item_coupon"."value", "item_coupon"."apply_on", "item_info"."created_at", "item_info"."updated_at", "item_info"."archived_at" from "item_coupon" inner join "item_info" on "item_coupon"."id" = "item_info"."id");--> statement-breakpoint
+CREATE MATERIALIZED VIEW "public"."script_info" AS (select "item_info"."id", "item_script"."uuid", "item_script"."type", "item_info"."name", "item_info"."status", "item_info"."created_at", "item_info"."updated_at", "item_info"."archived_at" from "item_script" inner join "item_info" on "item_script"."id" = "item_info"."id");

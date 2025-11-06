@@ -27,7 +27,7 @@ import { Header } from "./components/header";
 import { ThemeProvider } from "./components/theme/provider";
 import { Sidebar } from "./components/sidebar";
 import dataProvider from "@refinedev/simple-rest";
-import { Box, FileText, Users } from "lucide-react";
+import { Box, CalendarClock, FileText, Receipt, Users } from "lucide-react";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -69,48 +69,66 @@ export function Layout({ children }: { children: React.ReactNode }) {
               dataProvider={dataProvider('http://localhost:3000/api')}
               resources={[
                 {
-                  name: 'CMS',
-                  meta: {
-                    icon: <FileText />,
-                    label: "CMS"
-                  }
-                },
-                {
-                  name: "images",
-                  list: "/images",
-                  show: "/images/:id",
-                  edit: "/images/:id/edit",
-                  create: "/images/create",
-                  meta: {
-                    parent: 'CMS',
-                    canDelete: true,
-                  },
-                },
-                {
-                  name: 'CRM',
-                  meta: {
-
-                    icon: <Users />,
-                    label: "CRM"
-                  }
-                },
-                {
                   name: "users",
                   list: "/users",
                   show: "/users/:id",
                   edit: "/users/:id/edit",
                   create: "/users/create",
                   meta: {
-                    parent: 'CRM',
+                    icon: <Users />,
                     canDelete: true,
                   },
                 },
                 {
-                  name: 'PIM',
+                  name: "subscriptions",
+                  list: "/subscriptions",
+                  show: "/subscriptions/:id",
+                  edit: "/subscriptions/:id/edit",
+                  create: "/subscriptions/create",
+                  meta: {
+                    icon: <CalendarClock />,
+                    canDelete: true,
+                  },
+                },
+
+                // Financial
+                {
+                  name: 'financial',
+                  meta: {
+                    icon: <Receipt />,
+                    label: "Financial"
+                  }
+                },
+                {
+                  name: "invoices",
+                  list: "/invoices",
+                  show: "/invoices/:id",
+                  edit: "/invoices/:id/edit",
+                  create: "/invoices/create",
+                  meta: {
+                    parent: 'financial',
+                    canDelete: true,
+                  },
+                },
+                {
+                  name: "credit_notes",
+                  list: "/credit_notes",
+                  show: "/credit_notes/:id",
+                  edit: "/credit_notes/:id/edit",
+                  create: "/credit_notes/create",
+                  meta: {
+                    parent: 'financial',
+                    canDelete: true,
+                  },
+                },
+
+                // Catalog
+                {
+                  name: 'catalog',
                   meta: {
 
                     icon: <Box />,
-                    label: "PIM"
+                    label: "Catalog"
                   }
                 },
                 {
@@ -120,7 +138,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   edit: "/scripts/:id/edit",
                   create: "/scripts/create",
                   meta: {
-                    parent: 'PIM',
+                    parent: 'catalog',
+                    canDelete: true,
+                  },
+                },
+                {
+                  name: "coupons",
+                  list: "/coupons",
+                  show: "/coupons/:id",
+                  edit: "/coupons/:id/edit",
+                  create: "/coupons/create",
+                  meta: {
+                    parent: 'catalog',
                     canDelete: true,
                   },
                 },

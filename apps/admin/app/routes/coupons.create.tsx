@@ -1,5 +1,5 @@
 // import { Textarea } from "@/components/ui/textarea";
-import { Item, ItemScript, Status } from "@bw/core";
+import { Item, ItemCoupon, ItemScript, Status } from "@bw/core";
 import { useSelect } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
 import { useNavigate } from "react-router";
@@ -22,7 +22,7 @@ export default () => {
     });
 
     const { options: categoryOptions } = useSelect({
-        resource: "scripts",
+        resource: "coupons",
     });
 
     function onSubmit(values: Record<string, string>) {
@@ -31,7 +31,7 @@ export default () => {
 
     return (
         <CreateView>
-            <CreateViewHeader resource="scripts"/>
+            <CreateViewHeader resource="coupons" />
             <Form {...form} >
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-6">
                     <FormField
@@ -54,16 +54,24 @@ export default () => {
                     />
                     <FormField
                         control={form.control}
-                        name="uuid"
-                        rules={{ required: "Uuid is required" }}
+                        name="value"
+                        rules={{
+                            required: "Value is required",
+                            min: `Value cannot be less than ${form.getValues('type') == 'percentage' ? 0.01 : 0}`,
+                            max: `Value cannot be greater than 1.00`
+                        }}
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>UUID</FormLabel>
+                                <FormLabel>Value</FormLabel>
                                 <FormControl>
                                     <Input
                                         {...field}
+                                        type="number"
+                                        step={form.getValues('type') == 'percentage' ? 0.01 : 1}
+                                        min={form.getValues('type') == 'percentage' ? 0.01 : 0}
+                                        max={form.getValues('type') == 'percentage' ? 1 : undefined}
                                         value={field.value || ""}
-                                        placeholder="Enter script uuid"
+                                        placeholder="Enter value"
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -84,7 +92,30 @@ export default () => {
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {ItemScript.type.enumValues.map(value => (
+                                        {ItemCoupon.type.enumValues.map(value => (
+                                            <SelectItem value={value}>{_.upperFirst(value)}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="apply_on"
+                        rules={{ required: "Application is required" }}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Application</FormLabel>
+                                <Select onValueChange={field.onChange}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select application" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {ItemCoupon.apply_on.enumValues.map(value => (
                                             <SelectItem value={value}>{_.upperFirst(value)}</SelectItem>
                                         ))}
                                     </SelectContent>

@@ -7,10 +7,11 @@ export const Script = pgMaterializedView('script_info').as(qb => {
         id: Item.id,
         uuid: ItemScript.uuid,
         type: ItemScript.type,
-        title: Item.title,
+        name: Item.name,
         status: Item.status,
-        created_at: ItemScript.created_at,
-        updated_at: ItemScript.updated_at
+        created_at: Item.created_at,
+        updated_at: Item.updated_at,
+        archived_at: Item.archived_at,
     })
         .from(ItemScript)
         .innerJoin(Item, eq(ItemScript.id, Item.id))

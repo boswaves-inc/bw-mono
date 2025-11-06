@@ -1,4 +1,4 @@
-import type { Item, Script } from "@bw/core";
+import type { Coupon, Item, Script } from "@bw/core";
 import { useOne, useShow } from "@refinedev/core";
 import { Badge } from "~/components/core/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/core/card";
@@ -6,13 +6,13 @@ import { Separator } from "~/components/core/separator";
 import { ShowView, ShowViewHeader } from "~/components/refine/views/show";
 
 export default () => {
-    const { result: record, query } = useShow<Script>({});
+    const { result: record, query } = useShow<Coupon>({});
 
     const {
         result,
         query: { isLoading: loading },
-    } = useOne<Script>({
-        resource: "scripts",
+    } = useOne<Coupon>({
+        resource: "coupons",
         id: record?.id || "",
         queryOptions: {
             enabled: !!record,
@@ -21,7 +21,7 @@ export default () => {
 
     return (
         <ShowView>
-            <ShowViewHeader resource="scripts" />
+            <ShowViewHeader resource="coupons" />
             <div className="space-y-6">
                 <Card>
                     <CardHeader>
@@ -45,18 +45,36 @@ export default () => {
                         <Separator />
 
                         <div>
-                            <h4 className="text-sm font-medium mb-2">UUID</h4>
+                            <h4 className="text-sm font-medium mb-2">Name</h4>
                             <p className="text-sm text-muted-foreground">
-                                {loading ? "Loading..." : result?.uuid || "-"}
+                                {loading ? "Loading..." : result?.name || "-"}
                             </p>
                         </div>
 
                         <Separator />
 
                         <div>
-                            <h4 className="text-sm font-medium mb-2">Title</h4>
+                            <h4 className="text-sm font-medium mb-2">Value</h4>
                             <p className="text-sm text-muted-foreground">
-                                {loading ? "Loading..." : result?.name || "-"}
+                                {loading ? "Loading..." : result?.value || "-"}
+                            </p>
+                        </div>
+
+                        <Separator />
+
+                        <div>
+                            <h4 className="text-sm font-medium mb-2">Type</h4>
+                            <p className="text-sm text-muted-foreground">
+                                {loading ? "Loading..." : result?.type || "-"}
+                            </p>
+                        </div>
+
+                        <Separator />
+
+                        <div>
+                            <h4 className="text-sm font-medium mb-2">Application</h4>
+                            <p className="text-sm text-muted-foreground">
+                                {loading ? "Loading..." : result?.apply_on || "-"}
                             </p>
                         </div>
 

@@ -8,14 +8,15 @@ import { ShowButton } from "~/components/refine/button/show";
 import { DeleteButton } from "~/components/refine/button/delete";
 import Table from "~/components/refine/table";
 
-import { Item, Script } from "@bw/core";
+import { Coupon } from "@bw/core";
+import { DataTableSorter } from "~/components/refine/table/sorter";
 
 export default () => {
     const {
         result: { data },
         query: { isLoading: loading },
     } = useList({
-        resource: "scripts",
+        resource: "coupons",
         pagination: {
             currentPage: 1,
             pageSize: 999,
@@ -23,7 +24,7 @@ export default () => {
     });
 
     const columns = useMemo(() => {
-        const columnHelper = createColumnHelper<typeof Script.$inferSelect>();
+        const columnHelper = createColumnHelper<typeof Coupon.$inferSelect>();
 
         return [
             columnHelper.accessor("id", {
@@ -31,14 +32,14 @@ export default () => {
                 header: "ID",
                 enableSorting: false,
             }),
-            columnHelper.accessor("uuid", {
-                id: "uuid",
-                header: "UUID",
-                enableSorting: false,
-            }),
             columnHelper.accessor('name', {
                 id: "name",
                 header: "Name",
+                enableSorting: true,
+            }),
+            columnHelper.accessor("type", {
+                id: "type",
+                header: "Type",
                 enableSorting: true,
             }),
             columnHelper.accessor('status', {
@@ -62,7 +63,7 @@ export default () => {
     }, [data, loading]);
 
 
-    const table = useTable<typeof Script.$inferSelect>({
+    const table = useTable<typeof Coupon.$inferSelect>({
         columns,
         refineCoreProps: {
             syncWithLocation: true,
@@ -71,8 +72,9 @@ export default () => {
 
     return (
         <ListView>
-            <ListViewHeader wrapperClassName=" mb-6" />
-            <Table table={table} />
+            <ListViewHeader wrapperClassName="mb-6" resource="coupons" />
+            <Table table={table} >
+            </Table>
         </ListView>
     )
 }

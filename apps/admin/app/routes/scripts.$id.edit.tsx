@@ -26,16 +26,16 @@ export default () => {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormField
                         control={form.control}
-                        name="title"
-                        rules={{ required: "Title is required" }}
+                        name="name"
+                        rules={{ required: "Name is required" }}
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Title</FormLabel>
+                                <FormLabel>Name</FormLabel>
                                 <FormControl>
                                     <Input
                                         {...field}
                                         value={field.value || ""}
-                                        placeholder="Enter title"
+                                        placeholder="Enter name"
                                     />
                                 </FormControl>
                                 <FormMessage />
