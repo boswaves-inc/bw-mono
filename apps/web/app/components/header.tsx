@@ -1,15 +1,18 @@
 import { Dialog, DialogPanel } from "@headlessui/react"
-import { ChevronRight, Menu, MoreVertical, Search, ShoppingBag, ShoppingCart } from "lucide-react"
-import { forwardRef, useState } from "react"
+import { ChevronRight, Menu, Search, ShoppingCart } from "lucide-react"
+import { useState, type ComponentProps, type CSSProperties } from "react"
 import { Link } from "react-router"
+import { useCart } from "~/context/cart"
 
-const Header = forwardRef<HTMLDivElement>(({ }, ref) => {
+export default ({ ref }: ComponentProps<'header'>) => {
     const [dialog, setDialog] = useState(false)
+
+    const cart = useCart();
     const auth = false;
 
     return (
         <header ref={ref} className="fixed inset-x-0 top-0 z-50">
-            <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
+            <nav aria-label="Global" className="flex items-center z-20 justify-between p-6 lg:px-8">
                 <div className="flex lg:flex-1">
                     <Link to={'/'} className="-m-1.5 p-1.5">
                         <span className="sr-only">Search</span>
@@ -35,7 +38,10 @@ const Header = forwardRef<HTMLDivElement>(({ }, ref) => {
                 <div className="hidden lg:flex lg:flex-1 items-center gap-x-6 lg:justify-end dark:text-white text-gray-900">
                     <Search className=" size-5" />
                     <Link to={'/cart'}>
-                        <ShoppingCart className=" size-5" />
+                        <div className="size-5 relative">
+                            <span data-empty={cart.empty} className="block absolute top-0 right-0 bg-teal-500 data-[empty=true]:opacity-0 data-[empty=true]:animate-none opacity-100 transition-opacity animate-ping size-2 -translate-y-1/2 translate-x-1/2 rounded-full" />
+                            <ShoppingCart className=" size-5" />
+                        </div>
                     </Link>
                     {auth ? (
                         <div className="flex items-center gap-x-3 bg-gray-900/10 dark:bg-white/10 rounded-full h-8 pl-4">
@@ -83,8 +89,7 @@ const Header = forwardRef<HTMLDivElement>(({ }, ref) => {
                     </nav>
                 </DialogPanel>
             </Dialog>
+            <div className="absolute h-64 from-black to-transparent opacity-[clamp(0,calc(var(--scroll-y,0)/100),1)] bg-linear-to-b -z-10 top-0 inset-x-0" />
         </header>
     )
-})
-
-export default Header
+}

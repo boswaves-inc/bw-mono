@@ -66,7 +66,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <Refine
               // notificationProvider={useNotificationProvider()}
               routerProvider={routerProvider}
-              dataProvider={dataProvider('http://localhost:3000/api')}
+              dataProvider={dataProvider(`${data?.origin}/api`)}
               resources={[
                 {
                   name: "users",

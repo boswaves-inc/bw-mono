@@ -65,7 +65,7 @@ export default () => {
     const table = useTable<typeof Script.$inferSelect>({
         columns,
         refineCoreProps: {
-            syncWithLocation: true,
+            syncWithLocation: false,
         }
     });
 

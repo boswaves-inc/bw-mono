@@ -1,5 +1,6 @@
 import type { Item, Script } from "@bw/core";
 import { useOne, useShow } from "@refinedev/core";
+import { Link } from "react-router";
 import { Badge } from "~/components/core/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/core/card";
 import { Separator } from "~/components/core/separator";
@@ -54,10 +55,39 @@ export default () => {
                         <Separator />
 
                         <div>
-                            <h4 className="text-sm font-medium mb-2">Title</h4>
+                            <h4 className="text-sm font-medium mb-2">Slug</h4>
+                            <p className="text-sm text-muted-foreground">
+                                {loading ? "Loading..." : result?.slug || "-"}
+                            </p>
+                        </div>
+
+                        <Separator />
+
+                        <div>
+                            <h4 className="text-sm font-medium mb-2">Name</h4>
                             <p className="text-sm text-muted-foreground">
                                 {loading ? "Loading..." : result?.name || "-"}
                             </p>
+                        </div>
+
+                        <Separator />
+
+                        <div>
+                            <h4 className="text-sm font-medium mb-2">Description</h4>
+                            <p className="text-sm text-muted-foreground">
+                                {loading ? "Loading..." : result?.description || "-"}
+                            </p>
+                        </div>
+
+                        <Separator />
+
+                        <div>
+                            <h4 className="text-sm font-medium mb-2">Image</h4>
+                            <Link to={result?.image ?? './'} target="_blank">
+                                <p className="text-sm text-blue-500">
+                                    {loading ? "Loading..." : result?.image || "-"}
+                                </p>
+                            </Link>
                         </div>
 
                         <Separator />

@@ -2,9 +2,9 @@ import { CloudUpload, Hammer, LucidePackageOpen } from "lucide-react";
 import { forwardRef } from "react";
 import { Link } from "react-router";
 import { twMerge } from "tailwind-merge";
-import Button from "~/components/button";
-import Heading from "~/components/heading";
-import Paragraph from "~/components/paragraph";
+import Button from "~/components/core/button";
+import Heading from "~/components/core/heading";
+import Paragraph from "~/components/core/paragraph";
 import Section, { type SectionProps } from "~/components/section";
 
 

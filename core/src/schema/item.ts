@@ -12,6 +12,9 @@ import { CouponApplication, CouponType, ScriptType, Status } from "./types";
 export const Item = pgTable("item_info", (t) => ({
     id: t.uuid().primaryKey().notNull().$defaultFn(() => crypto.randomUUID()),
     name: t.text("name").unique().notNull(),
+    slug: t.text("slug").unique().notNull().generatedAlwaysAs(
+        sql`lower(regexp_replace(name, '[^a-zA-Z0-9]+', '-', 'g'))`
+    ),
     status: Status("status").default('archived').notNull(),
     created_at: t.timestamp().defaultNow().notNull(),
     updated_at: t.timestamp().defaultNow().notNull(),
@@ -20,9 +23,10 @@ export const Item = pgTable("item_info", (t) => ({
 
 export const ItemScript = pgTable("item_script", (t) => ({
     id: t.uuid().primaryKey().references(() => Item.id, { onDelete: 'cascade', onUpdate: 'cascade'}),
-    uuid: t.text("uuid").unique().notNull(),
     type: ScriptType("type").notNull(),
-
+    uuid: t.text("uuid").unique().notNull(),
+    image: t.text("image").notNull(),
+    description: t.text("description").notNull(),
 }));
 
 export const ItemCoupon = pgTable("item_coupon", (t) => ({

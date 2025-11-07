@@ -1,9 +1,9 @@
 import { Input } from "@headlessui/react";
 import { forwardRef } from "react";
 import { Form } from "react-router";
-import Panel from "~/components/panel";
-import Heading from "~/components/heading";
-import Paragraph from "~/components/paragraph";
+import Panel from "~/components/core/panel";
+import Heading from "~/components/core/heading";
+import Paragraph from "~/components/core/paragraph";
 import Section, { type SectionProps } from "~/components/section";
 
 const NewsletterPanel = forwardRef<HTMLElement, SectionProps>((props, ref) => {

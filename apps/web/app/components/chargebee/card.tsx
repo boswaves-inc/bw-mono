@@ -1,8 +1,8 @@
 import { createContext, createRef, useContext, useEffect, useRef, useState, type PropsWithChildren, type RefObject } from "react";
 import type { CardApi, Component } from "./types";
 import { useChargebee } from "./provider";
-import { useTheme } from "~/hooks/theme";
-import type { DivProps } from "../types";
+import { useTheme } from "~/context/theme";
+import type { DivProps } from "../core/types";
 import { twMerge } from "tailwind-merge";
 
 const context = createContext<{ component: Component | null }>(null as any)

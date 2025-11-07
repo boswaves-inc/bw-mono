@@ -21,6 +21,10 @@
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
+:root {
+  --scroll-y: 0;
+}
+
 html,
 body {
   @apply bg-white dark:bg-gray-950;

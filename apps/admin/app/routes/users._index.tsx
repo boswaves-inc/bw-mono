@@ -9,12 +9,10 @@ import { DeleteButton } from "~/components/refine/button/delete";
 import Table from "~/components/refine/table";
 
 import { Item, User } from "@bw/core";
+import type { Route } from "./+types/users._index";
 
-export default () => {
-    const {
-        result: { data },
-        query: { isLoading: loading },
-    } = useList<User>({
+export default ({ loaderData }: Route.ComponentProps) => {
+    const { result: { data }, query: { isLoading: loading } } = useList<User>({
         resource: "users",
         pagination: {
             currentPage: 1,
@@ -39,7 +37,7 @@ export default () => {
             columnHelper.accessor("role", {
                 id: "role",
                 header: "Role",
-                enableSorting: false,
+                enableSorting: true,
             }),
             columnHelper.accessor('email', {
                 id: "email",

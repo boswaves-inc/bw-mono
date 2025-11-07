@@ -11,10 +11,7 @@ const cookie = createCookie('theme', {
 export default () => {
     const router = express.Router();
 
-    router.use(express.json());
-    router.use(express.urlencoded({ extended: true }))
-
-    router.post('/theme', async (req, res) => {
+    router.post('/theme', express.json(), express.urlencoded({ extended: true }), async (req, res) => {
         const { theme } = req.body;
 
         if (theme !== 'dark' || theme !== 'light') {
@@ -22,7 +19,8 @@ export default () => {
         }
 
         return res.header('Set-Cookie', await cookie.serialize(theme)).json({ theme })
-    })
+    }
+    )
 
     return router
 }

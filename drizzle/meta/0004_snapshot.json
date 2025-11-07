@@ -1,6 +1,6 @@
 {
-  "id": "18ec7d48-1ec4-4e0e-974f-745fcf87778e",
-  "prevId": "66a7ed63-8769-479e-afb0-cce4ff9dcb50",
+  "id": "f976351c-37f4-4453-8d88-afae96ff5a84",
+  "prevId": "ab11dc9b-0e1b-4863-bd25-eefb6b19941e",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -14,11 +14,21 @@
           "primaryKey": true,
           "notNull": true
         },
-        "title": {
-          "name": "title",
+        "name": {
+          "name": "name",
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "generated": {
+            "as": "lower(regexp_replace(name, '[^a-zA-Z0-9]+', '-', 'g'))",
+            "type": "stored"
+          }
         },
         "status": {
           "name": "status",
@@ -41,20 +51,86 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "archived_at": {
+          "name": "archived_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "item_info_title_unique": {
-          "name": "item_info_title_unique",
+        "item_info_name_unique": {
+          "name": "item_info_name_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "title"
+            "name"
+          ]
+        },
+        "item_info_slug_unique": {
+          "name": "item_info_slug_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "slug"
           ]
         }
       },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.item_coupon": {
+      "name": "item_coupon",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "coupon_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "value": {
+          "name": "value",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "apply_on": {
+          "name": "apply_on",
+          "type": "coupon_application",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "item_coupon_id_item_info_id_fk": {
+          "name": "item_coupon_id_item_info_id_fk",
+          "tableFrom": "item_coupon",
+          "tableTo": "item_info",
+          "columnsFrom": [
+            "id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -69,12 +145,6 @@
           "primaryKey": true,
           "notNull": true
         },
-        "uuid": {
-          "name": "uuid",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
         "type": {
           "name": "type",
           "type": "script_type",
@@ -82,19 +152,23 @@
           "primaryKey": false,
           "notNull": true
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
+        "uuid": {
+          "name": "uuid",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": true
         },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
+        "image": {
+          "name": "image",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
@@ -262,6 +336,31 @@
     }
   },
   "enums": {
+    "public.coupon_application": {
+      "name": "coupon_application",
+      "schema": "public",
+      "values": [
+        "invoice",
+        "item"
+      ]
+    },
+    "public.coupon_duration": {
+      "name": "coupon_duration",
+      "schema": "public",
+      "values": [
+        "one_time",
+        "forever",
+        "limited_period"
+      ]
+    },
+    "public.coupon_type": {
+      "name": "coupon_type",
+      "schema": "public",
+      "values": [
+        "fixed",
+        "percentage"
+      ]
+    },
     "public.script_type": {
       "name": "script_type",
       "schema": "public",
@@ -302,6 +401,75 @@
   "roles": {},
   "policies": {},
   "views": {
+    "public.coupon_info": {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'archived'"
+        },
+        "type": {
+          "name": "type",
+          "type": "coupon_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "value": {
+          "name": "value",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "apply_on": {
+          "name": "apply_on",
+          "type": "coupon_application",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "archived_at": {
+          "name": "archived_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "definition": "select \"item_info\".\"id\", \"item_info\".\"name\", \"item_info\".\"status\", \"item_coupon\".\"type\", \"item_coupon\".\"value\", \"item_coupon\".\"apply_on\", \"item_info\".\"created_at\", \"item_info\".\"updated_at\", \"item_info\".\"archived_at\" from \"item_coupon\" inner join \"item_info\" on \"item_coupon\".\"id\" = \"item_info\".\"id\"",
+      "name": "coupon_info",
+      "schema": "public",
+      "isExisting": false,
+      "materialized": true
+    },
     "public.script_info": {
       "columns": {
         "id": {
@@ -323,11 +491,21 @@
           "primaryKey": false,
           "notNull": true
         },
-        "title": {
-          "name": "title",
+        "name": {
+          "name": "name",
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "generated": {
+            "as": "lower(regexp_replace(name, '[^a-zA-Z0-9]+', '-', 'g'))",
+            "type": "stored"
+          }
         },
         "status": {
           "name": "status",
@@ -336,6 +514,18 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'archived'"
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",
@@ -350,9 +540,15 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "archived_at": {
+          "name": "archived_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         }
       },
-      "definition": "select \"item_info\".\"id\", \"item_script\".\"uuid\", \"item_script\".\"type\", \"item_info\".\"title\", \"item_info\".\"status\", \"item_script\".\"created_at\", \"item_script\".\"updated_at\" from \"item_script\" inner join \"item_info\" on \"item_script\".\"id\" = \"item_info\".\"id\"",
+      "definition": "select \"item_info\".\"id\", \"item_script\".\"uuid\", \"item_script\".\"type\", \"item_info\".\"name\", \"item_info\".\"slug\", \"item_info\".\"status\", \"item_script\".\"image\", \"item_script\".\"description\", \"item_info\".\"created_at\", \"item_info\".\"updated_at\", \"item_info\".\"archived_at\" from \"item_script\" inner join \"item_info\" on \"item_script\".\"id\" = \"item_info\".\"id\"",
       "name": "script_info",
       "schema": "public",
       "isExisting": false,

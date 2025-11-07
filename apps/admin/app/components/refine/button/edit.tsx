@@ -37,7 +37,7 @@ export const EditButton = React.forwardRef<React.ComponentRef<typeof Button>, Ed
         {children ?? (
           <div className="flex items-center gap-2 font-semibold">
             <Pencil className="h-4 w-4" />
-            <span>{label}</span>
+            {/* <span>{label}</span> */}
           </div>
         )}
       </LinkComponent>

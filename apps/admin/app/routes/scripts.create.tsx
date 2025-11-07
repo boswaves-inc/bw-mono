@@ -10,29 +10,30 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~
 import { Textarea } from "~/components/core/textarea";
 import { CreateView, CreateViewHeader } from "~/components/refine/views/create";
 import _ from 'lodash';
+import { useEffect, useState, type BaseSyntheticEvent, type ChangeEvent, type InputEvent } from "react";
+import { Card } from "~/components/core/card";
 
 export default () => {
     const navigate = useNavigate();
 
-    const {
-        refineCore: { onFinish },
-        ...form
-    } = useForm({
-        refineCoreProps: {},
+    const { refineCore: { onFinish }, ...form } = useForm({
+        refineCoreProps: {
+            createMutationOptions: {
+                meta: {
+                    "Content-Type": 'test'
+                }
+            }
+        }
     });
 
-    const { options: categoryOptions } = useSelect({
-        resource: "scripts",
-    });
-
-    function onSubmit(values: Record<string, string>) {
+    const onSubmit = (values: any, event?: BaseSyntheticEvent) => {
         onFinish(values);
     }
 
     return (
         <CreateView>
-            <CreateViewHeader resource="scripts"/>
-            <Form {...form} >
+            <CreateViewHeader resource="scripts" />
+            <Form  {...form} >
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-6">
                     <FormField
                         control={form.control}
@@ -64,6 +65,24 @@ export default () => {
                                         {...field}
                                         value={field.value || ""}
                                         placeholder="Enter script uuid"
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="description"
+                        rules={{ required: "Description is required" }}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Description</FormLabel>
+                                <FormControl>
+                                    <Textarea
+                                        {...field}
+                                        value={field.value || ""}
+                                        placeholder="Enter description"
                                     />
                                 </FormControl>
                                 <FormMessage />

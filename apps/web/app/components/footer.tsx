@@ -1,15 +1,15 @@
-import { forwardRef } from "react"
-import Paragraph from "~/components/paragraph"
+import { forwardRef, type ComponentProps } from "react"
+import Paragraph from "~/components/core/paragraph"
 
-const Footer = forwardRef<HTMLDivElement>(({ }, ref) => {
+export default ({ ref }: ComponentProps<'footer'>) => {
     return (
         <footer ref={ref} className="px-4 sm:px-6 border-t dark:border-white/10 border-gray-900/10 lg:px-8 clear-both py-24 sm:py-32 max-w-7xl mx-auto">
             <div className="xl:grid xl:grid-cols-3 xl:gap-8 ">
                 <div>
                     <img className="h-9 not-last:mb-8" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=400" />
-                   <Paragraph  size="sm">
-                    Making the world a better place through constructing elegant hierarchies.
-                   </Paragraph>
+                    <Paragraph size="sm">
+                        Making the world a better place through constructing elegant hierarchies.
+                    </Paragraph>
                     <div className="gap-x-6 flex">
                         <svg role="img" viewBox="0 0 24 24" className="fill-gray-600 dark:fill-gray-400 size-6" xmlns="http://www.w3.org/2000/svg">
                             <title>Facebook</title>
@@ -136,6 +136,4 @@ const Footer = forwardRef<HTMLDivElement>(({ }, ref) => {
             </div>
         </footer>
     )
-})
-
-export default Footer
+}

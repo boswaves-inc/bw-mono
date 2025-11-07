@@ -1,12 +1,17 @@
-import type { Route } from "./+types/_layout.library.$id";
+import type { Route } from "./+types/library.$slug";
 import Section from "~/components/section";
-import Paragraph from "~/components/paragraph";
-import Heading from "~/components/heading";
+import Paragraph from "~/components/core/paragraph";
+import Heading from "~/components/core/heading";
 import { Check, ChevronLeft, Flame, Star } from "lucide-react";
 import FaqAccordion from "~/sections/faq/accordion";
 import { data, Link, useFetcher } from "react-router";
-import Button from "~/components/button";
-import Panel from "~/components/panel";
+import Button from "~/components/core/button";
+import Panel from "~/components/core/panel";
+import { Script } from "@bw/core";
+import { eq } from "drizzle-orm";
+import { useCart } from "~/context/cart";
+import { includes } from "lodash";
+import { Fragment } from "react/jsx-runtime";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -15,9 +20,14 @@ export function meta({ }: Route.MetaArgs) {
   ];
 }
 
-export async function loader({ }: Route.LoaderArgs) {
+export async function loader({ params, context }: Route.LoaderArgs) {
+  const product = await context.postgres.select().from(Script).where(eq(Script.slug, params.slug)).then(x => x.at(0))
 
-  return data({})
+  if (product == undefined) {
+    throw data(`item ${params.slug} does not exist`, 404)
+  }
+
+  return data(product)
 }
 
 export async function action({ request }: Route.ActionArgs) {
@@ -26,8 +36,18 @@ export async function action({ request }: Route.ActionArgs) {
   return data({})
 }
 
-export default function renderer() {
-  const cart = useFetcher({ key: 'cart' })
+export default ({ loaderData }: Route.ComponentProps) => {
+  const cart = useCart()
+  const included = cart.includes('item', loaderData.id)
+
+  const onToggle = () => {
+    if (included) {
+      cart.pop('item', loaderData.id)
+    }
+    else {
+      cart.push('item', loaderData.id)
+    }
+  }
 
   return (
     <div>
@@ -42,7 +62,7 @@ export default function renderer() {
         </Link>
         <div className="mt-6 flex flex-col sm:flex-row sm:justify-between sm:items-end">
           <div>
-            <Heading size="h1" className="">Session Gap Fill</Heading>
+            <Heading size="h1" className="">{loaderData.name}</Heading>
             <div className="mt-4 flex items-center gap-x-4">
               <div className=" flex items-center">
                 <Star className="size-6 fill-yellow-400 stroke-none" />
@@ -52,7 +72,13 @@ export default function renderer() {
                 <Star className="size-6 fill-gray-300 stroke-none" />
               </div>
               <div className=" h-4 w-px rounded-full bg-gray-400" />
-              <Paragraph >June 5, 2021</Paragraph>
+              <Paragraph>
+                {Intl.DateTimeFormat('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric'
+                }).format(loaderData.created_at)}
+              </Paragraph>
             </div>
           </div>
           {/* <button className="ring-1 flex items-center gap-2 w-fit mt-6 ring-white/10 dark:text-gray-400 hover:bg-white/5 dark:hover:text-yellow-400 p-1.5 rounded-md">
@@ -64,12 +90,12 @@ export default function renderer() {
         </div>
         <div className="block md:hidden mt-6">
           <div className="relative overflow-hidden rounded-2xl ring-1 shadow-xl ring-gray-900/5 dark:ring-white/5">
-            <img src="https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75" className="aspect-[4/3]" />
+            <img src={loaderData.image} className="aspect-4/3" />
           </div>
         </div>
         <div className="hidden md:block mt-6">
           <div className="relative overflow-hidden rounded-2xl ring-1 shadow-xl ring-gray-900/5 dark:ring-white/5 h-[500px]">
-            <img src="https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75" className="absolute -inset-x-1 outline-0 -top-px -bottom-6 ring w-[calc(100%+6px)] h-[500px] overflow-hidden" />
+            <img src={loaderData.image} className="absolute ring-1 w-[calc(100%+6px)] h-[500px] overflow-hidden" />
             {/* <iframe src="https://s.tradingview.com/embed/ItnS5Inz" className="absolute -inset-x-1 outline-0 -top-px -bottom-6 ring w-[calc(100%+6px)] h-[524px] overflow-hidden" /> */}
           </div>
         </div>
@@ -130,11 +156,16 @@ export default function renderer() {
                   /year
                 </Paragraph>
               </div>
-              <cart.Form method="post">
-                <Button className="w-full mt-6">
-                  Add to Toolbox
-                </Button>
-              </cart.Form>
+              <Button onClick={onToggle} className="w-full mt-6">
+                {included ? (
+                  <Fragment>
+                    <Check />
+                    <span>Added to Toolbox</span>
+                  </Fragment>
+                ) : (
+                  <span>Add to Toolbox</span>
+                )}
+              </Button>
               <ul className="xl:mt-10 dark:text-gray-300 text-sm/6 mt-8">
                 <li className="flex gap-x-3 not-last:mb-3">
                   <Check className="text-indigo-400" />

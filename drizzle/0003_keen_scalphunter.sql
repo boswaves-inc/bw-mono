@@ -1,0 +1,1 @@
+ALTER TABLE "item_script" ADD COLUMN "image" text NOT NULL;

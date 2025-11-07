@@ -1,16 +1,18 @@
-import type { Route } from "./+types/_store.library._index";
-import { Form, Link, useSearchParams } from "react-router";
-import { Checkbox } from "~/components/checkbox";
-import { Popover, PopoverButton, PopoverPanel } from "~/components/popover";
-import { Menu, MenuItem, MenuItems, MenuButton } from "~/components/menu";
+import { data, Form, Link, useSearchParams } from "react-router";
+import { Checkbox } from "~/components/core/checkbox";
+import { Popover, PopoverButton, PopoverPanel } from "~/components/core/popover";
+import { Menu, MenuItem, MenuItems, MenuButton } from "~/components/core/menu";
 import { ChevronDown } from 'lucide-react'
-import Heading from "~/components/heading";
-import Paragraph from "~/components/paragraph";
-import Label from "~/components/label";
+import Heading from "~/components/core/heading";
+import Paragraph from "~/components/core/paragraph";
+import Label from "~/components/core/label";
 
-import Button from "~/components/button";
-import ProductList from "~/sections/product/list";
+import Button from "~/components/core/button";
 import Section from "~/components/section";
+import { Script, ScriptType } from "@bw/core";
+import _ from 'lodash'
+import type { Route } from "./+types/library._index";
+import { useCart } from "~/context/cart";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -19,8 +21,10 @@ export function meta({ }: Route.MetaArgs) {
   ];
 }
 
-export function loader({ }: Route.LoaderArgs) {
-  return {}
+export async function loader({ context }: Route.LoaderArgs) {
+  const result = await context.postgres.select().from(Script)
+
+  return data({ data: result })
 }
 
 const products = [
@@ -74,14 +78,14 @@ const products = [
   }
 ]
 
-export default function renderer() {
-  const [searchParams, setSearchParams] = useSearchParams()
+export default function renderer({ loaderData }: Route.ComponentProps) {
+  const cart = useCart()
 
   return (
-    <Section className="">
+    <Section>
 
       {/* toolbar */}
-      <div className="px-4 sm:px-6 lg:px-8 sm:max-w-7xl max-w-[40rem] mx-auto">
+      <div className="px-4 sm:px-6 lg:px-8 sm:max-w-7xl max-w-160 mx-auto">
         <div className="pb-24 mt-13">
           <Heading size="h1">
             Your Trading Toolbox Starts Here
@@ -118,8 +122,8 @@ export default function renderer() {
               Filter
             </button>
 
-            <div className="hidden sm:flex ">
-              <Popover className={'sm:not-last:mr-8'}>
+            <div className="hidden sm:flex sm:gap-x-8 ">
+              <Popover className={''}>
                 <PopoverButton>
                   <Paragraph size="sm" className="mr-1">
                     Category
@@ -150,7 +154,7 @@ export default function renderer() {
                 </PopoverPanel>
               </Popover>
 
-              <Popover className={'sm:not-last:mr-8'}>
+              <Popover className={''}>
                 <PopoverButton>
                   <Paragraph size="sm" className="mr-1">
                     Type
@@ -159,24 +163,14 @@ export default function renderer() {
                 </PopoverButton>
                 <PopoverPanel>
                   <Form  >
-                    <div className="gap-3 flex h-5 not-last:mb-4 items-center">
-                      <Checkbox id='trees' name="category" value="tees" />
-                      <Label>
-                        Tees
-                      </Label>
-                    </div>
-                    <div className="gap-3 flex h-5 not-last:mb-4 items-center">
-                      <Checkbox />
-                      <Label>
-                        Crewnecks
-                      </Label>
-                    </div>
-                    <div className="gap-3 flex h-5 not-last:mb-4 items-center">
-                      <Checkbox />
-                      <Label>
-                        Hats
-                      </Label>
-                    </div>
+                    {ScriptType.enumValues.map(x => (
+                      <div className="gap-3 flex h-5 not-last:mb-4 items-center">
+                        <Checkbox id={x} name="type" value={x} />
+                        <Label>
+                          {_.startCase(x)}
+                        </Label>
+                      </div>
+                    ))}
                   </Form>
                 </PopoverPanel>
               </Popover>
@@ -185,28 +179,29 @@ export default function renderer() {
           </div>
         </section>
         <div className={"grid grid-cols-1 gap-x-6 gap-y-10 py-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8"}>
-          {products.slice(0, 10).map((product) => (
-            <div key={product.id} className="ring-1 group ring-gray-900/10 shadow-xl bg-gray-900/5 dark:bg-white/5 dark:ring-white/10 rounded-lg overflow-hidden">
-              <Link to={`/library/${product.id}`} className=" peer">
+          {loaderData.data.slice(0, 10).map((product) => (
+            <div key={product.slug} className="ring-1 group ring-gray-900/10 shadow-xl bg-gray-900/5 dark:bg-white/5 dark:ring-white/10 rounded-lg overflow-hidden">
+              <Link to={`/library/${product.slug}`} className=" peer">
                 <img
-                  alt={product.imageAlt}
-                  src={product.imageSrc}
-                  className="aspect-square peer w-full bg-gray-200 dark:bg-gray-800 object-cover xl:aspect-[8/7]"
+                  alt={product.slug}
+                  src={product.image}
+                  className="aspect-square peer w-full bg-gray-200 dark:bg-gray-800 object-cover xl:aspect-8/7"
                 />
               </Link>
-              <Link to={`/library/${product.id}`} className="transition-opacity px-4 pt-4 block hover:opacity-75 peer-hover:opacity-75">
+              <Link to={`/library/${product.slug}`} className="transition-opacity px-4 pt-4 block hover:opacity-75 peer-hover:opacity-75">
                 <div className="flex w-full justify-between">
                   <div>
                     <Heading size="h5" className="">
                       {product.name}
                     </Heading>
                     <Paragraph size="sm" className="">
-                      Indicator
+                      {_.startCase(product.type)}
                     </Paragraph>
                   </div>
 
                   <Paragraph size="lg" className="font-medium dark:text-white text-gray-900">
-                    {product.price}
+                    {/* {product.price} */}
+                    25
                   </Paragraph>
                 </div>
                 <Paragraph size="sm" className="mt-4 line-clamp-4">
@@ -214,8 +209,8 @@ export default function renderer() {
                 </Paragraph>
               </Link>
               <div className="block p-4 w-fit">
-                <Link to={`/library/${product.id}`} className="w-fit">
-                  <Button className="">
+                <Link to={`/library/${product.slug}`} className="w-fit">
+                  <Button>
                     Get Access
                   </Button>
                 </Link>
@@ -225,7 +220,7 @@ export default function renderer() {
         </div>
       </div>
 
-      <ProductList />
+      {/* <ProductList /> */}
       {/* <ProductList /> */}
     </Section>
   )

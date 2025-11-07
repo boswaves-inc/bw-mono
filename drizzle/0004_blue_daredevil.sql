@@ -1,0 +1,2 @@
+DROP MATERIALIZED VIEW "public"."script_info";--> statement-breakpoint
+CREATE MATERIALIZED VIEW "public"."script_info" AS (select "item_info"."id", "item_script"."uuid", "item_script"."type", "item_info"."name", "item_info"."slug", "item_info"."status", "item_script"."image", "item_script"."description", "item_info"."created_at", "item_info"."updated_at", "item_info"."archived_at" from "item_script" inner join "item_info" on "item_script"."id" = "item_info"."id");

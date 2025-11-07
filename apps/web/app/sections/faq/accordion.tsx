@@ -1,8 +1,8 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
 import { Minus, Plus } from "lucide-react";
 import { forwardRef } from "react";
-import Heading from "~/components/heading";
-import Paragraph from "~/components/paragraph";
+import Heading from "~/components/core/heading";
+import Paragraph from "~/components/core/paragraph";
 import Section, { type SectionProps } from "~/components/section";
 
 const config = [

@@ -2,6 +2,7 @@ import { reactRouter } from '@react-router/dev/vite';
 import { defineConfig } from "vite";
 import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+import path from 'path';
 
 export default defineConfig(({ isSsrBuild }) => ({
   server: {
@@ -15,8 +16,11 @@ export default defineConfig(({ isSsrBuild }) => ({
   optimizeDeps: {
     exclude: ["virtual:react-router/server-build"],
   },
-  ssr: {
-    // external: ['async_hooks'],
+  resolve: {
+    alias: {
+      'lodash': 'lodash-es',
+      '~': path.resolve(__dirname, './app')
+    }
   },
   plugins: [
     tailwindcss(),

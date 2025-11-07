@@ -1,18 +1,14 @@
 import _ from 'lodash';
 import express from 'express'
-import fileupload from "express-fileupload";
-import cors from "cors";
 import { eq } from 'drizzle-orm';
 import type Chargebee from 'chargebee'
 import type { Postgres } from '@bw/core/postgres'
 import { Item, ItemScript, Script } from '@bw/core'
 import type { TradingView } from '@bw/core/tradingview';
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
-import z from 'zod/v4';
 
 export default ({ family, postgres, tradingview, chargebee }: { family: string, postgres: Postgres, chargebee: Chargebee, tradingview: TradingView }) => {
     const router = express()
-
 
     // List
     router.get('/', async (req, res) => {
@@ -34,16 +30,16 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
     })
 
     // Create
-    router.post('/', cors(), express.json(), express.urlencoded({ extended: true }), async (req, res) => {
+    router.post('/', async (req, res) => {
         const schema = createInsertSchema(Item)
             .extend(createInsertSchema(ItemScript).shape)
             .omit({
                 id: true,
-                image: true,
                 created_at: true,
                 updated_at: true,
                 archived_at: true
             })
+
         try {
             const data = await schema.parseAsync(req.body)
             const script = await tradingview.script(data.uuid)
@@ -54,7 +50,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
 
             const result = await postgres.transaction(async (tx) => {
                 const item = await tx.insert(Item).values(data).returning().then(x => x[0])
-                const item_script = await tx.insert(ItemScript).values({ ...data, id: item.id, uuid: script.uuid, image: script.image.big }).returning().then(x => x[0])
+                const item_script = await tx.insert(ItemScript).values({ ...data, id: item.id, uuid: script.uuid }).returning().then(x => x[0])
 
                 await tx.refreshMaterializedView(Script)
 
@@ -101,8 +97,8 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                 updated_at: true,
                 archived_at: true
             })
-            
-            try {
+
+        try {
             const data = await schema.parseAsync(req.body)
             const result = await postgres.transaction(async tx => {
                 const { id } = req.params

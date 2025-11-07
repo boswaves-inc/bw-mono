@@ -6,6 +6,7 @@ import { Button } from "~/components/core/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/core/form";
 import { Input } from "~/components/core/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/core/select";
+import { Textarea } from "~/components/core/textarea";
 import { EditView, EditViewHeader } from "~/components/refine/views/edit";
 
 export default () => {
@@ -25,8 +26,8 @@ export default () => {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormField
-                        control={form.control}
                         name="name"
+                        control={form.control}
                         rules={{ required: "Name is required" }}
                         render={({ field }) => (
                             <FormItem>
@@ -43,8 +44,8 @@ export default () => {
                         )}
                     />
                     <FormField
-                        control={form.control}
                         name="uuid"
+                        control={form.control}
                         rules={{ required: "Uuid is required" }}
                         render={({ field }) => (
                             <FormItem>
@@ -61,8 +62,26 @@ export default () => {
                         )}
                     />
                     <FormField
+                        name="description"
                         control={form.control}
+                        rules={{ required: "Description is required" }}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Description</FormLabel>
+                                <FormControl>
+                                    <Textarea
+                                        {...field}
+                                        value={field.value || ""}
+                                        placeholder="Enter description"
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
                         name="type"
+                        control={form.control}
                         rules={{ required: "Type is required" }}
                         render={({ field }) => (
                             <FormItem>
@@ -87,8 +106,8 @@ export default () => {
                         )}
                     />
                     <FormField
-                        control={form.control}
                         name="status"
+                        control={form.control}
                         rules={{ required: "Status is required" }}
                         render={({ field }) => (
                             <FormItem>

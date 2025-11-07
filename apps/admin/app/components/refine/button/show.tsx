@@ -37,7 +37,7 @@ export const ShowButton = React.forwardRef<React.ComponentRef<typeof Button>, Sh
         {children ?? (
           <div className="flex items-center gap-2 font-semibold">
             <Eye className="h-4 w-4" />
-            <span>{label}</span>
+            {/* <span>{label}</span> */}
           </div>
         )}
       </LinkComponent>

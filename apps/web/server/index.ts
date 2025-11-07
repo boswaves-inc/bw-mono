@@ -14,16 +14,22 @@ if (!process.env.CB_API_KEY) {
   throw new Error('CB_API_KEY variable not set')
 }
 
-const router = express();
+if (!process.env.CB_FAMILY) {
+  throw new Error('CB_API_KEY variable not set')
+}
 
+// const api_router = express()
+const app_router = express();
+
+// const tv_client = new TradingView();
 const pg_client = new Postgres()
 const cb_client = new Chargebee({
   site: process.env.CB_SITE!,
   apiKey: process.env.CB_API_KEY!
 })
 
-router.use(theme());
-router.use(postgres({
+app_router.use(theme());
+app_router.use(postgres({
   port: process.env.PG_HOST ? Number(process.env.PG_HOST) : 5432,
   host: process.env.PG_HOST ?? 'localhost',
   username: process.env.PG_USERNAME,
@@ -31,8 +37,24 @@ router.use(postgres({
   password: process.env.PG_PASSWORD
 }));
 
+// api_router.use('/api/scripts', scripts({
+//   family: process.env.CB_FAMILY,
+//   tradingview: tv_client,
+//   chargebee: cb_client,
+//   postgres: pg_client,
+// }))
 
-router.use(createRequestHandler({
+// api_router.use('/api/coupons', coupons({
+//   chargebee: cb_client,
+//   postgres: pg_client
+// }))
+
+// api_router.use('/api/users', users({
+//   chargebee: cb_client,
+//   postgres: pg_client
+// }))
+
+app_router.use(createRequestHandler({
   build: () => import("virtual:react-router/server-build"),
   getLoadContext: async (req, res) => {
     const theme = await getTheme(req)
@@ -45,4 +67,4 @@ router.use(createRequestHandler({
   }
 }));
 
-export default router
+export default app_router
