@@ -53,7 +53,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
             }
 
             const result = await postgres.transaction(async (tx) => {
-                const item = await tx.insert(Item).values(data).returning().then(x => x[0])
+                const item = await tx.insert(Item).values({ ...data, type: 'script' }).returning().then(x => x[0])
                 const item_script = await tx.insert(ItemScript).values({ ...data, id: item.id, uuid: script.uuid, image: script.image.big }).returning().then(x => x[0])
 
                 await tx.refreshMaterializedView(Script)
@@ -101,8 +101,8 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                 updated_at: true,
                 archived_at: true
             })
-            
-            try {
+
+        try {
             const data = await schema.parseAsync(req.body)
             const result = await postgres.transaction(async tx => {
                 const { id } = req.params

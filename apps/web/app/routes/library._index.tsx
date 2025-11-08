@@ -2,7 +2,7 @@ import { data, Form, Link, useSearchParams } from "react-router";
 import { Checkbox } from "~/components/core/checkbox";
 import { Popover, PopoverButton, PopoverPanel } from "~/components/core/popover";
 import { Menu, MenuItem, MenuItems, MenuButton } from "~/components/core/menu";
-import { ChevronDown } from 'lucide-react'
+import { CheckIcon, ChevronDown, PlusIcon } from 'lucide-react'
 import Heading from "~/components/core/heading";
 import Paragraph from "~/components/core/paragraph";
 import Label from "~/components/core/label";
@@ -26,57 +26,6 @@ export async function loader({ context }: Route.LoaderArgs) {
 
   return data({ data: result })
 }
-
-const products = [
-  {
-    id: 'Trend Pivots Profile',
-    name: 'Trend Pivots Profile',
-    description: "trading indicator is a powerful tool designed to automatically detect and highlight filled and unfilled price gaps between regular trading sessions. It helps traders visually identify areas of strong market sentiment changes and provides a comprehensive dashboard showing detailed statistics about gap behavior and probabilities. Whether you're a day trader or swing trader, this indicator can help you understand how price gaps influence market direction and momentum.",
-    price: '$25',
-    imageSrc: 'https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75',
-    imageAlt: 'image'
-  },
-  {
-    id: 'Trend Pivots Profile',
-    name: 'Trend Pivots Profile',
-    description: "trading indicator is a powerful tool designed to automatically detect and highlight filled and unfilled price gaps between regular trading sessions. It helps traders visually identify areas of strong market sentiment changes and provides a comprehensive dashboard showing detailed statistics about gap behavior and probabilities. Whether you're a day trader or swing trader, this indicator can help you understand how price gaps influence market direction and momentum.",
-    price: '$25',
-    imageSrc: 'https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75',
-    imageAlt: 'image'
-  },
-  {
-    id: 'Trend Pivots Profile',
-    name: 'Trend Pivots Profile',
-    description: "trading indicator is a powerful tool designed to automatically detect and highlight filled and unfilled price gaps between regular trading sessions. It helps traders visually identify areas of strong market sentiment changes and provides a comprehensive dashboard showing detailed statistics about gap behavior and probabilities. Whether you're a day trader or swing trader, this indicator can help you understand how price gaps influence market direction and momentum.",
-    price: '$25',
-    imageSrc: 'https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75',
-    imageAlt: 'image'
-  },
-  {
-    id: 'Trend Pivots Profile',
-    name: 'Trend Pivots Profile',
-    description: "trading indicator is a powerful tool designed to automatically detect and highlight filled and unfilled price gaps between regular trading sessions. It helps traders visually identify areas of strong market sentiment changes and provides a comprehensive dashboard showing detailed statistics about gap behavior and probabilities. Whether you're a day trader or swing trader, this indicator can help you understand how price gaps influence market direction and momentum.",
-    price: '$25',
-    imageSrc: 'https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75',
-    imageAlt: 'image'
-  },
-  {
-    id: 'Trend Pivots Profile',
-    name: 'Trend Pivots Profile',
-    description: "trading indicator is a powerful tool designed to automatically detect and highlight filled and unfilled price gaps between regular trading sessions. It helps traders visually identify areas of strong market sentiment changes and provides a comprehensive dashboard showing detailed statistics about gap behavior and probabilities. Whether you're a day trader or swing trader, this indicator can help you understand how price gaps influence market direction and momentum.",
-    price: '$25',
-    imageSrc: 'https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75',
-    imageAlt: 'image'
-  },
-  {
-    id: 'Trend Pivots Profile',
-    name: 'Trend Pivots Profile',
-    description: "trading indicator is a powerful tool designed to automatically detect and highlight filled and unfilled price gaps between regular trading sessions. It helps traders visually identify areas of strong market sentiment changes and provides a comprehensive dashboard showing detailed statistics about gap behavior and probabilities. Whether you're a day trader or swing trader, this indicator can help you understand how price gaps influence market direction and momentum.",
-    price: '$25',
-    imageSrc: 'https://www.luxalgo.com/_next/image/?url=%2Fimages%2Fproduct%2Ftoolkits%2Ftoolkits_3.png&w=3840&q=75',
-    imageAlt: 'image'
-  }
-]
 
 export default function renderer({ loaderData }: Route.ComponentProps) {
   const cart = useCart()
@@ -179,23 +128,23 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
           </div>
         </section>
         <div className={"grid grid-cols-1 gap-x-6 gap-y-10 py-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8"}>
-          {loaderData.data.slice(0, 10).map((product) => (
-            <div key={product.slug} className="ring-1 group ring-gray-900/10 shadow-xl bg-gray-900/5 dark:bg-white/5 dark:ring-white/10 rounded-lg overflow-hidden">
-              <Link to={`/library/${product.slug}`} className=" peer">
+          {loaderData.data.slice(0, 10).map((item) => (
+            <div key={item.slug} className="ring-1 group ring-gray-900/10 shadow-xl bg-gray-900/5 dark:bg-white/5 dark:ring-white/10 rounded-lg overflow-hidden">
+              <Link to={`/library/${item.slug}`} className=" peer">
                 <img
-                  alt={product.slug}
-                  src={product.image}
+                  alt={item.slug}
+                  src={item.image}
                   className="aspect-square peer w-full bg-gray-200 dark:bg-gray-800 object-cover xl:aspect-8/7"
                 />
               </Link>
-              <Link to={`/library/${product.slug}`} className="transition-opacity px-4 pt-4 block hover:opacity-75 peer-hover:opacity-75">
+              <Link to={`/library/${item.slug}`} className="transition-opacity px-4 pt-4 block hover:opacity-75 peer-hover:opacity-75">
                 <div className="flex w-full justify-between">
                   <div>
                     <Heading size="h5" className="">
-                      {product.name}
+                      {item.name}
                     </Heading>
                     <Paragraph size="sm" className="">
-                      {_.startCase(product.type)}
+                      {_.startCase(item.type)}
                     </Paragraph>
                   </div>
 
@@ -205,15 +154,19 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
                   </Paragraph>
                 </div>
                 <Paragraph size="sm" className="mt-4 line-clamp-4">
-                  {product.description}
+                  {item.description}
                 </Paragraph>
               </Link>
               <div className="block p-4 w-fit">
-                <Link to={`/library/${product.slug}`} className="w-fit">
-                  <Button>
-                    Get Access
-                  </Button>
-                </Link>
+                {/* <Link to={`./${item.slug}`}> */}
+                <Button data-selected={cart.includes('item', item.id)} className="group/button">
+                  <div className="relative">
+                    <PlusIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all duration-200 group-data-[selected=true]/button:scale-0 group-data-[selected=true]/button:-rotate-90" />
+                    <CheckIcon className="absolute h-[1.2rem] inset-0 w-[1.2rem] rotate-90 scale-0 transition-all duration-200 group-data-[selected=true]/button:scale-100 group-data-[selected=true]/button:rotate-0" />
+                  </div>
+                  Added to toolbox
+                </Button>
+                {/* </Link> */}
               </div>
             </div>
           ))}

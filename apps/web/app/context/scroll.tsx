@@ -21,9 +21,9 @@ export const ScrollProvider = () => {
     }, [])
 
     return (
-        <Fragment>
+        <Fragment >
             <ScrollRestoration />
-            <script dangerouslySetInnerHTML={{
+            <script suppressHydrationWarning={true} dangerouslySetInnerHTML={{
                 __html: `
                     try {
                         let positions = JSON.parse(sessionStorage.getItem('react-router-scroll-positions') || "{}");

@@ -2,7 +2,7 @@ import { index, pgEnum, pgMaterializedView, pgView, uniqueIndex } from "drizzle-
 import { Item, ItemScript } from "./item";
 import { eq, type InferEnum, } from "drizzle-orm";
 
-export const Script = pgMaterializedView('script_info').as(qb => {
+export const ScriptData = pgMaterializedView('script_data').as(qb => {
     return qb.select({
         id: Item.id,
         uuid: ItemScript.uuid,
@@ -20,4 +20,4 @@ export const Script = pgMaterializedView('script_info').as(qb => {
         .innerJoin(Item, eq(ItemScript.id, Item.id))
 })
 
-export type Script = typeof Script.$inferSelect
+export type ScriptData = typeof ScriptData.$inferSelect

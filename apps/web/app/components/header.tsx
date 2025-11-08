@@ -1,6 +1,6 @@
 import { Dialog, DialogPanel } from "@headlessui/react"
 import { ChevronRight, Menu, Search, ShoppingCart } from "lucide-react"
-import { useState, type ComponentProps, type CSSProperties } from "react"
+import { useState, type ComponentProps } from "react"
 import { Link } from "react-router"
 import { useCart } from "~/context/cart"
 
@@ -12,6 +12,7 @@ export default ({ ref }: ComponentProps<'header'>) => {
 
     return (
         <header ref={ref} className="fixed inset-x-0 top-0 z-50">
+            <div className="absolute h-64 from-black to-transparent pointer-events-none opacity-[clamp(0,calc(var(--scroll-y,0)/100),1)] bg-linear-to-b -z-10 top-0 inset-x-0" />
             <nav aria-label="Global" className="flex items-center z-20 justify-between p-6 lg:px-8">
                 <div className="flex lg:flex-1">
                     <Link to={'/'} className="-m-1.5 p-1.5">
@@ -89,7 +90,6 @@ export default ({ ref }: ComponentProps<'header'>) => {
                     </nav>
                 </DialogPanel>
             </Dialog>
-            <div className="absolute h-64 from-black to-transparent opacity-[clamp(0,calc(var(--scroll-y,0)/100),1)] bg-linear-to-b -z-10 top-0 inset-x-0" />
         </header>
     )
 }

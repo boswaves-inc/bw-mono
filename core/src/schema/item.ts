@@ -1,16 +1,15 @@
-import { sql, type InferSelectModel } from "drizzle-orm";
-import {  pgTable } from "drizzle-orm/pg-core";
+import { sql, type InferEnum, type InferSelectModel } from "drizzle-orm";
+import {  pgEnum, pgTable } from "drizzle-orm/pg-core";
 import { CouponApplication, CouponType, ScriptType, Status } from "./types";
 
-// export const PeriodUnit = pgEnum('period_unit', [
-//     "day",
-//     "week",
-//     "month",
-//     "year"
-// ])
+export const ItemType = pgEnum('item_type', [
+    "script",
+    "coupon"
+])
 
 export const Item = pgTable("item_info", (t) => ({
     id: t.uuid().primaryKey().notNull().$defaultFn(() => crypto.randomUUID()),
+    type: ItemType('type').default('script').notNull(),
     name: t.text("name").unique().notNull(),
     slug: t.text("slug").unique().notNull().generatedAlwaysAs(
         sql`lower(regexp_replace(name, '[^a-zA-Z0-9]+', '-', 'g'))`
@@ -37,6 +36,7 @@ export const ItemCoupon = pgTable("item_coupon", (t) => ({
 }))
 
 export type Item = InferSelectModel<typeof Item>
+export type ItemType = InferEnum<typeof ItemType>
 export type ItemScript = InferSelectModel<typeof ItemScript>
 export type ItemCoupon = InferSelectModel<typeof ItemCoupon>
 

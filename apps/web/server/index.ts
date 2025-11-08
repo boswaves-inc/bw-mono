@@ -58,6 +58,7 @@ app_router.use(createRequestHandler({
   build: () => import("virtual:react-router/server-build"),
   getLoadContext: async (req, res) => {
     const theme = await getTheme(req)
+    
 
     return {
       theme,

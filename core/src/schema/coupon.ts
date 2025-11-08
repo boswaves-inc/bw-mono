@@ -2,8 +2,7 @@ import { pgMaterializedView } from "drizzle-orm/pg-core";
 import { Item, ItemCoupon } from "./item";
 import { eq, sql } from "drizzle-orm";
 
-
-export const Coupon = pgMaterializedView('coupon_info').as(qb => {
+export const CouponData = pgMaterializedView('coupon_data').as(qb => {
     return qb.select({
         id: Item.id,
         name: Item.name,
@@ -19,4 +18,4 @@ export const Coupon = pgMaterializedView('coupon_info').as(qb => {
         .innerJoin(Item, eq(ItemCoupon.id, Item.id))
 })
 
-export type Coupon = typeof Coupon.$inferSelect
+export type CouponData = typeof CouponData.$inferSelect

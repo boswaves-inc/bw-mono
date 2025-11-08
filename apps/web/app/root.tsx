@@ -10,15 +10,19 @@ import {
   type LinksFunction,
   type LoaderFunctionArgs,
 } from "react-router";
-
 import "./root.css";
 import { twMerge } from "tailwind-merge";
 import type { Route } from "./+types/root";
 import Footer from "./components/footer";
 import Header from "./components/header";
 import { CartProvider } from "./context/cart";
-import type { Cart } from "./types";
 import { ScrollProvider } from "./context/scroll";
+import type { CSSProperties } from "react";
+import { getSession } from "./utils/session";
+import { cartSession } from "./cookie";
+// import { CartData } from "@bw/core/schema/cart.ts";
+import { count, countDistinct, eq, sql } from "drizzle-orm";
+import { Cart, CartItem } from "@bw/core";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -38,11 +42,38 @@ export const links: LinksFunction = () => [
   },
 ];
 
-export async function loader({ request, context }: LoaderFunctionArgs) {
-  const cart: Cart = {
-    items: [],
-    coupons: []
-  }
+export async function loader({ request, context }: Route.LoaderArgs) {
+  const cart = await new Promise<any>(async resolve => {
+    const session = await getSession(request, cartSession)
+    const id = session.get('id')
+
+    if (id) {
+      const data = await context.postgres.select({
+        id: Cart.id,
+        uid: Cart.uid,
+        is_empty: sql<boolean>`NOT EXISTS (
+          SELECT 1 FROM ${CartItem} 
+          WHERE ${CartItem.cart_id} = ${Cart.id}
+        )`.as('is_empty'),
+        created_at: Cart.created_at,
+        updated_at: Cart.updated_at
+      }).from(Cart)
+        .where(eq(Cart.id, id))
+
+      if (data != undefined) {
+        return resolve({
+          // items: data.items,
+          items: [],
+          coupons: []
+        })
+      }
+    }
+
+    return resolve({
+      items: [],
+      coupons: []
+    })
+  })
 
   return data({ theme: context.theme, cart })
 }
@@ -51,7 +82,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const data = useLoaderData<typeof loader>()
 
   return (
-    <html lang="en" className={twMerge(data?.theme, '')}>
+    <html lang="en" className={twMerge('dark', '')} style={{ "--scroll-y": 0 } as CSSProperties}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -64,7 +95,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           {children}
           <Footer />
         </CartProvider>
-        <ScrollProvider/>
+        <ScrollProvider />
         <Scripts />
         <script src="https://js.chargebee.com/v2/chargebee.js" defer />
       </body>

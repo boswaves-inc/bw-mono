@@ -36,6 +36,125 @@
       "when": 1762437359884,
       "tag": "0004_blue_daredevil",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1762523498152,
+      "tag": "0005_ancient_piledriver",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1762523961447,
+      "tag": "0006_minor_groot",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1762526042959,
+      "tag": "0007_windy_ultimatum",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1762526640911,
+      "tag": "0008_minor_sunspot",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1762528225680,
+      "tag": "0009_familiar_ted_forrester",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1762572000217,
+      "tag": "0010_smiling_blonde_phantom",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1762573362129,
+      "tag": "0011_foamy_shriek",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1762573789191,
+      "tag": "0012_slippery_silverclaw",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1762574517506,
+      "tag": "0013_certain_lorna_dane",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1762576821442,
+      "tag": "0014_black_peter_parker",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1762576833676,
+      "tag": "0015_thankful_omega_red",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1762577440716,
+      "tag": "0016_flaky_white_tiger",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1762577483347,
+      "tag": "0017_unusual_weapon_omega",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1762578587128,
+      "tag": "0018_simple_deadpool",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1762579295738,
+      "tag": "0019_modern_rachel_grey",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1762579384779,
+      "tag": "0020_real_old_lace",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1762579447763,
+      "tag": "0021_funny_gideon",
+      "breakpoints": true
     }
   ]
 }
