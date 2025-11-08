@@ -1,5 +1,5 @@
 import { sql, type InferEnum, type InferSelectModel } from "drizzle-orm";
-import {  pgEnum, pgTable } from "drizzle-orm/pg-core";
+import {  index, pgEnum, pgTable, primaryKey } from "drizzle-orm/pg-core";
 import { CouponApplication, CouponType, ScriptType, Status } from "./types";
 
 export const ItemType = pgEnum('item_type', [
@@ -8,7 +8,7 @@ export const ItemType = pgEnum('item_type', [
 ])
 
 export const Item = pgTable("item_info", (t) => ({
-    id: t.uuid().primaryKey().notNull().$defaultFn(() => crypto.randomUUID()),
+    id: t.uuid().notNull().$defaultFn(() => crypto.randomUUID()),
     type: ItemType('type').default('script').notNull(),
     name: t.text("name").unique().notNull(),
     slug: t.text("slug").unique().notNull().generatedAlwaysAs(
@@ -18,7 +18,24 @@ export const Item = pgTable("item_info", (t) => ({
     created_at: t.timestamp().defaultNow().notNull(),
     updated_at: t.timestamp().defaultNow().notNull(),
     archived_at: t.timestamp(),
-}));
+}), table => [
+    primaryKey({columns: [table.id]}),
+    index("item_info_slug_idx").on(table.slug),
+]);
+ 
+export const ItemPrice = pgTable('item_price', (t) => ({
+    id: t.uuid().references(() => Item.id, { 
+        onDelete: 'cascade',
+        onUpdate: 'cascade' 
+    }).notNull(),
+    currency: t.text("currency").notNull(), // ISO 4217: 'USD', 'EUR', 'GBP', etc.
+    price_cents: t.integer("price_cents").notNull(), // Price in smallest unit
+    created_at: t.timestamp().defaultNow().notNull(),
+    updated_at: t.timestamp().defaultNow().notNull(),
+}),(table) => [
+    primaryKey({ columns: [table.id, table.currency] }),
+    index("item_price_currency_idx").on(table.currency),
+]);
 
 export const ItemScript = pgTable("item_script", (t) => ({
     id: t.uuid().primaryKey().references(() => Item.id, { onDelete: 'cascade', onUpdate: 'cascade'}),
