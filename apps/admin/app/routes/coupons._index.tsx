@@ -8,7 +8,7 @@ import { ShowButton } from "~/components/refine/button/show";
 import { DeleteButton } from "~/components/refine/button/delete";
 import Table from "~/components/refine/table";
 
-import { Coupon } from "@bw/core";
+import { CouponData } from "@bw/core";
 import { DataTableSorter } from "~/components/refine/table/sorter";
 
 export default () => {
@@ -24,7 +24,7 @@ export default () => {
     });
 
     const columns = useMemo(() => {
-        const columnHelper = createColumnHelper<typeof Coupon.$inferSelect>();
+        const columnHelper = createColumnHelper<typeof CouponData.$inferSelect>();
 
         return [
             columnHelper.accessor("id", {
@@ -63,7 +63,7 @@ export default () => {
     }, [data, loading]);
 
 
-    const table = useTable<typeof Coupon.$inferSelect>({
+    const table = useTable<typeof CouponData.$inferSelect>({
         columns,
         refineCoreProps: {
             syncWithLocation: true,

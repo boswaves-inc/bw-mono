@@ -21,6 +21,13 @@ export async function loader({ }: Route.LoaderArgs) {
 }
 
 export default function renderer() {
+  let string = 'test'
+
+  // switch(string){
+  //     case 'xpf': return 'fr',
+  //     default:  return 'fallback'
+  // }
+
   return (
     <div className="">
       <HeroScreenshot />

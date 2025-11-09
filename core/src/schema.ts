@@ -2,14 +2,15 @@ import { ScriptData } from './schema/script'
 import { CouponData } from './schema/coupon'
 import { Item, ItemCoupon, ItemScript } from './schema/item'
 import { Cart, CartItem } from './schema/cart'
-import { ScriptType, CouponApplication, CouponDuration, CouponType, Status } from './schema/types'
 import { User, UserCredentials, UserProvider } from './schema/user'
+import { ScriptType, CouponApplication, CouponDuration, CouponType, Status, Period } from './schema/types'
 
 import type { TvComment, TvIdeaMisc, TvImage, TvScript, TvScriptUpdate, TvSymbol, TvTag, TvUser } from './tradingview/types'
 
 export {
-    CouponData as Coupon,
-    ScriptData as Script,
+    Period,
+    CouponData,
+    ScriptData,
     Cart, CartItem,
     Item, ItemScript, ItemCoupon,
     ScriptType, CouponApplication, CouponType, Status, CouponDuration,
@@ -21,8 +22,7 @@ export type {
 }
 
 export default {
-    Coupon: CouponData,
-    Script: ScriptData,
+    Period,
     Cart, CartItem,
     Item, ItemScript, ItemCoupon,
     ScriptType, CouponApplication, CouponType, Status, CouponDuration,

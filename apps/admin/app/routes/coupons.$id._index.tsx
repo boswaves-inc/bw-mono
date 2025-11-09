@@ -1,4 +1,4 @@
-import type { Coupon, Item, Script } from "@bw/core";
+import type { CouponData, Item, Script } from "@bw/core";
 import { useOne, useShow } from "@refinedev/core";
 import { Badge } from "~/components/core/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/core/card";
@@ -6,12 +6,12 @@ import { Separator } from "~/components/core/separator";
 import { ShowView, ShowViewHeader } from "~/components/refine/views/show";
 
 export default () => {
-    const { result: record, query } = useShow<Coupon>({});
+    const { result: record, query } = useShow<CouponData>({});
 
     const {
         result,
         query: { isLoading: loading },
-    } = useOne<Coupon>({
+    } = useOne<CouponData>({
         resource: "coupons",
         id: record?.id || "",
         queryOptions: {

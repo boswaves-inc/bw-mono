@@ -8,6 +8,18 @@ export const citext = customType<{ data: string }>({
     },
 });
 
+export const Status = pgEnum('status', [
+    'archived',
+    'public'
+])
+
+export const Period = pgEnum('period', [
+    'daily',
+    'weekly',
+    "monthly",
+    'yearly'
+])
+
 export const ScriptType = pgEnum('script_type', [
     "library",
     "indicator",
@@ -33,12 +45,9 @@ export const CouponApplication = pgEnum('coupon_application', [
     "item",
 ])
 
-export const Status = pgEnum('status', [
-    'archived',
-    'public'
-])
 
 export type Status = InferEnum<typeof Status>
+export type Period = InferEnum<typeof Period>
 export type ScriptType = InferEnum<typeof ScriptType>
 export type CouponType = InferEnum<typeof CouponType>
 export type CouponDuration = InferEnum<typeof CouponDuration>

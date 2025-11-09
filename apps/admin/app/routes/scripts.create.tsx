@@ -1,8 +1,8 @@
 // import { Textarea } from "@/components/ui/textarea";
-import { Item, ItemScript, Status } from "@bw/core";
+import { Item, ItemScript, Period, Status } from "@bw/core";
 import { useSelect } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
-import { useNavigate } from "react-router";
+import { data, Link, useNavigate } from "react-router";
 import { Button } from "~/components/core/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/core/form";
 import { Input } from "~/components/core/input";
@@ -10,10 +10,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~
 import { Textarea } from "~/components/core/textarea";
 import { CreateView, CreateViewHeader } from "~/components/refine/views/create";
 import _ from 'lodash';
-import { useEffect, useState, type BaseSyntheticEvent, type ChangeEvent, type InputEvent } from "react";
+import { type BaseSyntheticEvent, } from "react";
+import type { Route } from "./+types/scripts.create";
 import { Card } from "~/components/core/card";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "~/components/core/sheet";
+import { Label } from "~/components/core/label";
 
-export default () => {
+export const loader = async ({ context }: Route.LoaderArgs) => {
+    const { list: currencies } = await context.chargebee.currency.list()
+
+    return data({ currencies })
+}
+
+export default ({ loaderData }: Route.ComponentProps) => {
     const navigate = useNavigate();
 
     const { refineCore: { onFinish }, ...form } = useForm({
@@ -135,6 +144,68 @@ export default () => {
                             </FormItem>
                         )}
                     />
+                    <Card className="px-6">
+                        <h3 className="scroll-m-20 font-semibold tracking-tight">
+                            Pricing
+                        </h3>
+                        <div className="mt-6 grid-cols-6 grid">
+                            <div className="inline-grid col-span-full mb-6 grid-cols-6">
+                                <Label>
+                                    Currency
+                                </Label>
+                                <Label>
+                                    Frequency
+                                </Label>
+                                <Label>
+                                    Pricing Model
+                                </Label>
+                                <Label>
+                                    Price
+                                </Label>
+                                <Label>
+                                    Cycle
+                                </Label>
+                                <Label>
+                                    Trial
+                                </Label>
+                            </div>
+                            {loaderData.currencies.map(({ currency }) => Period.enumValues.map(period => (
+                                <div className="inline-grid col-span-full py-1 border-b grid-cols-6">
+                                    <p className="leading-7 text-sm">
+                                        {currency.currency_code}
+                                    </p>
+                                    <p className="leading-7 text-sm">
+                                        {_.startCase(period)}
+                                    </p>
+                                    <p className="leading-7 text-sm">
+                                        <span className="text-muted-foreground">
+                                            -
+                                        </span>
+                                    </p>
+                                    <p className="leading-7 text-sm">
+                                        <Link to="" className="text-accent-foreground">
+                                            Set Price
+                                        </Link>
+                                    </p>
+                                    <p className="leading-7 text-sm">
+                                        <span className="text-muted-foreground">
+                                            -
+                                        </span>
+                                    </p>
+                                    <p className="leading-7 text-sm">
+                                        <span className="text-muted-foreground">
+                                            -
+                                        </span>
+                                    </p>
+                                </div>
+                            )))}
+                        </div>
+                        <div className="col-span-full text-muted-foreground">
+                            <p className="leading-7 text-sm">
+                                Showing 1 - {loaderData.currencies.length * 4} of {loaderData.currencies.length * 4}
+                            </p>
+                        </div>
+                    </Card>
                     <div className="flex gap-2">
                         <Button type="submit" {...form.saveButtonProps} disabled={form.formState.isSubmitting}>
                             {form.formState.isSubmitting ? "Creating..." : "Create"}
