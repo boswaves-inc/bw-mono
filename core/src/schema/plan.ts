@@ -1,6 +1,6 @@
 import { index, pgEnum, pgMaterializedView, pgView, uniqueIndex } from "drizzle-orm/pg-core";
 import { Item, ItemPrice, ItemScript } from "./item";
-import { eq, type InferEnum, } from "drizzle-orm";
+import { eq, isNotNull, type InferEnum, } from "drizzle-orm";
 import { array_agg, json_agg, json_agg_object, json_build_object } from "../utils/drizzle";
 
 export const PlanData = pgMaterializedView('plan_data').as(qb => {
@@ -34,6 +34,7 @@ export const PlanData = pgMaterializedView('plan_data').as(qb => {
         .from(Item)
         .leftJoin(ItemScript, eq(ItemScript.id, Item.id))
         .leftJoin(ItemPrice, eq(ItemPrice.id, Item.id))
+        .where(eq(Item.type, 'plan'))
         .groupBy(Item.id, ItemScript.id)
 })
 

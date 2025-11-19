@@ -9,10 +9,11 @@ import Label from "~/components/core/label";
 
 import Button from "~/components/core/button";
 import Section from "~/components/section";
-import { Script, ScriptType } from "@bw/core";
+import { PlanData, ScriptType, Status } from "@bw/core";
 import _ from 'lodash'
 import type { Route } from "./+types/library._index";
 import { useCart } from "~/context/cart";
+import { and, eq, isNotNull } from "drizzle-orm";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -22,7 +23,9 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export async function loader({ context }: Route.LoaderArgs) {
-  const result = await context.postgres.select().from(Script)
+  const result = await context.postgres.select().from(PlanData).where(and(eq(PlanData.status, 'active'), isNotNull(PlanData.script)))
+
+  console.log()
 
   return data({ data: result })
 }
@@ -133,7 +136,7 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
               <Link to={`/library/${item.slug}`} className=" peer">
                 <img
                   alt={item.slug}
-                  src={item.image}
+                  src={item.script.image}
                   className="aspect-square peer w-full bg-gray-200 dark:bg-gray-800 object-cover xl:aspect-8/7"
                 />
               </Link>
@@ -144,7 +147,7 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
                       {item.name}
                     </Heading>
                     <Paragraph size="sm" className="">
-                      {_.startCase(item.type)}
+                      {_.startCase(item.script.type)}
                     </Paragraph>
                   </div>
 
@@ -154,7 +157,7 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
                   </Paragraph>
                 </div>
                 <Paragraph size="sm" className="mt-4 line-clamp-4">
-                  {item.description}
+                  {item.script.description}
                 </Paragraph>
               </Link>
               <div className="block p-4 w-fit">

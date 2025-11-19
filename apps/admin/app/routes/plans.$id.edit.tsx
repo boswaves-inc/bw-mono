@@ -35,8 +35,6 @@ export default ({ loaderData }: Route.ComponentProps) => {
         onFinish(values);
     }
 
-    console.log(form.getValues('prices'))
-
     return (
         <EditView>
             <EditViewHeader resource="plan" />
@@ -114,7 +112,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
                                     </FormControl>
                                     <SelectContent>
                                         {ItemScript.type.enumValues.map(value => (
-                                            <SelectItem value={value}>{_.upperFirst(value)}</SelectItem>
+                                            <SelectItem key={value} value={value}>{_.upperFirst(value)}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>

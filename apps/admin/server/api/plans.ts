@@ -5,7 +5,7 @@ import cors from "cors";
 import { eq } from 'drizzle-orm';
 import type Chargebee from 'chargebee'
 import type { Postgres } from '@bw/core/postgres'
-import { Item, ItemPrice, ItemScript,  PeriodUnit, PlanData, PriceModel } from '@bw/core'
+import { Item, ItemPrice, ItemScript, PeriodUnit, PlanData, PriceModel } from '@bw/core'
 import type { TradingView } from '@bw/core/tradingview';
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z, { array, object } from 'zod/v4';
@@ -130,7 +130,9 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
     // Update
     router.patch('/:id', async (req, res) => {
         const schema = createUpdateSchema(Item)
-            .extend(createUpdateSchema(ItemScript).shape)
+            .extend(object({
+                script: createUpdateSchema(ItemScript)
+            }).shape)
             .omit({
                 id: true,
                 created_at: true,
@@ -143,10 +145,20 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
             const result = await postgres.transaction(async tx => {
                 const { id } = req.params
 
-                await Promise.all([
-                    tx.update(Item).set({ name: data.name, status: data.status, updated_at: new Date() }).where(eq(Item.id, id)),
-                    tx.update(ItemScript).set({ uuid: data.uuid }).where(eq(ItemScript.id, id))
-                ])
+                if (data.name != undefined || data.status != undefined) {
+                    await tx.update(Item).set({
+                        name: data.name,
+                        status: data.status,
+                        updated_at: new Date()
+                    }).where(eq(Item.id, id));
+                }
+
+                if (data.script.uuid != undefined || data.script.type != undefined) {
+                    await tx.update(ItemScript).set({
+                        uuid: data.script.uuid,
+                        type: data.script.type
+                    }).where(eq(ItemScript.id, id))
+                }
 
                 await chargebee.item.update(id, {
                     name: _.snakeCase(data.name),
@@ -156,7 +168,9 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
 
             return res.json(result).sendStatus(200)
         }
-        catch (err) {
+        catch (err: any) {
+            console.error(err)
+
             return res.destroy(err as any)
         }
     })
