@@ -43,24 +43,19 @@ export const links: LinksFunction = () => [
 ];
 
 export async function loader({ request, context }: Route.LoaderArgs) {
-  const session = await getSession(request, cartSession)
-  const id = session.get('id')
+  const session =  await getSession(request, cartSession);
 
   const cart = await new Promise<CartData | undefined>(async resolve => {
-    if (id) {
-      try {
-        const cart = await context.postgres.select()
-          .from(CartData)
-          .where(eq(CartData.id, id))
-          .then(x => x.at(0))
+    if (context.cart) {
+      const result = await context.postgres.select().from(CartData).where(
+        eq(CartData.id, context.cart)
+      ).limit(1).then(x => x.at(0));
 
-        if (cart != undefined) {
-          return resolve(cart)
-        }
-      }
-      catch (err) {
+      if(result == undefined){
         session.unset('id')
       }
+
+      return resolve(result)
     }
 
     return resolve(undefined)

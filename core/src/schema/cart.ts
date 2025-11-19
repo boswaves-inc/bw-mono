@@ -48,26 +48,6 @@ export const CartData = pgView('cart_data').as(qb => {
             updated_at: Item.updated_at,
             archived_at: Item.archived_at,
         }).as('items')
-        // items: coalesce(
-        //     filter(
-        //         json_agg_object({
-        //             id: PlanData.id,
-        //             // uuid: PlanData.uuid,
-        //             // type: PlanData.type,
-        //             // name: PlanData.name,
-        //             // slug: PlanData.slug,
-        //             // status: PlanData.status,
-        //             // image: PlanData.image,
-        //             // description: PlanData.description,
-        //             // created_at: PlanData.created_at,
-        //             // updated_at: PlanData.updated_at,
-        //             // archived_at: PlanData.archived_at,
-        //         }),
-        //         or(
-        //             eq(CartItem.type, 'plan'),
-        //         )
-        //     ), sql`'[]'::json`
-        // ).as('items'),
     }).from(Cart)
         .leftJoin(CartItem, eq(Cart.id, CartItem.id))
         .innerJoin(Item, eq(CartItem.item, Item.id))

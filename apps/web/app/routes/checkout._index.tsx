@@ -12,9 +12,21 @@ import { Radio, RadioGroup } from "~/components/core/radio";
 import { Field, } from "@headlessui/react";
 import { formatCurrency } from "@coingecko/cryptoformat";
 import { AppleLogo, GoogleLogo, StripeLogo } from "~/components/icons/logo";
-
+import { CartData } from "@bw/core";
+import { eq } from "drizzle-orm";
 
 export async function loader({ context }: Route.LoaderArgs) {
+    const cart = await new Promise<CartData | undefined>(async resolve => {
+        if (context.cart) {
+            return resolve(await context.postgres.select().from(CartData).where(
+                eq(CartData.id, context.cart)
+            ).limit(1).then(x => x.at(0)))
+        }
+
+        return resolve(undefined)
+    })
+
+
     const plans = [
         {
             id: 'monthly',
