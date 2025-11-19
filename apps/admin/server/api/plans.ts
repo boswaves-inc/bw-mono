@@ -5,7 +5,7 @@ import cors from "cors";
 import { eq } from 'drizzle-orm';
 import type Chargebee from 'chargebee'
 import type { Postgres } from '@bw/core/postgres'
-import { Item, PlanPrice, ItemScript, PeriodUnit, PlanData, PriceModel } from '@bw/core'
+import { Item, PlanPrice, PlanScript, PeriodUnit, PlanData, PriceModel } from '@bw/core'
 import type { TradingView } from '@bw/core/tradingview';
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z, { array, object } from 'zod/v4';
@@ -36,7 +36,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
     // Create
     router.post('/', cors(), express.json(), express.urlencoded({ extended: true }), async (req, res) => {
         const schema = createInsertSchema(Item)
-            .extend(createInsertSchema(ItemScript).shape)
+            .extend(createInsertSchema(PlanScript).shape)
             .extend({
                 item_price: array(z.object({
                     price: zfd.numeric(),
@@ -67,7 +67,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                     type: 'plan'
                 }).returning().then(x => x[0])
 
-                const item_script = await tx.insert(ItemScript).values({
+                const item_script = await tx.insert(PlanScript).values({
                     ...data,
                     id: item.id,
                     uuid: script.uuid,
@@ -131,7 +131,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
     router.patch('/:id', async (req, res) => {
         const schema = createUpdateSchema(Item)
             .extend(object({
-                script: createUpdateSchema(ItemScript)
+                script: createUpdateSchema(PlanScript)
             }).shape)
             .omit({
                 id: true,
@@ -154,10 +154,10 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                 }
 
                 if (data.script.uuid != undefined || data.script.type != undefined) {
-                    await tx.update(ItemScript).set({
+                    await tx.update(PlanScript).set({
                         uuid: data.script.uuid,
                         type: data.script.type
-                    }).where(eq(ItemScript.id, id))
+                    }).where(eq(PlanScript.id, id))
                 }
 
                 await chargebee.item.update(id, {
@@ -185,7 +185,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
 
                 await Promise.all([
                     tx.delete(Item).where(eq(Item.id, id)),
-                    tx.delete(ItemScript).where(eq(ItemScript.id, id))
+                    tx.delete(PlanScript).where(eq(PlanScript.id, id))
                 ])
 
                 await tx.refreshMaterializedView(PlanData)

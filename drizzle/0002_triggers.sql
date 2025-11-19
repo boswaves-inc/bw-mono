@@ -1,3 +1,4 @@
+-- Custom SQL migration file, put your code below! --
 --> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS plan_data_id_idx ON plan_data(id);
 --> statement-breakpoint
@@ -24,11 +25,11 @@ AFTER
 INSERT
     OR
 UPDATE
-    OR DELETE ON item_price FOR EACH STATEMENT EXECUTE FUNCTION refresh_plan_data();
+    OR DELETE ON item_plan_price FOR EACH STATEMENT EXECUTE FUNCTION refresh_plan_data();
 --> statement-breakpoint
 CREATE TRIGGER refresh_plan_data_trggr
 AFTER
 INSERT
     OR
 UPDATE
-    OR DELETE ON item_script FOR EACH STATEMENT EXECUTE FUNCTION refresh_plan_data();
+    OR DELETE ON item_plan_script FOR EACH STATEMENT EXECUTE FUNCTION refresh_plan_data();

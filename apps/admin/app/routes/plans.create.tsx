@@ -1,4 +1,4 @@
-import { Item, ItemScript, PeriodUnit, PriceModel, Status } from "@bw/core";
+import { Item, PlanScript, PeriodUnit, PriceModel, Status } from "@bw/core";
 import { useForm as useReactForm } from 'react-hook-form'
 import { useForm } from "@refinedev/react-hook-form";
 import { data, useNavigate } from "react-router";
@@ -113,7 +113,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {ItemScript.type.enumValues.map(value => (
+                                        {PlanScript.type.enumValues.map(value => (
                                             <SelectItem key={value} value={value}>{_.upperFirst(value)}</SelectItem>
                                         ))}
                                     </SelectContent>

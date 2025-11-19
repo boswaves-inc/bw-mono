@@ -21,19 +21,19 @@ import {
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 
 export type InferData<T extends SQLWrapper> = T extends Table
-	? InferSelectModel<T>
-	: T extends Column
-		? T['_']['notNull'] extends true
-			? T['_']['data']
-			: T['_']['data'] | null
-		: T extends View | Subquery
-			? T['_']['selectedFields']
-			: T extends SQL<infer U>
-				? U
-				: T extends SQL.Aliased<infer U>
-					? U
-					: unknown;
-                    
+    ? InferSelectModel<T>
+    : T extends Column
+    ? T['_']['notNull'] extends true
+    ? T['_']['data']
+    : T['_']['data'] | null
+    : T extends View | Subquery
+    ? T['_']['selectedFields']
+    : T extends SQL<infer U>
+    ? U
+    : T extends SQL.Aliased<infer U>
+    ? U
+    : unknown;
+
 // export function jsonBuildObject<T extends SelectedFields<any, any>>(shape: T) {
 //     const chunks: SQL[] = [];
 
@@ -128,6 +128,10 @@ export function filter<T>(aggr: SQL<T[]>, condition: SQL): SQL<T[]> {
     return sql`${aggr} FILTER (WHERE ${condition})`;
 }
 
+export function exists<T>(aggr: SQL<T>, condition: SQL): SQL<{ exists: boolean }> {
+    return sql`select exists (select 1 from ${aggr} where ${condition}) as exists`;
+}
+
 
 // /**
 //  * Aggregate sql values into an sql array.
@@ -142,11 +146,11 @@ export function filter<T>(aggr: SQL<T[]>, condition: SQL): SQL<T[]> {
 //  * @todo Implement collapsing for null array with notNull option.
 //  */
 export function array_agg<
-	T extends SQLWrapper,
-	//  N extends boolean = true
+    T extends SQLWrapper,
+//  N extends boolean = true
 >(
-	expression: T
-	// { notNull = true as N }: { notNull?: N } = {}
+    expression: T
+    // { notNull = true as N }: { notNull?: N } = {}
 ) {
-	return sql<InferData<T> | null>`array_agg(${expression})`;
+    return sql<InferData<T> | null>`array_agg(${expression})`;
 }

@@ -1,1 +1,0 @@
-ALTER TABLE "cart_item" ADD CONSTRAINT "cart_item_item_type_item_info_id_type_fk" FOREIGN KEY ("item","type") REFERENCES "public"."item_info"("id","type") ON DELETE cascade ON UPDATE cascade;

@@ -1,1 +1,0 @@
-CREATE VIEW "public"."cart_data" AS (select "cart_info"."id", "cart_info"."uid", json_agg(json_build_object('id', "plan_data"."id")) as "items" from "cart_info" left join "cart_item" on "cart_info"."id" = "cart_item"."id" inner join "plan_data" on "cart_item"."item" = "plan_data"."id" group by "cart_info"."id");

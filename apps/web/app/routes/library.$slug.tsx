@@ -38,14 +38,14 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default ({ loaderData }: Route.ComponentProps) => {
   const cart = useCart()
-  const included = cart.includes(loaderData.type, loaderData.id)
+  const included = cart.includes(loaderData.id)
 
   const onToggle = () => {
     if (included) {
-      cart.pop(loaderData.type, loaderData.id)
+      cart.pop(loaderData.id)
     }
     else {
-      cart.push(loaderData.type, loaderData.id)
+      cart.push(loaderData)
     }
   }
 

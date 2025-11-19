@@ -6,10 +6,9 @@ import { formData } from "zod-form-data";
 import { object, z } from "zod/v4";
 import { cartSession } from "~/cookie";
 import { getSession } from "~/utils/session";
-import { Cart, CartItem } from "@bw/core";
-import { and, eq } from "drizzle-orm";
+import { Cart, CartData, CartItem, Item } from "@bw/core";
+import { and, eq, } from "drizzle-orm";
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
-import { ItemType } from "@bw/core/schema/item.ts";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -27,21 +26,23 @@ export async function action({ request, context }: Route.ActionArgs) {
     const session = await getSession(request, cartSession)
     const schema = formData(createInsertSchema(CartItem).pick({
         id: true,
-        type: true
     }))
-
 
     switch (request.method) {
         case 'PUT': {
             const form = await request.formData()
             const result = await schema.parseAsync(form)
 
-            await context.postgres.transaction(async tx => {
+            const cart = await context.postgres.transaction(async tx => {
                 const cart_id = await new Promise<string>(async resolve => {
                     const current = session.get('id');
 
                     if (current != undefined) {
-                        return resolve(current)
+                        if (await tx.$count(Cart, eq(Cart.id, current)) > 0) {
+                            return resolve(current)
+                        }
+
+                        session.unset('id')
                     }
 
                     // Create a new cart here
@@ -55,59 +56,34 @@ export async function action({ request, context }: Route.ActionArgs) {
                     return resolve(cart.id)
                 })
 
+                const item = await tx.select().from(Item).where(
+                    eq(Item.id, result.id)
+                ).then(x => x.at(0))
+
+                if (item == undefined) {
+                    throw new Error('item does not exist');
+                }
+
                 // Insert the item and update the cart
                 await Promise.all([
                     tx.update(Cart).set({
                         updated_at: new Date()
-                    }),
+                    }).where(eq(Cart.id, cart_id)),
                     tx.insert(CartItem).values({
                         id: cart_id,
                         item: result.id,
-                        type: result.type
+                        type: item.type
                     })
                 ])
 
-                // tx.select
+                const cart = await tx.select().from(CartData).where(
+                    eq(CartData.id, cart_id)
+                ).limit(1).then(x => x[0])
 
-                console.log(cart_id)
+                return cart
             })
 
-            // // Open a new postgres transaction
-            // await context.postgres.transaction(async tx => {
-            //     const cart_id = await new Promise<string>(async resolve => {
-            //         const current = session.get('id');
-
-            //         if (current != undefined) {
-            //             return resolve(current)
-            //         }
-
-            //         // Create a new cart here
-            //         const cart = await tx.insert(Cart).values({
-            //             uid: undefined
-            //         }).returning().then(x => x[0])
-
-            //         // Set the cart to the session cookie for tracking
-            //         session.set('id', cart.id)
-
-            //         return resolve(cart.id)
-            //     })
-
-            //     // Insert the item and update the cart
-            //     await Promise.all([
-            //         tx.update(Cart).set({
-            //             updated_at: new Date()
-            //         }),
-            //         tx.insert(CartItem).values({
-            //             id: cart_id,
-            //             item: result.id,
-            //             type: result.type
-            //         })
-            //     ])
-
-            //     // await tx.refreshMaterializedView(CartData)
-            // })
-
-            return data({ items: [], coupons: [] }, {
+            return data(cart, {
                 headers: [
                     ["Set-Cookie", await cartSession.commitSession(session)]
                 ]

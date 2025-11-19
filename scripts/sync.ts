@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { Item, ItemScript, ScriptType, TvScript } from '@bw/core'
+import { Item, PlanScript, ScriptType, TvScript } from '@bw/core'
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';
@@ -53,18 +53,21 @@ const main = async () => {
     // console.log('⏳ Running migrations...');
     // await migrate(store, { migrationsFolder: 'drizzle' })
 
-    let items: (CBItem & { cf_tv_uuid?: string, cf_tv_type?: ScriptType })[] = [];
-    let item_offset = undefined;
+    let plans: (CBItem & { cf_tv_uuid?: string, cf_tv_type?: ScriptType })[] = [];
+    let plan_offset = undefined;
 
-    console.log('⏳ Fetching items...');
+    console.log('⏳ Fetching plans...');
 
-    while (items.length == 0 || item_offset != undefined) {
+    while (plans.length == 0 || plan_offset != undefined) {
         const { list, next_offset } = await cb_client.item.list({
             limit: 100,
+            type: {
+                is: 'plan'
+            }
         })
 
-        items.push(...list.map(({ item }) => item))
-        item_offset = next_offset;
+        plans.push(...list.map(({ item }) => item))
+        plan_offset = next_offset;
 
         // break out of the loop if there are no items
         if (list.length == 0) {
@@ -74,7 +77,7 @@ const main = async () => {
 
     console.log('⏳ Fetching scripts...');
 
-    let scripts = await Promise.all(items.map(({ id, cf_tv_uuid, cf_tv_type }) => new Promise<TvScript & { item_id: string, type: ScriptType } | undefined>(async (resolve, reject) => {
+    let scripts = await Promise.all(plans.map(({ id, cf_tv_uuid, cf_tv_type }) => new Promise<TvScript & { item_id: string, type: ScriptType } | undefined>(async (resolve, reject) => {
         // check if we have the cf_tv metadata set on charbebee
         if (cf_tv_uuid != undefined && cf_tv_type != undefined) {
             const response = await tv_client.script(cf_tv_uuid)
@@ -114,10 +117,10 @@ const main = async () => {
     console.log('✅ Finished collecting data, starting synchronization\n\n');
 
     await store.transaction(async tx => {
-        console.log('⏳ Synchronizing items...');
+        console.log('⏳ Synchronizing plans...');
 
-        if (items.length > 0) {
-            await tx.insert(Item).values(items.map(({ id, external_name, name, type, status }) => ({
+        if (plans.length > 0) {
+            await tx.insert(Item).values(plans.map(({ id, external_name, name, type, status }) => ({
                 id,
                 type,
                 status: status ?? 'archived',
@@ -127,17 +130,17 @@ const main = async () => {
         else {
             console.log('>> skipping, no items found');
         }
-        
-        console.log('⏳ Synchronizing scripts...');
+
+        console.log('⏳ Synchronizing plan scripts...');
 
         if (scripts.length > 0) {
-            await tx.insert(ItemScript).values(scripts.map(({ uuid, item_id, type, description, image }) => ({
+            await tx.insert(PlanScript).values(scripts.map(({ uuid, item_id, type, description, image }) => ({
                 uuid,
                 type,
                 description,
                 id: item_id,
                 image: image.big
-            }))).onConflictDoNothing({ target: ItemScript.id })
+            }))).onConflictDoNothing({ target: PlanScript.id })
         }
         else {
             console.log('>> skipping, no scripts found');

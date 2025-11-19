@@ -3,7 +3,7 @@ import { Item } from "./item";
 import { eq, sql, type InferSelectModel } from "drizzle-orm";
 import { CouponApplication, CouponType } from "./types";
 
-export const CouponInfo = pgTable("item_coupon", (t) => ({
+export const CouponInfo = pgTable("item_coupon_price", (t) => ({
     id: t.uuid().primaryKey().references(() => Item.id, { onDelete: 'cascade', onUpdate: 'cascade'}),
     type: CouponType("type").notNull(),
     value: t.doublePrecision("value").notNull(),

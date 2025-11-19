@@ -1,5 +1,5 @@
 import { index, pgEnum, pgMaterializedView, pgTable, pgView, primaryKey, uniqueIndex } from "drizzle-orm/pg-core";
-import { Item,  ItemScript } from "./item";
+import { Item,  PlanScript } from "./item";
 import { eq, isNotNull, type InferEnum, type InferSelectModel, } from "drizzle-orm";
 import { array_agg, json_agg, json_agg_object, json_build_object } from "../utils/drizzle";
 import { PeriodUnit, PricingModel } from "./types";
@@ -32,11 +32,11 @@ export const PlanData = pgMaterializedView('plan_data').as(qb => {
         slug: Item.slug,
         status: Item.status,
         script: json_build_object({
-            id: ItemScript.id,
-            uuid: ItemScript.uuid,
-            type: ItemScript.type,
-            image: ItemScript.image,
-            description: ItemScript.description
+            id: PlanScript.id,
+            uuid: PlanScript.uuid,
+            type: PlanScript.type,
+            image: PlanScript.image,
+            description: PlanScript.description
         }).as('script'),
         prices: json_agg_object({
             id: PlanPrice.id,
@@ -54,10 +54,10 @@ export const PlanData = pgMaterializedView('plan_data').as(qb => {
         archived_at: Item.archived_at,
     })
         .from(Item)
-        .leftJoin(ItemScript, eq(ItemScript.id, Item.id))
+        .leftJoin(PlanScript, eq(PlanScript.id, Item.id))
         .leftJoin(PlanPrice, eq(PlanPrice.id, Item.id))
         .where(eq(Item.type, 'plan'))
-        .groupBy(Item.id, ItemScript.id)
+        .groupBy(Item.id, PlanScript.id)
 })
 
 

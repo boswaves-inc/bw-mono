@@ -1,11 +1,8 @@
 import { User } from "./user";
-import { Item, ItemScript, ItemType } from "./item";
+import { Item, PlanScript, ItemType } from "./item";
 import { foreignKey, pgTable, pgView, primaryKey } from "drizzle-orm/pg-core";
 import { eq, max, or, sql, type InferSelectModel, type InferSelectViewModel } from "drizzle-orm";
-import { array_agg, coalesce, filter, json_agg_object } from "../utils/drizzle";
-import { CouponData } from "./coupon";
-import { PlanData } from "./plan";
-// import { ScriptData } from "./script";
+import { json_agg_object } from "../utils/drizzle";
 
 export const Cart = pgTable("cart_info", (t) => ({
     id: t.uuid().primaryKey().notNull().$defaultFn(() => crypto.randomUUID()),
@@ -22,11 +19,11 @@ export const CartItem = pgTable("cart_item", (t) => ({
         onDelete: 'cascade',
         onUpdate: 'cascade'
     }).notNull(),
+    type: ItemType('type').notNull(),
     item: t.uuid().references(() => Item.id, {
         onDelete: 'cascade',
         onUpdate: 'cascade'
     }).notNull(),
-    type: ItemType('type').notNull(),
     created_at: t.timestamp().defaultNow().notNull(),
     updated_at: t.timestamp().defaultNow().notNull(),
 }), ({ id, item, type }) => [
@@ -42,10 +39,14 @@ export const CartData = pgView('cart_data').as(qb => {
         id: Cart.id,
         uid: Cart.uid,
         items: json_agg_object({
-            id: PlanData.id,
-            name: PlanData.name,
-            type: PlanData.type,
-            status: PlanData.status
+            id: Item.id,
+            name: Item.name,
+            type: Item.type,
+            slug: Item.slug,
+            status: Item.status,
+            created_at: Item.created_at,
+            updated_at: Item.updated_at,
+            archived_at: Item.archived_at,
         }).as('items')
         // items: coalesce(
         //     filter(
@@ -69,7 +70,7 @@ export const CartData = pgView('cart_data').as(qb => {
         // ).as('items'),
     }).from(Cart)
         .leftJoin(CartItem, eq(Cart.id, CartItem.id))
-        .innerJoin(PlanData, eq(CartItem.item, PlanData.id))
+        .innerJoin(Item, eq(CartItem.item, Item.id))
         .groupBy(Cart.id)
 })
 
@@ -111,4 +112,4 @@ export const CartData = pgView('cart_data').as(qb => {
 
 export type Cart = InferSelectModel<typeof Cart>
 export type CartItem = InferSelectModel<typeof CartItem>
-// export type CartData = InferSelectViewModel<typeof CartData>
+export type CartData = InferSelectViewModel<typeof CartData>

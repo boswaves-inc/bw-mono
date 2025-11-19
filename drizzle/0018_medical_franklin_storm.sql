@@ -1,9 +1,0 @@
-DROP VIEW "public"."cart_data";--> statement-breakpoint
-DROP MATERIALIZED VIEW "public"."plan_data";--> statement-breakpoint
-ALTER TABLE "item_script" RENAME TO "item_plan_script";--> statement-breakpoint
-ALTER TABLE "item_plan_script" DROP CONSTRAINT "item_script_uuid_unique";--> statement-breakpoint
-ALTER TABLE "item_plan_script" DROP CONSTRAINT "item_script_id_item_info_id_fk";
---> statement-breakpoint
-ALTER TABLE "item_plan_script" ADD CONSTRAINT "item_plan_script_id_item_info_id_fk" FOREIGN KEY ("id") REFERENCES "public"."item_info"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
-ALTER TABLE "item_plan_script" ADD CONSTRAINT "item_plan_script_uuid_unique" UNIQUE("uuid");--> statement-breakpoint
-CREATE MATERIALIZED VIEW "public"."plan_data" AS (select "item_info"."id", "item_info"."name", "item_info"."type", "item_info"."slug", "item_info"."status", json_build_object('id', "item_plan_script"."id", 'uuid', "item_plan_script"."uuid", 'type', "item_plan_script"."type", 'image', "item_plan_script"."image", 'description', "item_plan_script"."description") as "script", json_agg(json_build_object('id', "item_plan_price"."id", 'uuid', "item_plan_price"."uuid", 'price', "item_plan_price"."price", 'period_unit', "item_plan_price"."period_unit", 'pricing_model', "item_plan_price"."pricing_model", 'currency_code', "item_plan_price"."currency_code", 'created_at', "item_plan_price"."created_at", 'updated_at', "item_plan_price"."updated_at", 'archived_at', "item_plan_price"."archived_at")) as "prices", "item_info"."created_at", "item_info"."updated_at", "item_info"."archived_at" from "item_info" left join "item_plan_script" on "item_plan_script"."id" = "item_info"."id" left join "item_plan_price" on "item_plan_price"."id" = "item_info"."id" where "item_info"."type" = 'plan' group by "item_info"."id", "item_plan_script"."id");

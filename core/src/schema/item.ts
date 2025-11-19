@@ -9,7 +9,7 @@ export const ItemType = pgEnum('item_type', [
     'addon'
 ])
 
-export const Item = pgTable("item_info", (t) => ({
+export const Item = pgTable("item", (t) => ({
     id: t.uuid().notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
     type: ItemType('type').notNull(),
     name: t.text("name").unique().notNull(),
@@ -25,7 +25,7 @@ export const Item = pgTable("item_info", (t) => ({
     index("item_info_slug_idx").on(table.slug),
 ]);
  
-export const ItemScript = pgTable("item_plan_script", (t) => ({
+export const PlanScript = pgTable("item_plan_script", (t) => ({
     id: t.uuid().primaryKey().references(() => Item.id, { onDelete: 'cascade', onUpdate: 'cascade'}),
     type: ScriptType("type").notNull(),
     uuid: t.text("uuid").unique().notNull(),
@@ -42,7 +42,7 @@ export const ItemScript = pgTable("item_plan_script", (t) => ({
 
 export type Item = InferSelectModel<typeof Item>
 export type ItemType = InferEnum<typeof ItemType>
-export type ItemScript = InferSelectModel<typeof ItemScript>
+export type PlanScript = InferSelectModel<typeof PlanScript>
 
 // export const ItemPrice = pgTable("item_price", (t) => ({
 //     id: t.uuid().primaryKey().references(() => Item.id, {

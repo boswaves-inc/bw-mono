@@ -22,7 +22,7 @@ import { getSession } from "./utils/session";
 import { cartSession } from "./cookie";
 // import { CartData } from "@bw/core/schema/cart.ts";
 import { count, countDistinct, eq, sql } from "drizzle-orm";
-import { Cart, CartItem } from "@bw/core";
+import { Cart, CartData, CartItem } from "@bw/core";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -43,39 +43,34 @@ export const links: LinksFunction = () => [
 ];
 
 export async function loader({ request, context }: Route.LoaderArgs) {
-  const cart = await new Promise<any>(async resolve => {
-    const session = await getSession(request, cartSession)
-    const id = session.get('id')
+  const session = await getSession(request, cartSession)
+  const id = session.get('id')
 
+  const cart = await new Promise<CartData | undefined>(async resolve => {
     if (id) {
-      const data = await context.postgres.select({
-        id: Cart.id,
-        uid: Cart.uid,
-        is_empty: sql<boolean>`NOT EXISTS (
-          SELECT 1 FROM ${CartItem} 
-          WHERE ${CartItem.id} = ${Cart.id}
-        )`.as('is_empty'),
-        created_at: Cart.created_at,
-        updated_at: Cart.updated_at
-      }).from(Cart)
-        .where(eq(Cart.id, id))
+      try {
+        const cart = await context.postgres.select()
+          .from(CartData)
+          .where(eq(CartData.id, id))
+          .then(x => x.at(0))
 
-      if (data != undefined) {
-        return resolve({
-          // items: data.items,
-          items: [],
-          coupons: []
-        })
+        if (cart != undefined) {
+          return resolve(cart)
+        }
+      }
+      catch (err) {
+        session.unset('id')
       }
     }
 
-    return resolve({
-      items: [],
-      coupons: []
-    })
+    return resolve(undefined)
   })
 
-  return data({ theme: context.theme, cart })
+  return data({ theme: context.theme, cart }, {
+    headers: [
+      ["Set-Cookie", await cartSession.commitSession(session)]
+    ]
+  })
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
