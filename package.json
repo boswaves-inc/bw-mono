@@ -4,13 +4,18 @@
         "db:generate": "dotenv -- drizzle-kit generate",
         "db:migrate": "dotenv -- drizzle-kit migrate",
         "db:update": "dotenv -- drizzle-kit up",
-        "db:seed": "dotenv -- tsx scripts/seed.ts"
+        "db:seed": "dotenv -- tsx scripts/seed.ts",
+        "db:sync": "dotenv -- tsx scripts/sync.ts"
     },
     "dependencies": {
+        "@bw/core": "workspace:*",
+        "chargebee": "^3.14.0",
         "drizzle-orm": "^0.44.6",
+        "lodash": "^4.17.21",
         "postgres": "^3.4.7"
     },
     "devDependencies": {
+        "@types/lodash": "^4.17.20",
         "@types/node": "^22.18.10",
         "dotenv-cli": "^10.0.0",
         "drizzle-kit": "^0.31.5",

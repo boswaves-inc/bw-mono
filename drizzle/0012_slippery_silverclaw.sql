@@ -1,1 +1,0 @@
-CREATE MATERIALIZED VIEW "public"."cart_data" AS (select "cart_info"."id", "cart_info"."uid", ARRAY_AGG("cart_item"."item_id") as "items", ARRAY_AGG("cart_item"."item_id") as "coupons", "cart_info"."created_at", max("cart_item"."updated_at") as "updated_at" from "cart_info" inner join "cart_item" on "cart_item"."cart_id" = "cart_info"."id" group by "cart_info"."id");

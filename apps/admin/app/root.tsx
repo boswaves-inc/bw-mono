@@ -132,11 +132,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   }
                 },
                 {
-                  name: "scripts",
-                  list: "/scripts",
-                  show: "/scripts/:id",
-                  edit: "/scripts/:id/edit",
-                  create: "/scripts/create",
+                  name: "plans",
+                  list: "/plans",
+                  show: "/plans/:id",
+                  edit: "/plans/:id/edit",
+                  create: "/plans/create",
                   meta: {
                     parent: 'catalog',
                     canDelete: true,

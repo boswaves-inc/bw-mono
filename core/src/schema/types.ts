@@ -1,7 +1,6 @@
 import type { InferEnum } from "drizzle-orm";
 import { customType, pgEnum } from "drizzle-orm/pg-core";
 
-
 export const citext = customType<{ data: string }>({
     dataType() {
         return 'citext';
@@ -10,14 +9,20 @@ export const citext = customType<{ data: string }>({
 
 export const Status = pgEnum('status', [
     'archived',
-    'public'
+    'deleted',
+    'active'
 ])
 
-export const Period = pgEnum('period', [
-    'daily',
-    'weekly',
-    "monthly",
-    'yearly'
+export const PeriodUnit = pgEnum('period_unit', [
+    'day',
+    'week',
+    "month",
+    'year'
+])
+
+export const PriceModel = pgEnum('price_model', [
+    'flat_fee',
+    'per_unit'
 ])
 
 export const ScriptType = pgEnum('script_type', [
@@ -47,7 +52,8 @@ export const CouponApplication = pgEnum('coupon_application', [
 
 
 export type Status = InferEnum<typeof Status>
-export type Period = InferEnum<typeof Period>
+export type PeriodUnit = InferEnum<typeof PeriodUnit>
+export type PriceModel = InferEnum<typeof PriceModel>
 export type ScriptType = InferEnum<typeof ScriptType>
 export type CouponType = InferEnum<typeof CouponType>
 export type CouponDuration = InferEnum<typeof CouponDuration>

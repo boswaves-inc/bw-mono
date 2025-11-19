@@ -7,7 +7,7 @@ import { TradingView } from "@bw/core/tradingview";
 import "react-router";
 import theme, { getTheme } from "./theme";
 import users from "./api/users";
-import scripts from "./api/scripts";
+import plans from "./api/plans";
 import coupons from "./api/coupons";
 
 if (!process.env.CB_SITE) {
@@ -41,7 +41,7 @@ router.use(postgres({
 
 router.use(theme())
 
-router.use('/api/scripts', scripts({
+router.use('/api/plans', plans({
   family: process.env.CB_FAMILY,
   tradingview: tv_client,
   chargebee: cb_client,

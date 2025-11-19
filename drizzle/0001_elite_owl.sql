@@ -1,2 +1,0 @@
-ALTER TABLE "item_info" ADD COLUMN "slug" text GENERATED ALWAYS AS (lower(regexp_replace(name, '[^a-zA-Z0-9]+', '-', 'g'))) STORED NOT NULL;--> statement-breakpoint
-ALTER TABLE "item_info" ADD CONSTRAINT "item_info_slug_unique" UNIQUE("slug");

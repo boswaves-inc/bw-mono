@@ -1,2 +1,0 @@
-DROP MATERIALIZED VIEW "public"."cart_data";--> statement-breakpoint
-CREATE MATERIALIZED VIEW "public"."cart_data" AS (select "cart_info"."id", "cart_info"."uid", ARRAY_AGG("cart_item"."id") as "items", ARRAY_AGG("cart_item"."id") as "coupons", "cart_info"."created_at", max("cart_item"."updated_at") as "updated_at" from "cart_info" inner join "cart_item" on "cart_item"."id" = "cart_info"."id" group by "cart_info"."id");

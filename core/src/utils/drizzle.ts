@@ -6,7 +6,12 @@ import {
     is,
     type SelectedFields,
     type GetColumnData,
-    and
+    and,
+    type SQLWrapper,
+    Table,
+    Column,
+    View,
+    Subquery
 } from "drizzle-orm";
 import {
     type PgTable,
@@ -15,6 +20,20 @@ import {
 } from "drizzle-orm/pg-core";
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 
+export type InferData<T extends SQLWrapper> = T extends Table
+	? InferSelectModel<T>
+	: T extends Column
+		? T['_']['notNull'] extends true
+			? T['_']['data']
+			: T['_']['data'] | null
+		: T extends View | Subquery
+			? T['_']['selectedFields']
+			: T extends SQL<infer U>
+				? U
+				: T extends SQL.Aliased<infer U>
+					? U
+					: unknown;
+                    
 // export function jsonBuildObject<T extends SelectedFields<any, any>>(shape: T) {
 //     const chunks: SQL[] = [];
 
@@ -74,6 +93,15 @@ export function coalesce<T>(value: SQL.Aliased<T> | SQL<T>, defaultValue: SQL) {
     return sql<T>`coalesce(${value}, ${defaultValue})`;
 }
 
+// export const array_agg = <T extends Record<string, AnyColumn | SQL>>(obj: T): SQL<{ [K in keyof T]: T[K] extends AnyColumn ? GetColumnData<T[K]> : T[K] extends SQL<infer U> ? U : never }[]> => {
+//     const entries = Object.entries(obj).flatMap(([key, value]) => [
+//         sql.raw(`'${key}'`),
+//         value
+//     ]);
+
+//     return sql`json_agg(${sql.join(entries, sql`, `)})`
+// }
+
 export const json_agg_object = <T extends Record<string, AnyColumn | SQL>>(obj: T): SQL<{ [K in keyof T]: T[K] extends AnyColumn ? GetColumnData<T[K]> : T[K] extends SQL<infer U> ? U : never }[]> => {
     const entries = Object.entries(obj).flatMap(([key, value]) => [
         sql.raw(`'${key}'`),
@@ -99,14 +127,26 @@ export const json_agg = <C extends AnyColumn>(column: C): SQL<GetColumnData<C>[]
 export function filter<T>(aggr: SQL<T[]>, condition: SQL): SQL<T[]> {
     return sql`${aggr} FILTER (WHERE ${condition})`;
 }
-// // generalist
-// export function jsonAgg<Column extends AnyColumn>(column: Column) {
-//     return coalesce<GetColumnData<Column, "raw">[]>(
-//         sql`json_agg(${sql`${column}`})`,
-//         sql`'[]'`
-//     );
-// }
 
-// function coalesce<T>(arg0: any, arg1: any) {
-//     throw new Error("Function not implemented.");
-// }
+
+// /**
+//  * Aggregate sql values into an sql array.
+//  *
+//  * Input values, including nulls, concatenated into an array.
+//  *
+//  * Input arrays concatenated into array of one higher dimension (inputs must all have same
+//  * dimensionality, and cannot be empty or null)
+//  *
+//  * @see https://www.postgresql.org/docs/9.5/functions-aggregate.html
+//  *
+//  * @todo Implement collapsing for null array with notNull option.
+//  */
+export function array_agg<
+	T extends SQLWrapper,
+	//  N extends boolean = true
+>(
+	expression: T
+	// { notNull = true as N }: { notNull?: N } = {}
+) {
+	return sql<InferData<T> | null>`array_agg(${expression})`;
+}

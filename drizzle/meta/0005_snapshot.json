@@ -1,6 +1,6 @@
 {
-  "id": "d25ea079-cfba-46b8-b76e-55c053cd0b0c",
-  "prevId": "f976351c-37f4-4453-8d88-afae96ff5a84",
+  "id": "c0236d90-ca0b-4c30-913f-c7e517703b24",
+  "prevId": "7a562beb-3edb-40b4-9ba1-63aaaf8c0585",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -61,27 +61,48 @@
       "name": "cart_item",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "item": {
-          "name": "item",
+        "cart_id": {
+          "name": "cart_id",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
+        },
+        "item_id": {
+          "name": "item_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "item_type": {
+          "name": "item_type",
+          "type": "item_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "cart_item_id_cart_info_id_fk": {
-          "name": "cart_item_id_cart_info_id_fk",
+        "cart_item_cart_id_cart_info_id_fk": {
+          "name": "cart_item_cart_id_cart_info_id_fk",
           "tableFrom": "cart_item",
           "tableTo": "cart_info",
           "columnsFrom": [
-            "id"
+            "cart_id"
           ],
           "columnsTo": [
             "id"
@@ -89,12 +110,12 @@
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "cart_item_item_item_info_id_fk": {
-          "name": "cart_item_item_item_info_id_fk",
+        "cart_item_item_id_item_info_id_fk": {
+          "name": "cart_item_item_id_item_info_id_fk",
           "tableFrom": "cart_item",
           "tableTo": "item_info",
           "columnsFrom": [
-            "item"
+            "item_id"
           ],
           "columnsTo": [
             "id"
@@ -103,7 +124,15 @@
           "onUpdate": "cascade"
         }
       },
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "cart_item_cart_id_item_id_pk": {
+          "name": "cart_item_cart_id_item_id_pk",
+          "columns": [
+            "cart_id",
+            "item_id"
+          ]
+        }
+      },
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
@@ -117,6 +146,13 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "item_type",
+          "typeSchema": "public",
+          "primaryKey": false,
           "notNull": true
         },
         "name": {
@@ -164,7 +200,23 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "item_info_slug_idx": {
+          "name": "item_info_slug_idx",
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
@@ -235,6 +287,150 @@
         }
       },
       "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.item_price": {
+      "name": "item_price",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "uuid": {
+          "name": "uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price": {
+          "name": "price",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "period_unit": {
+          "name": "period_unit",
+          "type": "period_unit",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pricing_model": {
+          "name": "pricing_model",
+          "type": "price_model",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "currency_code": {
+          "name": "currency_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "archived_at": {
+          "name": "archived_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "item_price_item_idx": {
+          "name": "item_price_item_idx",
+          "columns": [
+            {
+              "expression": "currency_code",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "item_price_currency_idx": {
+          "name": "item_price_currency_idx",
+          "columns": [
+            {
+              "expression": "currency_code",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "item_price_item_currency_idx": {
+          "name": "item_price_item_currency_idx",
+          "columns": [
+            {
+              "expression": "id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "currency_code",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "item_price_id_item_info_id_fk": {
+          "name": "item_price_id_item_info_id_fk",
+          "tableFrom": "item_price",
+          "tableTo": "item_info",
+          "columnsFrom": [
+            "id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "item_price_uuid_pk": {
+          "name": "item_price_uuid_pk",
+          "columns": [
+            "uuid"
+          ]
+        }
+      },
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
@@ -441,6 +637,16 @@
     }
   },
   "enums": {
+    "public.item_type": {
+      "name": "item_type",
+      "schema": "public",
+      "values": [
+        "plan",
+        "coupon",
+        "charge",
+        "addon"
+      ]
+    },
     "public.coupon_application": {
       "name": "coupon_application",
       "schema": "public",
@@ -466,6 +672,24 @@
         "percentage"
       ]
     },
+    "public.period_unit": {
+      "name": "period_unit",
+      "schema": "public",
+      "values": [
+        "day",
+        "week",
+        "month",
+        "year"
+      ]
+    },
+    "public.price_model": {
+      "name": "price_model",
+      "schema": "public",
+      "values": [
+        "flat_fee",
+        "per_unit"
+      ]
+    },
     "public.script_type": {
       "name": "script_type",
       "schema": "public",
@@ -481,7 +705,8 @@
       "schema": "public",
       "values": [
         "archived",
-        "public"
+        "deleted",
+        "active"
       ]
     },
     "public.user_provider": {
@@ -506,7 +731,7 @@
   "roles": {},
   "policies": {},
   "views": {
-    "public.coupon_info": {
+    "public.coupon_data": {
       "columns": {
         "id": {
           "name": "id",
@@ -570,30 +795,17 @@
         }
       },
       "definition": "select \"item_info\".\"id\", \"item_info\".\"name\", \"item_info\".\"status\", \"item_coupon\".\"type\", \"item_coupon\".\"value\", \"item_coupon\".\"apply_on\", \"item_info\".\"created_at\", \"item_info\".\"updated_at\", \"item_info\".\"archived_at\" from \"item_coupon\" inner join \"item_info\" on \"item_coupon\".\"id\" = \"item_info\".\"id\"",
-      "name": "coupon_info",
+      "name": "coupon_data",
       "schema": "public",
       "isExisting": false,
       "materialized": true
     },
-    "public.script_info": {
+    "public.plan_data": {
       "columns": {
         "id": {
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true
-        },
-        "uuid": {
-          "name": "uuid",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "type": {
-          "name": "type",
-          "type": "script_type",
-          "typeSchema": "public",
-          "primaryKey": false,
           "notNull": true
         },
         "name": {
@@ -620,18 +832,6 @@
           "notNull": true,
           "default": "'archived'"
         },
-        "image": {
-          "name": "image",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -653,8 +853,8 @@
           "notNull": false
         }
       },
-      "definition": "select \"item_info\".\"id\", \"item_script\".\"uuid\", \"item_script\".\"type\", \"item_info\".\"name\", \"item_info\".\"slug\", \"item_info\".\"status\", \"item_script\".\"image\", \"item_script\".\"description\", \"item_info\".\"created_at\", \"item_info\".\"updated_at\", \"item_info\".\"archived_at\" from \"item_script\" inner join \"item_info\" on \"item_script\".\"id\" = \"item_info\".\"id\"",
-      "name": "script_info",
+      "definition": "select \"item_info\".\"id\", \"item_info\".\"name\", \"item_info\".\"slug\", \"item_info\".\"status\", json_build_object('id', \"item_script\".\"id\", 'uuid', \"item_script\".\"uuid\", 'type', \"item_script\".\"type\", 'image', \"item_script\".\"image\", 'description', \"item_script\".\"description\") as \"script\", json_agg(json_build_object('id', \"item_price\".\"id\", 'uuid', \"item_price\".\"uuid\", 'price', \"item_price\".\"price\", 'period_unit', \"item_price\".\"period_unit\", 'pricing_model', \"item_price\".\"pricing_model\", 'currency_code', \"item_price\".\"currency_code\")) as \"prices\", \"item_info\".\"created_at\", \"item_info\".\"updated_at\", \"item_info\".\"archived_at\" from \"item_info\" left join \"item_script\" on \"item_script\".\"id\" = \"item_info\".\"id\" left join \"item_price\" on \"item_price\".\"id\" = \"item_info\".\"id\" group by \"item_info\".\"id\", \"item_script\".\"id\"",
+      "name": "plan_data",
       "schema": "public",
       "isExisting": false,
       "materialized": true
