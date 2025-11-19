@@ -103,10 +103,6 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                     })
                 )))
 
-
-                await tx.refreshMaterializedView(PlanData)
-                // await tx.refreshMaterializedView(ScriptData)
-
                 return _.merge(item, { item_prices, item_script })
             })
 
@@ -151,8 +147,6 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                     tx.update(Item).set({ name: data.name, status: data.status, updated_at: new Date() }).where(eq(Item.id, id)),
                     tx.update(ItemScript).set({ uuid: data.uuid }).where(eq(ItemScript.id, id))
                 ])
-
-                await tx.refreshMaterializedView(PlanData)
 
                 await chargebee.item.update(id, {
                     name: _.snakeCase(data.name),
