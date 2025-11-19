@@ -1,4 +1,4 @@
-import {  PeriodUnit, PriceModel, type Item, type PlanData } from "@bw/core";
+import { PeriodUnit, PriceModel, type Item, type PlanData } from "@bw/core";
 import { useOne, useShow } from "@refinedev/core";
 import _ from "lodash";
 import { data, Link } from "react-router";
@@ -58,7 +58,16 @@ export default ({ loaderData }: Route.ComponentProps) => {
                         <div>
                             <h4 className="text-sm font-medium mb-2">UUID</h4>
                             <p className="text-sm text-muted-foreground">
-                                {loading ? "Loading..." : result?.id || "-"}
+                                {loading ? "Loading..." : result?.script.uuid || "-"}
+                            </p>
+                        </div>
+
+                        <Separator />
+
+                        <div>
+                            <h4 className="text-sm font-medium mb-2">Type</h4>
+                            <p className="text-sm text-muted-foreground">
+                                {loading ? "Loading..." : result?.script.type || "-"}
                             </p>
                         </div>
 
@@ -102,6 +111,24 @@ export default ({ loaderData }: Route.ComponentProps) => {
 
                         <Separator />
 
+                        <div>
+                            <h4 className="text-sm font-medium mb-2">Created At</h4>
+                            <p className="text-sm text-muted-foreground">
+                                {record?.created_at ? new Date(record.created_at).toLocaleString() : "-"}
+                            </p>
+                        </div>
+
+                        <Separator />
+
+                        <div>
+                            <h4 className="text-sm font-medium mb-2">Updated At</h4>
+                            <p className="text-sm text-muted-foreground">
+                                {record?.updated_at ? `${new Date(record.updated_at).toLocaleString()}` : "-"}
+                            </p>
+                        </div>
+
+                        <Separator />
+                        
                         <div>
                             <h4 className="text-sm font-medium mb-4">Prices</h4>
                             <div className=" grid grid-cols-4 sm:grid-cols-6">
@@ -147,24 +174,6 @@ export default ({ loaderData }: Route.ComponentProps) => {
                                     {loading ? "Loading..." : result?.image || "-"}
                                 </p>
                             </Link> */}
-                        </div>
-
-                        <Separator />
-
-                        <div>
-                            <h4 className="text-sm font-medium mb-2">Created At</h4>
-                            <p className="text-sm text-muted-foreground">
-                                {record?.created_at ? new Date(record.created_at).toLocaleString() : "-"}
-                            </p>
-                        </div>
-
-                        <Separator />
-
-                        <div>
-                            <h4 className="text-sm font-medium mb-2">Updated At</h4>
-                            <p className="text-sm text-muted-foreground">
-                                {record?.updated_at ? `${new Date(record.updated_at).toLocaleString()}` : "-"}
-                            </p>
                         </div>
                     </CardContent>
                 </Card>
