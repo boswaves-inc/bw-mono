@@ -1,0 +1,3 @@
+DROP VIEW "public"."cart_data";--> statement-breakpoint
+ALTER MATERIALIZED VIEW "public"."plan_data" RENAME TO "item_plan_data";--> statement-breakpoint
+CREATE VIEW "public"."cart_data" AS (select "cart_info"."id", "cart_info"."uid", json_agg(json_build_object('id', "item_plan_data"."id", 'name', "item_plan_data"."name", 'type', "item_plan_data"."type", 'status', "item_plan_data"."status")) as "items" from "cart_info" left join "cart_item" on "cart_info"."id" = "cart_item"."id" inner join "item_plan_data" on "cart_item"."item" = "item_plan_data"."id" group by "cart_info"."id");

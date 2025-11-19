@@ -1,5 +1,5 @@
 import { index, pgEnum, pgMaterializedView, pgView, uniqueIndex } from "drizzle-orm/pg-core";
-import { Item, ItemPrice, ItemScript } from "./item";
+import { Item,  ItemScript } from "./item";
 import { eq, type InferEnum, } from "drizzle-orm";
 
 // export const ScriptData = pgMaterializedView('script_data').as(qb => {

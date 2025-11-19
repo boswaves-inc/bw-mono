@@ -5,7 +5,7 @@ import cors from "cors";
 import { eq } from 'drizzle-orm';
 import type Chargebee from 'chargebee'
 import type { Postgres } from '@bw/core/postgres'
-import { Item, ItemPrice, ItemScript, PeriodUnit, PlanData, PriceModel } from '@bw/core'
+import { Item, PlanPrice, ItemScript, PeriodUnit, PlanData, PriceModel } from '@bw/core'
 import type { TradingView } from '@bw/core/tradingview';
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z, { array, object } from 'zod/v4';
@@ -74,7 +74,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                     image: script.image.big
                 }).returning().then(x => x[0]);
 
-                const prices = await tx.insert(ItemPrice).values(data.item_price.map(price => ({
+                const prices = await tx.insert(PlanPrice).values(data.item_price.map(price => ({
                     id: item.id,
                     ...price,
                 }))).returning()

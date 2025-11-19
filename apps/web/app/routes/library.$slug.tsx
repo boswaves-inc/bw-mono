@@ -7,7 +7,7 @@ import FaqAccordion from "~/sections/faq/accordion";
 import { data, Link, useFetcher } from "react-router";
 import Button from "~/components/core/button";
 import Panel from "~/components/core/panel";
-import { Script } from "@bw/core";
+import { PlanData } from "@bw/core";
 import { eq } from "drizzle-orm";
 import { useCart } from "~/context/cart";
 import { includes } from "lodash";
@@ -21,7 +21,7 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export async function loader({ params, context }: Route.LoaderArgs) {
-  const product = await context.postgres.select().from(Script).where(eq(Script.slug, params.slug)).then(x => x.at(0))
+  const product = await context.postgres.select().from(PlanData).where(eq(PlanData.slug, params.slug)).then(x => x.at(0))
 
   if (product == undefined) {
     throw data(`item ${params.slug} does not exist`, 404)
@@ -38,14 +38,14 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default ({ loaderData }: Route.ComponentProps) => {
   const cart = useCart()
-  const included = cart.includes('item', loaderData.id)
+  const included = cart.includes(loaderData.type, loaderData.id)
 
   const onToggle = () => {
     if (included) {
-      cart.pop('item', loaderData.id)
+      cart.pop(loaderData.type, loaderData.id)
     }
     else {
-      cart.push('item', loaderData.id)
+      cart.push(loaderData.type, loaderData.id)
     }
   }
 
@@ -90,12 +90,12 @@ export default ({ loaderData }: Route.ComponentProps) => {
         </div>
         <div className="block md:hidden mt-6">
           <div className="relative overflow-hidden rounded-2xl ring-1 shadow-xl ring-gray-900/5 dark:ring-white/5">
-            <img src={loaderData.image} className="aspect-4/3" />
+            <img src={loaderData.script.image} className="aspect-4/3" />
           </div>
         </div>
         <div className="hidden md:block mt-6">
           <div className="relative overflow-hidden rounded-2xl ring-1 shadow-xl ring-gray-900/5 dark:ring-white/5 h-[500px]">
-            <img src={loaderData.image} className="absolute ring-1 w-[calc(100%+6px)] h-[500px] overflow-hidden" />
+            <img src={loaderData.script.image} className="absolute ring-1 w-[calc(100%+6px)] h-[500px] overflow-hidden" />
             {/* <iframe src="https://s.tradingview.com/embed/ItnS5Inz" className="absolute -inset-x-1 outline-0 -top-px -bottom-6 ring w-[calc(100%+6px)] h-[524px] overflow-hidden" /> */}
           </div>
         </div>

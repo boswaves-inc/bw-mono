@@ -1,9 +1,10 @@
 import { User } from "./user";
-import { Item, ItemCoupon, ItemScript, ItemType } from "./item";
-import { pgTable, pgView, primaryKey } from "drizzle-orm/pg-core";
-import { eq, max, sql, type InferSelectModel, type InferSelectViewModel } from "drizzle-orm";
+import { Item, ItemScript, ItemType } from "./item";
+import { foreignKey, pgTable, pgView, primaryKey } from "drizzle-orm/pg-core";
+import { eq, max, or, sql, type InferSelectModel, type InferSelectViewModel } from "drizzle-orm";
 import { array_agg, coalesce, filter, json_agg_object } from "../utils/drizzle";
 import { CouponData } from "./coupon";
+import { PlanData } from "./plan";
 // import { ScriptData } from "./script";
 
 export const Cart = pgTable("cart_info", (t) => ({
@@ -17,43 +18,83 @@ export const Cart = pgTable("cart_info", (t) => ({
 }));
 
 export const CartItem = pgTable("cart_item", (t) => ({
-    cart_id: t.uuid().references(() => Cart.id, {
+    id: t.uuid().references(() => Cart.id, {
         onDelete: 'cascade',
         onUpdate: 'cascade'
     }).notNull(),
-    item_id: t.uuid().references(() => Item.id, {
+    item: t.uuid().references(() => Item.id, {
         onDelete: 'cascade',
         onUpdate: 'cascade'
     }).notNull(),
-    item_type: ItemType('item_type').notNull(),
+    type: ItemType('type').notNull(),
     created_at: t.timestamp().defaultNow().notNull(),
     updated_at: t.timestamp().defaultNow().notNull(),
-}), ({ cart_id, item_id }) => [
-    primaryKey({ columns: [cart_id, item_id] }),
+}), ({ id, item, type }) => [
+    primaryKey({ columns: [id, item] }),
+    foreignKey({
+        columns: [item, type],
+        foreignColumns: [Item.id, Item.type]
+    }).onDelete('cascade').onUpdate('cascade'),
 ]);
+
+export const CartData = pgView('cart_data').as(qb => {
+    return qb.select({
+        id: Cart.id,
+        uid: Cart.uid,
+        items: json_agg_object({
+            id: PlanData.id,
+            name: PlanData.name,
+            type: PlanData.type,
+            status: PlanData.status
+        }).as('items')
+        // items: coalesce(
+        //     filter(
+        //         json_agg_object({
+        //             id: PlanData.id,
+        //             // uuid: PlanData.uuid,
+        //             // type: PlanData.type,
+        //             // name: PlanData.name,
+        //             // slug: PlanData.slug,
+        //             // status: PlanData.status,
+        //             // image: PlanData.image,
+        //             // description: PlanData.description,
+        //             // created_at: PlanData.created_at,
+        //             // updated_at: PlanData.updated_at,
+        //             // archived_at: PlanData.archived_at,
+        //         }),
+        //         or(
+        //             eq(CartItem.type, 'plan'),
+        //         )
+        //     ), sql`'[]'::json`
+        // ).as('items'),
+    }).from(Cart)
+        .leftJoin(CartItem, eq(Cart.id, CartItem.id))
+        .innerJoin(PlanData, eq(CartItem.item, PlanData.id))
+        .groupBy(Cart.id)
+})
 
 // export const CartData = pgView('cart_data').as(qb => {
 //     return qb.select({
 //         id: Cart.id,
 //         uid: Cart.uid,
-//         items: coalesce(
-//             filter(
-//                 json_agg_object({
-//                     id: ScriptData.id,
-//                     uuid: ScriptData.uuid,
-//                     type: ScriptData.type,
-//                     name: ScriptData.name,
-//                     slug: ScriptData.slug,
-//                     status: ScriptData.status,
-//                     image: ScriptData.image,
-//                     description: ScriptData.description,
-//                     created_at: ScriptData.created_at,
-//                     updated_at: ScriptData.updated_at,
-//                     archived_at: ScriptData.archived_at,
-//                 }),
-//                 eq(CartItem.item_type, 'script')
-//             ), sql`'[]'::json`
-//         ).as('items'),
+// items: coalesce(
+//     filter(
+//         json_agg_object({
+//             id: ScriptData.id,
+//             uuid: ScriptData.uuid,
+//             type: ScriptData.type,
+//             name: ScriptData.name,
+//             slug: ScriptData.slug,
+//             status: ScriptData.status,
+//             image: ScriptData.image,
+//             description: ScriptData.description,
+//             created_at: ScriptData.created_at,
+//             updated_at: ScriptData.updated_at,
+//             archived_at: ScriptData.archived_at,
+//         }),
+//         eq(CartItem.item_type, 'script')
+//     ), sql`'[]'::json`
+// ).as('items'),
 //         // coupons: filter(
 //         //     array_agg(ItemCoupon),
 //         //     eq(CartItem.item_type, 'coupon')

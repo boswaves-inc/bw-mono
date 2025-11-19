@@ -1,3 +1,4 @@
+import type { ItemType } from "@bw/core"
 import { createContext, useContext, useEffect, useState, type PropsWithChildren } from "react"
 import { useFetcher } from "react-router"
 import type { Cart } from "~/types"
@@ -6,9 +7,9 @@ const CONTEXT = createContext<{
     coupons: string[],
     items: string[],
     empty: boolean,
-    includes: (type: 'coupon' | 'item', id: string) => boolean,
-    push: (type: 'coupon' | 'item', id: string) => void,
-    pop: (type: 'coupon' | 'item', id: string) => void,
+    includes: (type: ItemType, id: string) => boolean,
+    push: (type: ItemType, id: string) => void,
+    pop: (type: ItemType, id: string) => void,
 }>({} as any)
 
 export const CartProvider = ({ children, cart }: PropsWithChildren<{ cart: Cart | undefined }>) => {
@@ -17,14 +18,14 @@ export const CartProvider = ({ children, cart }: PropsWithChildren<{ cart: Cart 
     const fetcher = useFetcher<Cart>()
     const current = fetcher.data ?? inner
 
-    const includes = (type: 'coupon' | 'item', id: string) => {
+    const includes = (type: ItemType, id: string) => {
         if (type === 'coupon') {
             return current.coupons.includes(id)
         }
         return current.items.includes(id)
     }
 
-    const push = async (type: 'coupon' | 'item', id: string) => {
+    const push = async (type: ItemType, id: string) => {
         // Optimistic update
         if (type === 'coupon' && !current.coupons.includes(id)) {
             setInner(current => ({
@@ -32,7 +33,7 @@ export const CartProvider = ({ children, cart }: PropsWithChildren<{ cart: Cart 
                 coupons: current.coupons.concat(id)
             }))
         }
-        else if (type === 'item' && !current.items.includes(id)) {
+        else if (!current.items.includes(id)) {
             setInner(current => ({
                 ...current,
                 items: current.items.concat(id)
@@ -45,14 +46,14 @@ export const CartProvider = ({ children, cart }: PropsWithChildren<{ cart: Cart 
         })
     }
 
-    const pop = async (type: 'coupon' | 'item', id: string) => {
+    const pop = async (type: ItemType, id: string) => {
         if (type === 'coupon' && current.coupons.includes(id)) {
             setInner(current => ({
                 ...current,
                 coupons: current.coupons.filter(x => x !== id)
             }))
         }
-        else if (type === 'item' && current.items.includes(id)) {
+        else if (current.items.includes(id)) {
             setInner(current => ({
                 ...current,
                 items: current.items.filter(x => x !== id)

@@ -20,7 +20,7 @@ export const PeriodUnit = pgEnum('period_unit', [
     'year'
 ])
 
-export const PriceModel = pgEnum('price_model', [
+export const PricingModel = pgEnum('pricing_model', [
     'flat_fee',
     'per_unit'
 ])
@@ -53,7 +53,7 @@ export const CouponApplication = pgEnum('coupon_application', [
 
 export type Status = InferEnum<typeof Status>
 export type PeriodUnit = InferEnum<typeof PeriodUnit>
-export type PriceModel = InferEnum<typeof PriceModel>
+export type PricingModel = InferEnum<typeof PricingModel>
 export type ScriptType = InferEnum<typeof ScriptType>
 export type CouponType = InferEnum<typeof CouponType>
 export type CouponDuration = InferEnum<typeof CouponDuration>

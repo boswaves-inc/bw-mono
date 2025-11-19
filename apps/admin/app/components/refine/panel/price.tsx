@@ -1,4 +1,4 @@
-import { ItemPrice, PriceModel, type PeriodUnit } from "@bw/core";
+import { PlanPrice, PriceModel, type PeriodUnit } from "@bw/core";
 import { formatCurrency } from "@coingecko/cryptoformat";
 import _ from "lodash";
 import { Pencil, Trash } from "lucide-react";
@@ -11,7 +11,7 @@ import { Panel, PanelClose, PanelContent, PanelDescription, PanelFooter, PanelHe
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/core/select";
 import { Flag } from "~/components/flag";
 
-export const PricePanel = ({ index, currency, period, defaultValue }: { index: number, period: PeriodUnit, currency: string, defaultValue?: ItemPrice | undefined }) => {
+export const PricePanel = ({ index, currency, period, defaultValue }: { index: number, period: PeriodUnit, currency: string, defaultValue?: PlanPrice | undefined }) => {
     const [open, setOpen] = useState<boolean>(false)
     const [state, setState] = useState<{ price: number, pricing_model: PriceModel } | undefined>(defaultValue)
 

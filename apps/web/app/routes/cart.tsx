@@ -8,6 +8,8 @@ import { cartSession } from "~/cookie";
 import { getSession } from "~/utils/session";
 import { Cart, CartItem } from "@bw/core";
 import { and, eq } from "drizzle-orm";
+import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
+import { ItemType } from "@bw/core/schema/item.ts";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -23,17 +25,17 @@ export async function loader({ }: Route.LoaderArgs) {
 
 export async function action({ request, context }: Route.ActionArgs) {
     const session = await getSession(request, cartSession)
-    const schema = formData(object({
-        id: z.uuidv4(),
-        type: z.enum(['coupon', 'script'])
+    const schema = formData(createInsertSchema(CartItem).pick({
+        id: true,
+        type: true
     }))
+
 
     switch (request.method) {
         case 'PUT': {
             const form = await request.formData()
             const result = await schema.parseAsync(form)
 
-            // Open a new postgres transaction
             await context.postgres.transaction(async tx => {
                 const cart_id = await new Promise<string>(async resolve => {
                     const current = session.get('id');
@@ -59,14 +61,51 @@ export async function action({ request, context }: Route.ActionArgs) {
                         updated_at: new Date()
                     }),
                     tx.insert(CartItem).values({
-                        cart_id,
-                        item_id: result.id,
-                        item_type: result.type
+                        id: cart_id,
+                        item: result.id,
+                        type: result.type
                     })
                 ])
 
-                // await tx.refreshMaterializedView(CartData)
+                // tx.select
+
+                console.log(cart_id)
             })
+
+            // // Open a new postgres transaction
+            // await context.postgres.transaction(async tx => {
+            //     const cart_id = await new Promise<string>(async resolve => {
+            //         const current = session.get('id');
+
+            //         if (current != undefined) {
+            //             return resolve(current)
+            //         }
+
+            //         // Create a new cart here
+            //         const cart = await tx.insert(Cart).values({
+            //             uid: undefined
+            //         }).returning().then(x => x[0])
+
+            //         // Set the cart to the session cookie for tracking
+            //         session.set('id', cart.id)
+
+            //         return resolve(cart.id)
+            //     })
+
+            //     // Insert the item and update the cart
+            //     await Promise.all([
+            //         tx.update(Cart).set({
+            //             updated_at: new Date()
+            //         }),
+            //         tx.insert(CartItem).values({
+            //             id: cart_id,
+            //             item: result.id,
+            //             type: result.type
+            //         })
+            //     ])
+
+            //     // await tx.refreshMaterializedView(CartData)
+            // })
 
             return data({ items: [], coupons: [] }, {
                 headers: [
@@ -86,8 +125,8 @@ export async function action({ request, context }: Route.ActionArgs) {
 
             await context.postgres.transaction(async tx => {
                 await tx.delete(CartItem).where(and(
-                    eq(CartItem.item_id, result.id),
-                    eq(CartItem.cart_id, cart_id)
+                    eq(CartItem.item, result.id),
+                    eq(CartItem.id, cart_id)
                 ))
 
                 await tx.update(Cart).set({

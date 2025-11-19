@@ -162,7 +162,7 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
               </Link>
               <div className="block p-4 w-fit">
                 {/* <Link to={`./${item.slug}`}> */}
-                <Button data-selected={cart.includes('item', item.id)} className="group/button">
+                <Button data-selected={cart.includes('plan', item.id)} className="group/button">
                   <div className="relative">
                     <PlusIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all duration-200 group-data-[selected=true]/button:scale-0 group-data-[selected=true]/button:-rotate-90" />
                     <CheckIcon className="absolute h-[1.2rem] inset-0 w-[1.2rem] rotate-90 scale-0 transition-all duration-200 group-data-[selected=true]/button:scale-100 group-data-[selected=true]/button:rotate-0" />

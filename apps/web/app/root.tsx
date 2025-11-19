@@ -53,7 +53,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
         uid: Cart.uid,
         is_empty: sql<boolean>`NOT EXISTS (
           SELECT 1 FROM ${CartItem} 
-          WHERE ${CartItem.cart_id} = ${Cart.id}
+          WHERE ${CartItem.id} = ${Cart.id}
         )`.as('is_empty'),
         created_at: Cart.created_at,
         updated_at: Cart.updated_at
