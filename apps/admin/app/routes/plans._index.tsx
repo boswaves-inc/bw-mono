@@ -15,7 +15,7 @@ export default () => {
         result: { data },
         query: { isLoading: loading },
     } = useList({
-        resource: "scripts",
+        resource: "plans",
         pagination: {
             currentPage: 1,
             pageSize: 999,

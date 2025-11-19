@@ -26,7 +26,9 @@ export default ({ loaderData }: Route.ComponentProps) => {
 
     const { result: record } = useShow<PlanData>({});
     const { refineCore: { onFinish, query }, ...form } = useForm<PlanData>({
-        refineCoreProps: {},
+        refineCoreProps: {
+            resource: 'plans'
+        },
     });
 
     function onSubmit(values: Record<string, string>) {

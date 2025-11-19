@@ -32,6 +32,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
 
     const { refineCore: { onFinish }, ...form } = useForm({
         refineCoreProps: {
+            resource: 'plans'
         }
     });
 
@@ -41,7 +42,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
 
     return (
         <CreateView>
-            <CreateViewHeader resource="scripts" />
+            <CreateViewHeader resource="plans" />
             <Form  {...form} >
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-6">
                     <FormField
