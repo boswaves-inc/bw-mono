@@ -23,6 +23,7 @@ import { cartSession } from "./cookie";
 // import { CartData } from "@bw/core/schema/cart.ts";
 import { count, countDistinct, eq, sql } from "drizzle-orm";
 import { Cart, CartData, CartItem } from "@bw/core";
+  import countryToCurrency, { type Currencies, type Countries } from "country-to-currency";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -43,7 +44,7 @@ export const links: LinksFunction = () => [
 ];
 
 export async function loader({ request, context }: Route.LoaderArgs) {
-  const session =  await getSession(request, cartSession);
+  const session = await getSession(request, cartSession);
 
   const cart = await new Promise<CartData | undefined>(async resolve => {
     if (context.cart) {
@@ -51,7 +52,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
         eq(CartData.id, context.cart)
       ).limit(1).then(x => x.at(0));
 
-      if(result == undefined){
+      if (result == undefined) {
         session.unset('id')
       }
 
@@ -60,6 +61,16 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 
     return resolve(undefined)
   })
+
+  const currency = await new Promise(async resolve => {
+    if (context.geo?.country != undefined) {
+      const iso_code = context.geo.country.iso_code;
+
+
+      console.log(context.geo.registered_country)
+    }
+    resolve('USD')
+  });
 
   return data({ theme: context.theme, cart }, {
     headers: [
