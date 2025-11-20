@@ -1,14 +1,14 @@
 import "react-router";
 import type Chargebee from "chargebee";
 import type { Postgres } from "@bw/core/postgres";
-import { ipInfo } from 'fast-geoip';
+import { CityResponse } from "maxmind";
 
 declare module "react-router" {
   interface AppLoadContext {
-    postgres: Postgres
-    geo: ipInfo | null,
+    geo: CityResponse | null,
     theme: 'dark' | 'light'
     cart: string | undefined
+    postgres: Postgres
     chargebee: InstanceType<typeof Chargebee>
   }
 }

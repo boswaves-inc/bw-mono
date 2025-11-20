@@ -3,11 +3,14 @@ import express from "express";
 import Chargebee from 'chargebee';
 import theme, { getTheme } from "./theme";
 import postgres, { Postgres } from "@bw/core/postgres";
-import geoip from 'fast-geoip';
+import maxmind, { type CountryResponse } from 'maxmind';
+
+// import ss from './geolite/country.mmdb'
 
 import "react-router";
 import { getSession } from "~/utils/session";
 import { cartSession } from "~/cookie";
+import { Maxmind } from "./maxmind";
 
 if (!process.env.CB_SITE) {
   throw new Error('CB_SITE variable not set')
@@ -24,7 +27,11 @@ if (!process.env.CB_FAMILY) {
 // const api_router = express()
 const app_router = express();
 
+
 // const tv_client = new TradingView();
+// const geo_client = await maxmind.open<CountryResponse>('./geolite/country.mmdb')
+const geo_client = await Maxmind.open()
+
 const pg_client = new Postgres()
 const cb_client = new Chargebee({
   site: process.env.CB_SITE!,
@@ -63,15 +70,13 @@ app_router.use(postgres({
 app_router.use(createRequestHandler({
   build: () => import("virtual:react-router/server-build"),
   getLoadContext: async (req, res) => {
-    geoip.enableCache()
-
     const [theme, session] = await Promise.all([
       getTheme(req),
       cartSession.getSession(req.headers.cookie)
     ])
 
     const cart = session.get('id')
-    const geo = await geoip.lookup(req.ip || '')
+    const geo = geo_client.city.get(req.ip || '')
 
     return {
       geo,
