@@ -3,7 +3,7 @@ import { formatCurrency } from "@coingecko/cryptoformat";
 import type { Currency } from "chargebee";
 import _ from "lodash";
 import { Pencil, Trash } from "lucide-react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment,  useState } from "react";
 import { useFieldArray, useFormContext, useForm as useReactForm, useWatch } from 'react-hook-form'
 import { Button } from "~/components/core/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/core/form";
