@@ -42,11 +42,10 @@ export const ItemPrice = pgTable('item_price', (t) => ({
     created_at: t.timestamp().defaultNow().notNull(),
     updated_at: t.timestamp().defaultNow().notNull(),
 }), (table) => [
-    uniqueIndex("item_price_item_idx").on(table.item_id),
     uniqueIndex("item_price_name_unq").on(table.name).where(sql`status != 'deleted'`),
-    uniqueIndex('item_price_item_currency_unq').on(table.item_id, table.currency_code, table.period, table.period_unit).where(sql`status != 'deleted'`),
-    
+    uniqueIndex('item_price_item_currency_idx').on(table.item_id, table.currency_code, table.period, table.period_unit).where(sql`status != 'deleted'`),
     index("item_price_currency_idx").on(table.currency_code),
+    index("item_price_item_idx").on(table.item_id),
 ]);
 
 export const ItemCoupon = pgTable("item_coupon", (t) => ({

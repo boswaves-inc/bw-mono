@@ -9,7 +9,7 @@ import type { TradingView } from '@bw/core/tradingview';
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z, { array } from 'zod/v4';
 import { zfd } from 'zod-form-data';
-import { array_agg, json_agg_object } from '@bw/core/utils/drizzle.ts';
+import { json_agg_object } from '@bw/core/utils/drizzle.ts';
 
 export default ({ family, postgres, tradingview, chargebee }: { family: string, postgres: Postgres, chargebee: Chargebee, tradingview: TradingView }) => {
     const router = express()
@@ -31,7 +31,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                 script: ItemScript,
                 item_price: json_agg_object({
                     ...getTableColumns(ItemPrice)
-                })
+                }, isNotNull(ItemPrice.id)),
             }).from(Item)
                 .innerJoin(ItemScript, eq(ItemScript.id, Item.id))
                 .leftJoin(ItemPrice,
@@ -155,7 +155,9 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                 slug: Item.slug,
                 status: Item.status,
                 script: ItemScript,
-                item_price: array_agg(ItemPrice, isNotNull(ItemPrice)),
+                item_price: json_agg_object({
+                    ...getTableColumns(ItemPrice)
+                }, isNotNull(ItemPrice.id)),
             }).from(Item)
                 .innerJoin(ItemScript, eq(ItemScript.id, Item.id))
                 .leftJoin(ItemPrice,
@@ -245,21 +247,20 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                         currency_code,
                         pricing_model,
                         status: 'active',
+                        id: id ?? undefined,
                         item_id: req.params.id,
                         name: _.snakeCase(`${data.name}_${currency_code}_${period_unit}`),
                     }).onConflictDoUpdate(({
-                        target: [
-                            ItemPrice.period,
-                            ItemPrice.item_id,
-                            ItemPrice.period_unit,
-                            ItemPrice.currency_code,
-                        ],
+                        target: [ItemPrice.item_id, ItemPrice.period, ItemPrice.period_unit, ItemPrice.currency_code],
                         set: {
                             price,
                             pricing_model
-                        }
+                        },
+                        targetWhere: ne(ItemPrice.status, 'deleted')
                     })).returning().then(x => ({ ...x[0], created: id == undefined }))
                 )))
+
+                console.log(data.item_price)
 
                 const deleted_prices = current_prices.filter(x => item_prices.findIndex(y => y.id == x.id) == -1)
 

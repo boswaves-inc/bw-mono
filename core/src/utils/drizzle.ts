@@ -103,11 +103,20 @@ export function coalesce<T>(value: SQL.Aliased<T> | SQL<T>, defaultValue: SQL) {
 //     return sql`json_agg(${sql.join(entries, sql`, `)})`
 // }
 
-export const json_agg_object = <T extends Record<string, AnyColumn | SQL>>(obj: T): SQL<{ [K in keyof T]: T[K] extends AnyColumn ? GetColumnData<T[K]> : T[K] extends SQL<infer U> ? U : never }[]> => {
+export function json_agg_object<T extends Record<string, AnyColumn | SQL>>(obj: T): SQL<{ [K in keyof T]: T[K] extends AnyColumn ? GetColumnData<T[K]> : T[K] extends SQL<infer U> ? U : never }[]>;
+export function json_agg_object<T extends Record<string, AnyColumn | SQL>>(obj: T, condition: SQL): SQL<{ [K in keyof T]: T[K] extends AnyColumn ? GetColumnData<T[K]> : T[K] extends SQL<infer U> ? U : never }[]>;
+export function json_agg_object<T extends Record<string, AnyColumn | SQL>>(obj: T, condition?: SQL): SQL<{ [K in keyof T]: T[K] extends AnyColumn ? GetColumnData<T[K]> : T[K] extends SQL<infer U> ? U : never }[]> {
     const entries = Object.entries(obj).flatMap(([key, value]) => [
         sql.raw(`'${key}'`),
         value
     ]);
+
+    if(condition != undefined){
+        return filter(
+            sql`json_agg(json_build_object(${sql.join(entries, sql`, `)}))`,
+            condition
+        )
+    }
 
     return sql`json_agg(json_build_object(${sql.join(entries, sql`, `)}))`
 }
@@ -160,6 +169,6 @@ export function array_agg<T extends SQLWrapper>(expression: T, condition?: SQL):
     if (condition != undefined) {
         return sql<InferData<T>[] | null>`array_agg(${expression}) filter (where ${condition})`;
     }
-    
+
     return sql<InferData<T>[] | null>`array_agg(${expression})`;
 }

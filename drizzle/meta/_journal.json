@@ -15,6 +15,20 @@
       "when": 1764246108029,
       "tag": "0001_sad_zeigeist",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1764248347308,
+      "tag": "0002_amused_blazing_skull",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1764249421129,
+      "tag": "0003_gorgeous_romulus",
+      "breakpoints": true
     }
   ]
 }

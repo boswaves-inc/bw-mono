@@ -16,7 +16,7 @@ export const PricePanel = ({ currency, period_unit: period }: { period_unit: Per
     const [open, setOpen] = useState<boolean>(false)
 
     const root = useFormContext<{
-        item_price: (Pick<ItemPrice, 'period_unit' | 'period' | 'currency_code' | 'pricing_model' | 'price'> | null)[]
+        item_price: (Pick<ItemPrice, 'period_unit' | 'period' | 'currency_code' | 'pricing_model' | 'price'> & { id?: string } | null)[]
     }>()
 
     const prices = useFieldArray({
@@ -37,11 +37,12 @@ export const PricePanel = ({ currency, period_unit: period }: { period_unit: Per
         values: field ?? undefined
     });
 
-    const onValid = (data: Pick<ItemPrice, 'pricing_model' | 'price'>) => {
+    const onValid = (data: Pick<ItemPrice, 'pricing_model' | 'price'> & { id?: string }) => {
         if (index >= 0) {
             prices.update(index, {
-                price: data.price,
                 period: 1,
+                id: data.id,
+                price: data.price,
                 period_unit: period,
                 pricing_model: data.pricing_model,
                 currency_code: currency.currency_code,
@@ -49,8 +50,8 @@ export const PricePanel = ({ currency, period_unit: period }: { period_unit: Per
         }
         else {
             prices.append({
-                price: data.price,
                 period: 1,
+                price: data.price,
                 period_unit: period,
                 pricing_model: data.pricing_model,
                 currency_code: currency.currency_code
@@ -84,7 +85,7 @@ export const PricePanel = ({ currency, period_unit: period }: { period_unit: Per
             ) : (
                 <div className="flex">
                     <Fragment>
-                        <FormField name={`item_price.${index}.id`} render={({ field }) => <input hidden {...field} />} />
+                        <FormField name={`item_price.${index}.id`} render={({ field: props }) => <input hidden {...props} />} />
                         <FormField name={`item_price.${index}.period`} render={({ field }) => <input type="number" hidden {...field} />} />
                         <FormField name={`item_price.${index}.period_unit`} render={({ field }) => <input hidden {...field} value={period} />} />
                         <FormField name={`item_price.${index}.currency_code`} render={({ field }) => <input hidden {...field} value={currency.currency_code} />} />
