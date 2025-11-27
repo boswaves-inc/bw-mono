@@ -32,7 +32,7 @@ export const ItemPrice = pgTable('item_price', (t) => ({
         onUpdate: 'cascade'
     }).notNull(),
     price: t.integer("price").notNull(),
-    
+    name: t.text("name").notNull(),
     period: t.integer("period").notNull(), 
     period_unit: PeriodUnit('period_unit').notNull(),
     currency_code: t.text("currency_code").notNull(), // ISO 4217: 'USD', 'EUR', 'GBP', etc.
@@ -42,11 +42,11 @@ export const ItemPrice = pgTable('item_price', (t) => ({
     created_at: t.timestamp().defaultNow().notNull(),
     updated_at: t.timestamp().defaultNow().notNull(),
 }), (table) => [
-    // primaryKey({ columns: [table.item_id, table.currency_code, table.period_unit] }),
-    index("item_price_item_idx").on(table.item_id),
+    uniqueIndex("item_price_item_idx").on(table.item_id),
+    uniqueIndex("item_price_name_unq").on(table.name).where(sql`status != 'deleted'`),
+    uniqueIndex('item_price_item_currency_unq').on(table.item_id, table.currency_code, table.period, table.period_unit).where(sql`status != 'deleted'`),
+    
     index("item_price_currency_idx").on(table.currency_code),
-    index("item_price_item_currency_idx").on(table.item_id, table.currency_code, table.period, table.period_unit),
-    unique('item_price_item_currency_unq').on(table.item_id, table.currency_code, table.period, table.period_unit)
 ]);
 
 export const ItemCoupon = pgTable("item_coupon", (t) => ({

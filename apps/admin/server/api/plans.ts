@@ -99,6 +99,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
 
                 const prices = data.item_price.length > 0 ? await tx.insert(ItemPrice).values(data.item_price.map(price => ({
                     ...price,
+                    name: _.snakeCase(`${data.name}_${price.currency_code}_${price.period_unit}`),
                     item_id: item.id
                 }))).returning() : []
 
@@ -193,7 +194,8 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
 
         try {
             const data = await schema.parseAsync(req.body)
-            const result = await postgres.transaction(async tx => {
+
+            await postgres.transaction(async tx => {
                 if (data.name != undefined || data.status != undefined) {
                     await tx.update(Item).set({
                         name: data.name,
@@ -232,6 +234,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                         currency_code,
                         pricing_model,
                         item_id: req.params.id,
+                        name: _.snakeCase(`${data.name}_${currency_code}_${period_unit}`),
                     }).onConflictDoUpdate(({
                         target: [
                             ItemPrice.period,

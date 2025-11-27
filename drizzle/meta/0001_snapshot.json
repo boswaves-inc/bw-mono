@@ -1,5 +1,5 @@
 {
-  "id": "f9aa445c-6c24-465e-a3ec-630830235f28",
+  "id": "ac94e9d5-ce4f-451d-859e-de33d7ef4258",
   "prevId": "6b27af5c-8068-431c-9d14-551af1cb649c",
   "version": "7",
   "dialect": "postgresql",
@@ -358,6 +358,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "period": {
           "name": "period",
           "type": "integer",
@@ -418,28 +424,29 @@
               "nulls": "last"
             }
           ],
-          "isUnique": false,
+          "isUnique": true,
           "concurrently": false,
           "method": "btree",
           "with": {}
         },
-        "item_price_currency_idx": {
-          "name": "item_price_currency_idx",
+        "item_price_name_unq": {
+          "name": "item_price_name_unq",
           "columns": [
             {
-              "expression": "currency_code",
+              "expression": "name",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
             }
           ],
-          "isUnique": false,
+          "isUnique": true,
+          "where": "status != 'deleted'",
           "concurrently": false,
           "method": "btree",
           "with": {}
         },
-        "item_price_item_currency_idx": {
-          "name": "item_price_item_currency_idx",
+        "item_price_item_currency_unq": {
+          "name": "item_price_item_currency_unq",
           "columns": [
             {
               "expression": "item_id",
@@ -461,6 +468,22 @@
             },
             {
               "expression": "period_unit",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "status != 'deleted'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "item_price_currency_idx": {
+          "name": "item_price_currency_idx",
+          "columns": [
+            {
+              "expression": "currency_code",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -488,18 +511,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "item_price_item_currency_unq": {
-          "name": "item_price_item_currency_unq",
-          "nullsNotDistinct": false,
-          "columns": [
-            "item_id",
-            "currency_code",
-            "period",
-            "period_unit"
-          ]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
