@@ -1,0 +1,1 @@
+ALTER TABLE "item_price" ADD CONSTRAINT "item_price_item_currency_unq" UNIQUE("item_id","currency_code","period","period_unit");
