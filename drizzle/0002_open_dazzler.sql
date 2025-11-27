@@ -1,1 +1,0 @@
-ALTER TABLE "item_price" ADD COLUMN "period" integer DEFAULT 1 NOT NULL;

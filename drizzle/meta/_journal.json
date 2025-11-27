@@ -12,43 +12,8 @@
     {
       "idx": 1,
       "version": "7",
-      "when": 1764225811848,
-      "tag": "0001_rare_shadowcat",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1764227512590,
-      "tag": "0002_open_dazzler",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1764227892452,
-      "tag": "0003_robust_demogoblin",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1764238346702,
-      "tag": "0004_parallel_the_executioner",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1764238381693,
-      "tag": "0005_sloppy_meltdown",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1764239175574,
-      "tag": "0006_cold_dazzler",
+      "when": 1764241916551,
+      "tag": "0001_soft_pepper_potts",
       "breakpoints": true
     }
   ]

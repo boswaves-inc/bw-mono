@@ -1,5 +1,5 @@
-import {  sql, type InferEnum, type InferSelectModel } from "drizzle-orm";
-import {  index, pgEnum, pgTable,  unique } from "drizzle-orm/pg-core";
+import {  ne, sql, type InferEnum, type InferSelectModel } from "drizzle-orm";
+import {  index, pgEnum, pgTable,  unique, uniqueIndex } from "drizzle-orm/pg-core";
 import { CouponApplication, CouponType, PeriodUnit, PricingModel, ScriptType, Status } from "./types";
 
 export const ItemType = pgEnum('item_type', [
@@ -12,17 +12,17 @@ export const ItemType = pgEnum('item_type', [
 export const Item = pgTable("item", (t) => ({
     id: t.uuid().notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
     type: ItemType('type').notNull(),
-    name: t.text("name").unique().notNull(),
+    name: t.text("name").notNull(),
     slug: t.text("slug").unique().notNull().generatedAlwaysAs(
         sql`lower(regexp_replace(name, '[^a-zA-Z0-9]+', '-', 'g'))`
     ),
     status: Status("status").default('archived').notNull(),
     created_at: t.timestamp().defaultNow().notNull(),
-    updated_at: t.timestamp().defaultNow().notNull(),
-    archived_at: t.timestamp(),
+    updated_at: t.timestamp().defaultNow().notNull()
 }), table => [
-    unique('item_info_id_type_unq').on(table.id, table.type),
-    index("item_info_slug_idx").on(table.slug),
+    uniqueIndex("item_info_slug_unq").on(table.slug),
+    uniqueIndex("item_info_name_unq").on(table.name).where(sql`status != 'deleted'`),
+    uniqueIndex('item_info_id_type_unq').on(table.id, table.type).where(sql`status != 'deleted'`),
 ]);
 
 export const ItemPrice = pgTable('item_price', (t) => ({
@@ -68,12 +68,14 @@ export const ItemScript = pgTable("item_script", (t) => ({
     index('item_script_id_idx').on(table.id),
 ]);
 
-
-
-/** https://apidocs.chargebee.com/docs/api/item_prices*/
-export type ItemPrice = InferSelectModel<typeof ItemPrice>  
-export type Item = InferSelectModel<typeof Item>
 export type ItemType = InferEnum<typeof ItemType>
+
+/** https://apidocs.chargebee.com/docs/api/item_prices */
+export type ItemPrice = InferSelectModel<typeof ItemPrice>  
+
+/** https://apidocs.chargebee.com/docs/api/items */
+export type Item = InferSelectModel<typeof Item>
+
 export type ItemScript = InferSelectModel<typeof ItemScript>
 export type ItemCoupon = InferSelectModel<typeof ItemCoupon>
 

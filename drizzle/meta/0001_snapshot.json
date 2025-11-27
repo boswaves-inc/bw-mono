@@ -1,5 +1,5 @@
 {
-  "id": "c5af5c90-519c-4c38-88cc-cf805f9e8f7f",
+  "id": "f9aa445c-6c24-465e-a3ec-630830235f28",
   "prevId": "6b27af5c-8068-431c-9d14-551af1cb649c",
   "version": "7",
   "dialect": "postgresql",
@@ -80,6 +80,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "item_price": {
+          "name": "item_price",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -123,17 +129,15 @@
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "cart_item_item_type_item_id_type_fk": {
-          "name": "cart_item_item_type_item_id_type_fk",
+        "cart_item_item_price_item_price_id_fk": {
+          "name": "cart_item_item_price_item_price_id_fk",
           "tableFrom": "cart_item",
-          "tableTo": "item",
+          "tableTo": "item_price",
           "columnsFrom": [
-            "item",
-            "type"
+            "item_price"
           ],
           "columnsTo": [
-            "id",
-            "type"
+            "id"
           ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
@@ -207,17 +211,11 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
-        },
-        "archived_at": {
-          "name": "archived_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
         }
       },
       "indexes": {
-        "item_info_slug_idx": {
-          "name": "item_info_slug_idx",
+        "item_info_slug_unq": {
+          "name": "item_info_slug_unq",
           "columns": [
             {
               "expression": "slug",
@@ -226,132 +224,29 @@
               "nulls": "last"
             }
           ],
-          "isUnique": false,
+          "isUnique": true,
           "concurrently": false,
           "method": "btree",
           "with": {}
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "item_name_unique": {
-          "name": "item_name_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
         },
-        "item_slug_unique": {
-          "name": "item_slug_unique",
-          "nullsNotDistinct": false,
+        "item_info_name_unq": {
+          "name": "item_info_name_unq",
           "columns": [
-            "slug"
-          ]
+            {
+              "expression": "name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "status != 'deleted'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "item_info_id_type_unq": {
           "name": "item_info_id_type_unq",
-          "nullsNotDistinct": false,
-          "columns": [
-            "id",
-            "type"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.item_charge": {
-      "name": "item_charge",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "uuid": {
-          "name": "uuid",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "price": {
-          "name": "price",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "status": {
-          "name": "status",
-          "type": "status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "pricing_model": {
-          "name": "pricing_model",
-          "type": "pricing_model",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "currency_code": {
-          "name": "currency_code",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "charge_price_item_idx": {
-          "name": "charge_price_item_idx",
-          "columns": [
-            {
-              "expression": "currency_code",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "charge_price_currency_idx": {
-          "name": "charge_price_currency_idx",
-          "columns": [
-            {
-              "expression": "currency_code",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "charge_price_item_currency_idx": {
-          "name": "charge_price_item_currency_idx",
           "columns": [
             {
               "expression": "id",
@@ -360,42 +255,30 @@
               "nulls": "last"
             },
             {
-              "expression": "currency_code",
+              "expression": "type",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
             }
           ],
-          "isUnique": false,
+          "isUnique": true,
+          "where": "status != 'deleted'",
           "concurrently": false,
           "method": "btree",
           "with": {}
         }
       },
-      "foreignKeys": {
-        "item_charge_id_item_id_fk": {
-          "name": "item_charge_id_item_id_fk",
-          "tableFrom": "item_charge",
-          "tableTo": "item",
-          "columnsFrom": [
-            "id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
-        }
-      },
-      "compositePrimaryKeys": {
-        "item_charge_uuid_pk": {
-          "name": "item_charge_uuid_pk",
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "item_slug_unique": {
+          "name": "item_slug_unique",
+          "nullsNotDistinct": false,
           "columns": [
-            "uuid"
+            "slug"
           ]
         }
       },
-      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -475,6 +358,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "period": {
+          "name": "period",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
         "period_unit": {
           "name": "period_unit",
           "type": "period_unit",
@@ -519,15 +408,9 @@
         }
       },
       "indexes": {
-        "plan_price_item_idx": {
-          "name": "plan_price_item_idx",
+        "item_price_item_idx": {
+          "name": "item_price_item_idx",
           "columns": [
-            {
-              "expression": "id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
             {
               "expression": "item_id",
               "isExpression": false,
@@ -540,8 +423,8 @@
           "method": "btree",
           "with": {}
         },
-        "plan_price_currency_idx": {
-          "name": "plan_price_currency_idx",
+        "item_price_currency_idx": {
+          "name": "item_price_currency_idx",
           "columns": [
             {
               "expression": "currency_code",
@@ -555,8 +438,8 @@
           "method": "btree",
           "with": {}
         },
-        "plan_price_item_currency_idx": {
-          "name": "plan_price_item_currency_idx",
+        "item_price_item_currency_idx": {
+          "name": "item_price_item_currency_idx",
           "columns": [
             {
               "expression": "item_id",
@@ -566,6 +449,18 @@
             },
             {
               "expression": "currency_code",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "period",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "period_unit",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -593,7 +488,18 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "item_price_item_currency_unq": {
+          "name": "item_price_item_currency_unq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "item_id",
+            "currency_code",
+            "period",
+            "period_unit"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -946,7 +852,7 @@
           "notNull": false
         }
       },
-      "definition": "select \"cart_info\".\"id\", \"cart_info\".\"uid\", json_agg(json_build_object('id', \"item\".\"id\", 'name', \"item\".\"name\", 'type', \"item\".\"type\", 'slug', \"item\".\"slug\", 'status', \"item\".\"status\", 'created_at', \"item\".\"created_at\", 'updated_at', \"item\".\"updated_at\", 'archived_at', \"item\".\"archived_at\")) as \"items\" from \"cart_info\" left join \"cart_item\" on \"cart_info\".\"id\" = \"cart_item\".\"id\" inner join \"item\" on \"cart_item\".\"item\" = \"item\".\"id\" group by \"cart_info\".\"id\"",
+      "definition": "select \"cart_info\".\"id\", \"cart_info\".\"uid\", json_agg(json_build_object('id', \"item\".\"id\", 'name', \"item\".\"name\", 'type', \"item\".\"type\", 'slug', \"item\".\"slug\", 'status', \"item\".\"status\", 'created_at', \"item\".\"created_at\", 'updated_at', \"item\".\"updated_at\")) as \"items\" from \"cart_info\" left join \"cart_item\" on \"cart_info\".\"id\" = \"cart_item\".\"id\" inner join \"item\" on \"cart_item\".\"item\" = \"item\".\"id\" group by \"cart_info\".\"id\"",
       "name": "cart_data",
       "schema": "public",
       "isExisting": false,

@@ -75,7 +75,7 @@ export const PricePanel = ({ currency, period_unit: period }: { period_unit: Per
 
     return (
         <Panel open={open} onOpenChange={onOpenChange} >
-            {field == undefined ? (
+            {index < 0 ? (
                 <PanelTrigger asChild>
                     <Button type="button" variant={'link'} className="px-0 py-0 text-sm mr-4">
                         Set Price
@@ -88,13 +88,13 @@ export const PricePanel = ({ currency, period_unit: period }: { period_unit: Per
                         <FormField name={`item_price.${index}.period`} render={({ field }) => <input type="number" hidden {...field} />} />
                         <FormField name={`item_price.${index}.period_unit`} render={({ field }) => <input hidden {...field} value={period} />} />
                         <FormField name={`item_price.${index}.currency_code`} render={({ field }) => <input hidden {...field} value={currency.currency_code} />} />
-                        <FormField defaultValue={field.price} name={`item_price.${index}.price`} render={({ field: props }) => <input type="number" hidden {...props} value={field.price as number} />} />
-                        <FormField defaultValue={field.pricing_model} name={`item_price.${index}.pricing_model`} render={({ field }) => <input hidden {...field} />} />
+                        <FormField name={`item_price.${index}.price`} render={({ field: props }) => <input type="number" hidden {...props} />} />
+                        <FormField name={`item_price.${index}.pricing_model`} render={({ field }) => <input hidden {...field} />} />
                     </Fragment>
 
                     <PanelTrigger asChild>
                         <Button variant={'link'} size={'sm'} className="pl-0">
-                            {formatCurrency(field.price / 100, currency.currency_code, 'en-US', false, { decimalPlaces: 2 })}
+                            {formatCurrency(prices.fields[index].price / 100, currency.currency_code, 'en-US', false, { decimalPlaces: 2 })}
                         </Button>
                     </PanelTrigger >
                     <PanelTrigger asChild>

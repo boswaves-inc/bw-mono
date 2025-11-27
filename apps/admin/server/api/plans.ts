@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import express from 'express'
 import cors from "cors";
-import { eq, getTableColumns } from 'drizzle-orm';
+import { and, eq, getTableColumns, isNotNull, ne } from 'drizzle-orm';
 import type Chargebee from 'chargebee'
 import type { Postgres } from '@bw/core/postgres'
 import { Item, ItemPrice, PeriodUnit, PricingModel, ItemScript } from '@bw/core'
@@ -9,7 +9,7 @@ import type { TradingView } from '@bw/core/tradingview';
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z, { array } from 'zod/v4';
 import { zfd } from 'zod-form-data';
-import { json_agg_object } from '@bw/core/utils/drizzle.ts';
+import { array_agg, json_agg_object } from '@bw/core/utils/drizzle.ts';
 
 export default ({ family, postgres, tradingview, chargebee }: { family: string, postgres: Postgres, chargebee: Chargebee, tradingview: TradingView }) => {
     const router = express()
@@ -34,7 +34,11 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                 })
             }).from(Item)
                 .innerJoin(ItemScript, eq(ItemScript.id, Item.id))
-                .leftJoin(ItemPrice, eq(ItemPrice.item_id, Item.id))
+                .leftJoin(ItemPrice,
+                    and(
+                        eq(ItemPrice.item_id, Item.id),
+                        ne(ItemPrice.status, 'deleted')
+                    ))
                 .where(eq(Item.type, 'plan'))
                 .groupBy(Item.id, ItemScript.id)
                 .offset(start)
@@ -69,7 +73,6 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                 image: true,
                 created_at: true,
                 updated_at: true,
-                archived_at: true
             })
 
         try {
@@ -145,12 +148,14 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                 slug: Item.slug,
                 status: Item.status,
                 script: ItemScript,
-                item_price: json_agg_object({
-                    ...getTableColumns(ItemPrice)
-                }),
+                item_price: array_agg(ItemPrice, isNotNull(ItemPrice)),
             }).from(Item)
                 .innerJoin(ItemScript, eq(ItemScript.id, Item.id))
-                .leftJoin(ItemPrice, eq(ItemPrice.item_id, Item.id))
+                .leftJoin(ItemPrice,
+                    and(
+                        eq(ItemPrice.item_id, Item.id),
+                        ne(ItemPrice.status, 'deleted')
+                    ))
                 .groupBy(Item.id, ItemScript.id)
                 .limit(1)
 
@@ -172,7 +177,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
             })
             .extend({
                 item_price: array(z.object({
-                    id: zfd.text().optional(),
+                    id: zfd.text().optional().nullable(),
                     price: zfd.numeric(),
                     period: zfd.numeric(),
                     period_unit: z.enum(PeriodUnit.enumValues),
@@ -184,7 +189,6 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                 id: true,
                 created_at: true,
                 updated_at: true,
-                archived_at: true
             })
 
         try {
@@ -213,6 +217,13 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                     }
                 })
 
+                const current_prices = await tx.select().from(ItemPrice).where(
+                    and(
+                        eq(ItemPrice.item_id, req.params.id),
+                        ne(ItemPrice.status, 'deleted')
+                    )
+                )
+
                 const item_prices = await Promise.all(data.item_price.map(({ id, period, price, currency_code, pricing_model, period_unit }) => (
                     tx.insert(ItemPrice).values({
                         price,
@@ -232,11 +243,33 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                             price,
                             pricing_model
                         }
-                    })).returning().then(x => x[0])
+                    })).returning().then(x => ({ ...x[0], created: id == undefined }))
                 )))
 
-                await Promise.all(item_prices.map(async ({ id, price, currency_code, pricing_model, period_unit }) => {
-                    if (id != undefined) {
+                const deleted_prices = current_prices.filter(x => item_prices.findIndex(y => y.id == x.id) == -1)
+
+                await Promise.all(deleted_prices.map(item_price => tx.update(ItemPrice).set({
+                    status: 'deleted'
+                }).where(eq(ItemPrice.id, item_price.id))))
+
+                await Promise.all([
+                    ...deleted_prices.map(({ id }) => {
+                        return chargebee.itemPrice.delete(id)
+                    }),
+                    ...item_prices.map(async ({ created, id, price, currency_code, pricing_model, period_unit }) => {
+                        if (created) {
+                            return chargebee.itemPrice.create({
+                                id,
+                                price,
+                                period: 1,
+                                period_unit,
+                                pricing_model,
+                                currency_code,
+                                item_id: req.params.id,
+                                name: _.snakeCase(`${data.name}_${currency_code}_${period_unit}`),
+                            })
+                        }
+
                         return chargebee.itemPrice.update(id, {
                             price,
                             period: 1,
@@ -245,19 +278,8 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                             currency_code,
                             pricing_model,
                         })
-                    }
-
-                    return chargebee.itemPrice.create({
-                        id,
-                        price,
-                        period: 1,
-                        period_unit,
-                        pricing_model,
-                        currency_code,
-                        item_id: req.params.id,
-                        name: _.snakeCase(`${data.name}_${currency_code}_${period_unit}`),
                     })
-                }))
+                ])
 
                 await chargebee.item.update(req.params.id, {
                     name: _.snakeCase(data.name),
@@ -267,7 +289,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                 })
             })
 
-            return res.json(result).sendStatus(200)
+            return res.json({}).sendStatus(200)
         }
         catch (err: any) {
             console.error(err)
@@ -276,28 +298,28 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
         }
     })
 
-    // Delete
-    router.delete('/:id', async (req, res) => {
-        try {
-            const result = await postgres.transaction(async tx => {
-                const { id } = req.params
+    // // Delete
+    // router.delete('/:id', async (req, res) => {
+    //     try {
+    //         const result = await postgres.transaction(async tx => {
+    //             const { id } = req.params
 
-                await chargebee.item.delete(id)
+    //             await chargebee.item.delete(id)
 
-                await Promise.all([
-                    tx.delete(Item).where(eq(Item.id, id)),
-                    tx.delete(ItemScript).where(eq(ItemScript.id, id))
-                ])
-            })
+    //             await Promise.all([
+    //                 tx.delete(Item).where(eq(Item.id, id)),
+    //                 tx.delete(ItemScript).where(eq(ItemScript.id, id))
+    //             ])
+    //         })
 
-            return res.json(result).sendStatus(200)
-        }
-        catch (err) {
-            console.error(err)
+    //         return res.json(result).sendStatus(200)
+    //     }
+    //     catch (err) {
+    //         console.error(err)
 
-            return res.destroy(err as any)
-        }
-    })
+    //         return res.destroy(err as any)
+    //     }
+    // })
 
 
     return router

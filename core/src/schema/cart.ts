@@ -1,5 +1,5 @@
 import { User } from "./user";
-import { Item, ItemScript, ItemType } from "./item";
+import { Item, ItemPrice, ItemScript, ItemType } from "./item";
 import { foreignKey, pgTable, pgView, primaryKey } from "drizzle-orm/pg-core";
 import { eq, max, or, sql, type InferSelectModel, type InferSelectViewModel } from "drizzle-orm";
 import { json_agg_object } from "../utils/drizzle";
@@ -24,14 +24,14 @@ export const CartItem = pgTable("cart_item", (t) => ({
         onDelete: 'cascade',
         onUpdate: 'cascade'
     }).notNull(),
+    item_price: t.uuid().references(() => ItemPrice.id, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
+    }).notNull(),
     created_at: t.timestamp().defaultNow().notNull(),
     updated_at: t.timestamp().defaultNow().notNull(),
-}), ({ id, item, type }) => [
+}), ({ id, item }) => [
     primaryKey({ columns: [id, item] }),
-    foreignKey({
-        columns: [item, type],
-        foreignColumns: [Item.id, Item.type]
-    }).onDelete('cascade').onUpdate('cascade'),
 ]);
 
 export const CartData = pgView('cart_data').as(qb => {
@@ -46,7 +46,6 @@ export const CartData = pgView('cart_data').as(qb => {
             status: Item.status,
             created_at: Item.created_at,
             updated_at: Item.updated_at,
-            archived_at: Item.archived_at,
         }).as('items')
     }).from(Cart)
         .leftJoin(CartItem, eq(Cart.id, CartItem.id))
