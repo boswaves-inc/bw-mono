@@ -96,7 +96,6 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                     image: script.image.big
                 }).returning().then(x => x[0]);
 
-
                 const prices = data.item_price.length > 0 ? await tx.insert(ItemPrice).values(data.item_price.map(price => ({
                     ...price,
                     name: _.snakeCase(`${data.name}_${price.currency_code}_${price.period_unit}`),

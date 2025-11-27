@@ -142,17 +142,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     canDelete: true,
                   },
                 },
-                {
-                  name: "coupons",
-                  list: "/coupons",
-                  show: "/coupons/:id",
-                  edit: "/coupons/:id/edit",
-                  create: "/coupons/create",
-                  meta: {
-                    parent: 'catalog',
-                    canDelete: true,
-                  },
-                },
+                // {
+                //   name: "coupons",
+                //   list: "/coupons",
+                //   show: "/coupons/:id",
+                //   edit: "/coupons/:id/edit",
+                //   create: "/coupons/create",
+                //   meta: {
+                //     parent: 'catalog',
+                //     canDelete: true,
+                //   },
+                // },
               ]}
               options={{
                 title: {
