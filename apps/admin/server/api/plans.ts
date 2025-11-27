@@ -39,7 +39,12 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                         eq(ItemPrice.item_id, Item.id),
                         ne(ItemPrice.status, 'deleted')
                     ))
-                .where(eq(Item.type, 'plan'))
+                .where(
+                    and(
+                        eq(Item.type, 'plan'),
+                        ne(ItemPrice.status, 'deleted')
+                    )
+                )
                 .groupBy(Item.id, ItemScript.id)
                 .offset(start)
                 .limit(end - start)
@@ -139,7 +144,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
     })
 
     // Show
-    router.get('/:id', async (_, res) => {
+    router.get('/:id', async (req, res) => {
         try {
             const [result] = await postgres.select({
                 id: Item.id,
@@ -157,6 +162,12 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                         ne(ItemPrice.status, 'deleted')
                     ))
                 .groupBy(Item.id, ItemScript.id)
+                .where(
+                    and(
+                        eq(Item.id, req.params.id),
+                        ne(Item.status, 'deleted'),
+                    )
+                )
                 .limit(1)
 
             return res.json(result).sendStatus(200)
