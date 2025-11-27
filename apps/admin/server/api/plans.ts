@@ -228,7 +228,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                     set: {
                         uuid: data.script.uuid,
                         type: data.script.type,
-                        description: data.script.description
+                        description: data.script.description,
                     }
                 })
 
@@ -254,13 +254,12 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                         target: [ItemPrice.item_id, ItemPrice.period, ItemPrice.period_unit, ItemPrice.currency_code],
                         set: {
                             price,
-                            pricing_model
+                            pricing_model,
+                            updated_at: new Date()
                         },
                         targetWhere: ne(ItemPrice.status, 'deleted')
                     })).returning().then(x => ({ ...x[0], created: id == undefined }))
                 )))
-
-                console.log(data.item_price)
 
                 const deleted_prices = current_prices.filter(x => item_prices.findIndex(y => y.id == x.id) == -1)
 
