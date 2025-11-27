@@ -1,4 +1,4 @@
-import { Item, CouponInfo, PlanScript } from "@bw/core";
+import { Item, ItemCoupon } from "@bw/core";
 import { useForm } from "@refinedev/react-hook-form";
 import _ from "lodash";
 import { useNavigate } from "react-router";
@@ -85,7 +85,7 @@ export default () => {
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {CouponInfo.type.enumValues.map(value => (
+                                        {ItemCoupon.type.enumValues.map(value => (
                                             <SelectItem value={value}>{_.upperFirst(value)}</SelectItem>
                                         ))}
                                     </SelectContent>
@@ -111,7 +111,7 @@ export default () => {
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {CouponInfo.apply_on.enumValues.map(value => (
+                                        {ItemCoupon.apply_on.enumValues.map(value => (
                                             <SelectItem value={value}>{_.upperFirst(value)}</SelectItem>
                                         ))}
                                     </SelectContent>

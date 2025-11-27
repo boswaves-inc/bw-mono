@@ -30,8 +30,8 @@ export default () => {
     }
 
     return (
-        <EditView>
-            <EditViewHeader />
+        <EditView >
+            <EditViewHeader resource="users" />
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormField

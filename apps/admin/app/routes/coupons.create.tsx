@@ -1,5 +1,5 @@
 // import { Textarea } from "@/components/ui/textarea";
-import { Item, CouponInfo, PlanScript, Status } from "@bw/core";
+import { Item, ItemCoupon, Status } from "@bw/core";
 import { useSelect } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
 import { useNavigate } from "react-router";
@@ -92,7 +92,7 @@ export default () => {
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {CouponInfo.type.enumValues.map(value => (
+                                        {ItemCoupon.type.enumValues.map(value => (
                                             <SelectItem value={value}>{_.upperFirst(value)}</SelectItem>
                                         ))}
                                     </SelectContent>
@@ -115,7 +115,7 @@ export default () => {
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {CouponInfo.apply_on.enumValues.map(value => (
+                                        {ItemCoupon.apply_on.enumValues.map(value => (
                                             <SelectItem value={value}>{_.upperFirst(value)}</SelectItem>
                                         ))}
                                     </SelectContent>

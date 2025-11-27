@@ -1,5 +1,5 @@
 import { User } from "./user";
-import { Item, PlanScript, ItemType } from "./item";
+import { Item, ItemScript, ItemType } from "./item";
 import { foreignKey, pgTable, pgView, primaryKey } from "drizzle-orm/pg-core";
 import { eq, max, or, sql, type InferSelectModel, type InferSelectViewModel } from "drizzle-orm";
 import { json_agg_object } from "../utils/drizzle";

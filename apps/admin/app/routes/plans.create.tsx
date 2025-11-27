@@ -1,5 +1,5 @@
-import { Item, PlanScript, PeriodUnit, PriceModel, Status } from "@bw/core";
-import { useForm as useReactForm } from 'react-hook-form'
+import { Item, ItemPrice, ItemScript, PeriodUnit, PricingModel, Status } from "@bw/core";
+import { useFieldArray, useFormContext, useForm as useReactForm, useWatch } from 'react-hook-form'
 import { useForm } from "@refinedev/react-hook-form";
 import { data, useNavigate } from "react-router";
 import { Button } from "~/components/core/button";
@@ -19,6 +19,7 @@ import { Flag } from "~/components/flag";
 import { Panel, PanelClose, PanelContent, PanelDescription, PanelFooter, PanelHeader, PanelTitle, PanelTrigger } from "~/components/core/panel";
 import { formatCurrency } from '@coingecko/cryptoformat'
 import { PricePanel } from "~/components/refine/panel/price";
+import type { Currency } from "chargebee";
 
 export const loader = async ({ context }: Route.LoaderArgs) => {
     const { list: currencies } = await context.chargebee.currency.list()
@@ -113,7 +114,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {PlanScript.type.enumValues.map(value => (
+                                        {ItemScript.type.enumValues.map(value => (
                                             <SelectItem key={value} value={value}>{_.upperFirst(value)}</SelectItem>
                                         ))}
                                     </SelectContent>
@@ -170,7 +171,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
                                     Trial
                                 </Label>
                             </div>
-                            {loaderData.currencies.map(({ currency }, cidx) => PeriodUnit.enumValues.map((period, pidx) => (
+                            {loaderData.currencies.map(({ currency }) => PeriodUnit.enumValues.map((period) => (
                                 <div key={`${currency.id}-${period}`} className="inline-grid col-span-full py-1 border-b grid-cols-3 sm:grid-cols-6">
                                     <p className="leading-7 flex items-center gap-2 text-sm">
                                         <Flag className="h-5" currency_code={currency.currency_code} />
@@ -185,7 +186,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
                                         </span>
                                     </p>
                                     <div className="leading-7 text-sm">
-                                        <PricePanel index={cidx * 4 + pidx} currency={currency.currency_code} period={period} />
+                                        <PricePanel currency={currency} period_unit={period} />
                                     </div>
                                     <p className="leading-7 text-sm hidden sm:block">
                                         <span className="text-muted-foreground">

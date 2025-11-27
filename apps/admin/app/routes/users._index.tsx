@@ -69,7 +69,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
 
     return (
         <ListView>
-            <ListViewHeader wrapperClassName=" mb-6" />
+            <ListViewHeader resource="users" wrapperClassName=" mb-6" />
             <Table table={table} />
         </ListView>
     )

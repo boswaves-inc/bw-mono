@@ -1,5 +1,3 @@
-// "use client";
-
 import type { PropsWithChildren } from "react";
 import { useResourceParams, useUserFriendlyName } from "@refinedev/core";
 import { cn } from "~/utils";
@@ -33,7 +31,6 @@ export const ListViewHeader = ({
     headerClassName,
 }: ListHeaderProps) => {
     const getUserFriendlyName = useUserFriendlyName();
-
     const { resource, identifier } = useResourceParams({
         resource: resourceFromProps,
     });
@@ -51,7 +48,7 @@ export const ListViewHeader = ({
             </div>
             <div className={cn("flex", "justify-between", "gap-4", headerClassName)}>
                 <h2 className="text-2xl font-bold">
-                    {title || (
+                    {title ?? (
                         <div className="w-40 animate-pulse ease-in-out duration-100 h-9 rounded-lg bg-muted" />
                     )}
                 </h2>

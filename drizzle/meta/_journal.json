@@ -12,43 +12,22 @@
     {
       "idx": 1,
       "version": "7",
-      "when": 1763562511506,
-      "tag": "0001_mute_the_hunter",
+      "when": 1764225811848,
+      "tag": "0001_rare_shadowcat",
       "breakpoints": true
     },
     {
       "idx": 2,
       "version": "7",
-      "when": 1763562534099,
-      "tag": "0002_triggers",
+      "when": 1764227512590,
+      "tag": "0002_open_dazzler",
       "breakpoints": true
     },
     {
       "idx": 3,
       "version": "7",
-      "when": 1763566271998,
-      "tag": "0003_lovely_jack_power",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1763566394805,
-      "tag": "0004_equal_thunderbird",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1763566853576,
-      "tag": "0005_magical_naoko",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1763567879216,
-      "tag": "0006_triggers",
+      "when": 1764227892452,
+      "tag": "0003_robust_demogoblin",
       "breakpoints": true
     }
   ]

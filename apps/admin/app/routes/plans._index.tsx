@@ -8,7 +8,7 @@ import { ShowButton } from "~/components/refine/button/show";
 import { DeleteButton } from "~/components/refine/button/delete";
 import Table from "~/components/refine/table";
 
-import { Item, PlanData } from "@bw/core";
+import { Item, ItemScript, ItemPrice } from "@bw/core";
 
 export default () => {
     const {
@@ -23,7 +23,7 @@ export default () => {
     });
 
     const columns = useMemo(() => {
-        const columnHelper = createColumnHelper<typeof PlanData.$inferSelect>();
+        const columnHelper = createColumnHelper<Item & { script: ItemScript, item_price: ItemPrice[]}>();
 
         return [
             columnHelper.accessor("id", {
@@ -31,7 +31,7 @@ export default () => {
                 header: "ID",
                 enableSorting: false,
             }),
-            columnHelper.accessor('script.id', {
+            columnHelper.accessor('script.uuid', {
                 id: "uuid",
                 header: "Script",
                 enableSorting: false,
@@ -62,7 +62,7 @@ export default () => {
     }, [data, loading]);
 
 
-    const table = useTable<typeof PlanData.$inferSelect>({
+    const table = useTable<Item & { script: ItemScript, item_price: ItemPrice[]}>({
         columns,
         refineCoreProps: {
             syncWithLocation: false,
@@ -71,7 +71,7 @@ export default () => {
 
     return (
         <ListView>
-            <ListViewHeader wrapperClassName=" mb-6" />
+            <ListViewHeader resource="plans" wrapperClassName="mb-6" />
             <Table table={table} />
         </ListView>
     )

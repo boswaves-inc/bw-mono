@@ -25,8 +25,6 @@ export const CartProvider = ({ children, cart }: PropsWithChildren<{ cart: CartD
     }
 
     const push = async (item: Item) => {
-        console.log('test')
-
         if (current.items.findIndex(x => x.id == item.id) == -1) {
             setInner(current => ({
                 ...current,

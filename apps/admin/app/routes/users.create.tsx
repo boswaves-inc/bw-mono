@@ -25,7 +25,7 @@ export default () => {
 
     return (
         <CreateView>
-            <CreateViewHeader />
+            <CreateViewHeader resource="users" />
             <Form {...form} >
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-6">
                     <FormField

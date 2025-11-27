@@ -7,11 +7,12 @@ import FaqAccordion from "~/sections/faq/accordion";
 import { data, Link, useFetcher } from "react-router";
 import Button from "~/components/core/button";
 import Panel from "~/components/core/panel";
-import { PlanData } from "@bw/core";
-import { eq } from "drizzle-orm";
+import { Item, ItemPrice, ItemScript } from "@bw/core";
+import { and, eq, isNotNull } from "drizzle-orm";
 import { useCart } from "~/context/cart";
 import { includes } from "lodash";
 import { Fragment } from "react/jsx-runtime";
+import { array_agg } from "@bw/core/utils/drizzle.ts";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -20,11 +21,33 @@ export function meta({ }: Route.MetaArgs) {
   ];
 }
 
-export async function loader({ params, context }: Route.LoaderArgs) {
-  const product = await context.postgres.select().from(PlanData).where(eq(PlanData.slug, params.slug)).then(x => x.at(0))
+export async function loader({ params, context: { postgres, geo } }: Route.LoaderArgs) {
+  const product = await postgres.select({
+    id: Item.id,
+    name: Item.name,
+    type: Item.type,
+    slug: Item.slug,
+    status: Item.status,
+    script: ItemScript,
+    created_at: Item.created_at,
+    updated_at: Item.updated_at,
+    prices: array_agg(ItemPrice, isNotNull(ItemPrice)),
+  }).from(Item)
+    .innerJoin(ItemScript, eq(ItemScript.id, Item.id))
+    .innerJoin(ItemPrice, and(eq(ItemPrice.item_id, Item.id), eq(ItemPrice.currency_code, geo.currency)))
+    .where(
+      and(
+        eq(Item.type, 'plan'),
+        eq(Item.status, 'active'),
+        eq(Item.slug, params.slug)
+      )
+    )
+    .groupBy(Item.id, ItemScript.id)
+    .limit(1)
+    .then(x => x.at(0))
 
   if (product == undefined) {
-    throw data(`item ${params.slug} does not exist`, 404)
+    throw new Error(`Item '${params.slug}' does not exist`)
   }
 
   return data(product)
@@ -45,7 +68,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
       cart.pop(loaderData.id)
     }
     else {
-      cart.push(loaderData)
+      // cart.push(loaderData)
     }
   }
 

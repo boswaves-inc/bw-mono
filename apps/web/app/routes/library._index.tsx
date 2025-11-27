@@ -9,11 +9,12 @@ import Label from "~/components/core/label";
 
 import Button from "~/components/core/button";
 import Section from "~/components/section";
-import { PlanData, ScriptType, Status } from "@bw/core";
+import { Item, ItemScript, ItemPrice, ScriptType, Status } from "@bw/core";
 import _ from 'lodash'
 import type { Route } from "./+types/library._index";
 import { useCart } from "~/context/cart";
-import { and, eq, isNotNull } from "drizzle-orm";
+import { and, eq, isNotNull, sql } from "drizzle-orm";
+import { array_agg, coalesce } from "@bw/core/utils/drizzle.ts";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -22,10 +23,26 @@ export function meta({ }: Route.MetaArgs) {
   ];
 }
 
-export async function loader({ context }: Route.LoaderArgs) {
-  const result = await context.postgres.select().from(PlanData).where(and(eq(PlanData.status, 'active'), isNotNull(PlanData.script)))
+export async function loader({ context: {postgres, geo} }: Route.LoaderArgs) {
 
-  console.log()
+  const result = await postgres.select({
+    id: Item.id,
+    name: Item.name,
+    type: Item.type,
+    slug: Item.slug,
+    status: Item.status,
+    script: ItemScript,
+    prices: array_agg(ItemPrice, isNotNull(ItemPrice)),
+  }).from(Item)
+    .innerJoin(ItemScript, eq(ItemScript.id, Item.id))
+    .leftJoin(ItemPrice, and(eq(ItemPrice.item_id, Item.id), eq(ItemPrice.currency_code, geo.currency)))
+    .where(
+      and(
+        eq(Item.type, 'plan'),
+        eq(Item.status, 'active'),
+      )
+    )
+    .groupBy(Item.id, ItemScript.id)
 
   return data({ data: result })
 }
@@ -162,7 +179,7 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
               </Link>
               <div className="block p-4 w-fit">
                 {/* <Link to={`./${item.slug}`}> */}
-                <Button data-selected={cart.includes('plan', item.id)} className="group/button">
+                <Button data-selected={cart.includes(item.id)} className="group/button">
                   <div className="relative">
                     <PlusIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all duration-200 group-data-[selected=true]/button:scale-0 group-data-[selected=true]/button:-rotate-90" />
                     <CheckIcon className="absolute h-[1.2rem] inset-0 w-[1.2rem] rotate-90 scale-0 transition-all duration-200 group-data-[selected=true]/button:scale-100 group-data-[selected=true]/button:rotate-0" />

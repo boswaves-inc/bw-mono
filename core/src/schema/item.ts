@@ -1,6 +1,6 @@
 import {  sql, type InferEnum, type InferSelectModel } from "drizzle-orm";
-import {  index, pgEnum, pgTable, primaryKey, unique } from "drizzle-orm/pg-core";
-import { CouponApplication, CouponType, PeriodUnit , PricingModel, ScriptType, Status } from "./types";
+import {  index, pgEnum, pgTable,  unique } from "drizzle-orm/pg-core";
+import { CouponApplication, CouponType, PeriodUnit, PricingModel, ScriptType, Status } from "./types";
 
 export const ItemType = pgEnum('item_type', [
     "plan",
@@ -24,25 +24,57 @@ export const Item = pgTable("item", (t) => ({
     unique('item_info_id_type_unq').on(table.id, table.type),
     index("item_info_slug_idx").on(table.slug),
 ]);
- 
-export const PlanScript = pgTable("item_plan_script", (t) => ({
+
+export const ItemPrice = pgTable('item_price', (t) => ({
+    id: t.uuid().notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
+    item_id: t.uuid().references(() => Item.id, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
+    }).notNull(),
+    price: t.integer("price").notNull(),
+    
+    period: t.integer("period").notNull(), 
+    period_unit: PeriodUnit('period_unit').notNull(),
+    currency_code: t.text("currency_code").notNull(), // ISO 4217: 'USD', 'EUR', 'GBP', etc.
+    pricing_model: PricingModel("pricing_model").notNull(), // Price in smallest unit
+
+    status: Status('status').default('active').notNull(),
+    created_at: t.timestamp().defaultNow().notNull(),
+    updated_at: t.timestamp().defaultNow().notNull(),
+}), (table) => [
+    // primaryKey({ columns: [table.item_id, table.currency_code, table.period_unit] }),
+    index("plan_price_item_idx").on(table.id, table.item_id),
+    index("plan_price_currency_idx").on(table.currency_code),
+    index("plan_price_item_currency_idx").on(table.item_id, table.currency_code),
+]);
+
+export const ItemCoupon = pgTable("item_coupon", (t) => ({
+    id: t.uuid().primaryKey().references(() => Item.id, { onDelete: 'cascade', onUpdate: 'cascade'}),
+    type: CouponType("type").notNull(),
+    value: t.doublePrecision("value").notNull(),
+    apply_on: CouponApplication("apply_on").notNull(),
+}))
+
+export const ItemScript = pgTable("item_script", (t) => ({
     id: t.uuid().primaryKey().references(() => Item.id, { onDelete: 'cascade', onUpdate: 'cascade'}),
     type: ScriptType("type").notNull(),
     uuid: t.text("uuid").unique().notNull(),
     image: t.text("image").notNull(),
     description: t.text("description").notNull(),
-}));
+}), table => [
+    unique('item_script_uuid_unq').on(table.uuid),
+    index('item_script_uuid_idx').on(table.uuid),
+    index('item_script_id_idx').on(table.id),
+]);
 
-// export const ItemCoupon = pgTable("item_coupon", (t) => ({
-//     id: t.uuid().primaryKey().references(() => Item.id, { onDelete: 'cascade', onUpdate: 'cascade'}),
-//     type: CouponType("type").notNull(),
-//     value: t.doublePrecision("value").notNull(),
-//     apply_on: CouponApplication("apply_on").notNull(),
-// }))
 
+
+/** https://apidocs.chargebee.com/docs/api/item_prices*/
+export type ItemPrice = InferSelectModel<typeof ItemPrice>  
 export type Item = InferSelectModel<typeof Item>
 export type ItemType = InferEnum<typeof ItemType>
-export type PlanScript = InferSelectModel<typeof PlanScript>
+export type ItemScript = InferSelectModel<typeof ItemScript>
+export type ItemCoupon = InferSelectModel<typeof ItemCoupon>
 
 // export const ItemPrice = pgTable("item_price", (t) => ({
 //     id: t.uuid().primaryKey().references(() => Item.id, {

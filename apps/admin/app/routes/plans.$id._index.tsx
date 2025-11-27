@@ -1,4 +1,4 @@
-import { PeriodUnit, PriceModel, type Item, type PlanData } from "@bw/core";
+import { ItemScript, PeriodUnit, ItemPrice, PricingModel, type Item } from "@bw/core";
 import { useOne, useShow } from "@refinedev/core";
 import _ from "lodash";
 import { data, Link } from "react-router";
@@ -16,13 +16,9 @@ export const loader = async ({ context }: Route.LoaderArgs) => {
     return data({ currencies })
 }
 
-export default ({ loaderData }: Route.ComponentProps) => {
-    const { result: record, query } = useShow<PlanData>({});
-
-    const {
-        result,
-        query: { isLoading: loading },
-    } = useOne<PlanData>({
+export default ({ loaderData, params }: Route.ComponentProps) => {
+    const { result: record } = useShow<Item & { script: ItemScript, item_price: ItemPrice[] }>({});
+    const { result, query: { isLoading: loading }, } = useOne<Item & { script: ItemScript, item_price: ItemPrice[] }>({
         resource: "plans",
         id: record?.id || "",
         queryOptions: {
@@ -128,7 +124,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
                         </div>
 
                         <Separator />
-                        
+
                         <div>
                             <h4 className="text-sm font-medium mb-4">Prices</h4>
                             <div className=" grid grid-cols-4 sm:grid-cols-6">
@@ -146,7 +142,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
                                     ))}
                                 </div>
                                 {loaderData.currencies.map(({ currency }) => (
-                                    <div className="grid text-sm/5 grid-cols-subgrid col-span-full py-2 border-b">
+                                    <div key={currency.currency_code} className="grid text-sm/5 grid-cols-subgrid col-span-full py-2 border-b">
                                         <p className="flex gap-2">
                                             <Flag currency_code={currency.currency_code} className="w-6 rounded-md" />
                                             {currency.currency_code}

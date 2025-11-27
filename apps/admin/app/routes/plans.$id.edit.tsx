@@ -1,4 +1,4 @@
-import { Item, PlanScript, PeriodUnit, PlanData } from "@bw/core";
+import { Item, ItemScript, PeriodUnit, ItemPrice, PricingModel } from "@bw/core";
 import { useForm } from "@refinedev/react-hook-form";
 import _ from "lodash";
 import { data, useNavigate } from "react-router";
@@ -12,8 +12,14 @@ import { Textarea } from "~/components/core/textarea";
 import { EditView, EditViewHeader } from "~/components/refine/views/edit";
 import type { Route } from "./+types/plans.$id.edit";
 import { Flag } from "~/components/flag";
-import { PricePanel } from "~/components/refine/panel/price";
 import { useShow } from "@refinedev/core";
+import { Fragment, useMemo, useState } from "react";
+import { useFieldArray, useFormContext, useForm as useReactForm, useWatch } from 'react-hook-form'
+import { Panel, PanelClose, PanelContent, PanelDescription, PanelFooter, PanelHeader, PanelTitle, PanelTrigger } from "~/components/core/panel";
+import { formatCurrency } from "@coingecko/cryptoformat";
+import { Pencil, Trash } from "lucide-react";
+import type { Currency } from "chargebee";
+import { PricePanel } from "~/components/refine/panel/price";
 
 export const loader = async ({ context }: Route.LoaderArgs) => {
     const { list: currencies } = await context.chargebee.currency.list()
@@ -21,14 +27,21 @@ export const loader = async ({ context }: Route.LoaderArgs) => {
     return data({ currencies })
 }
 
-export default ({ loaderData }: Route.ComponentProps) => {
+export default ({ loaderData: { currencies }, params }: Route.ComponentProps) => {
     const navigate = useNavigate();
 
-    const { result: record } = useShow<PlanData>({});
-    const { refineCore: { onFinish, query }, ...form } = useForm<PlanData>({
+    const { result: record } = useShow<Item & { script: ItemScript, item_price: ItemPrice[] }>({
+        resource: 'plans',
+        id: params.id
+    });
+
+    const { refineCore: { onFinish }, ...form } = useForm<Item & { script: ItemScript, item_price: ItemPrice[] }>({
+        defaultValues: record,
         refineCoreProps: {
-            resource: 'plans'
+            id: params.id,
+            resource: 'plans',
         },
+
     });
 
     function onSubmit(values: Record<string, string>) {
@@ -37,7 +50,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
 
     return (
         <EditView>
-            <EditViewHeader resource="plan" />
+            <EditViewHeader resource="plans" />
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormField
@@ -103,7 +116,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
                                 <FormLabel>Type</FormLabel>
                                 <Select
                                     onValueChange={field.onChange}
-                                    value={field.value || ""}
+                                    value={field.value}
                                 >
                                     <FormControl>
                                         <SelectTrigger>
@@ -111,7 +124,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {PlanScript.type.enumValues.map(value => (
+                                        {ItemScript.type.enumValues.map(value => (
                                             <SelectItem key={value} value={value}>{_.upperFirst(value)}</SelectItem>
                                         ))}
                                     </SelectContent>
@@ -138,7 +151,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
                                     </FormControl>
                                     <SelectContent>
                                         {Item.status.enumValues.map(value => (
-                                            <SelectItem value={value}>{_.upperFirst(value)}</SelectItem>
+                                            <SelectItem key={value} value={value}>{_.upperFirst(value)}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -171,16 +184,14 @@ export default ({ loaderData }: Route.ComponentProps) => {
                                     Trial (soon)
                                 </Label>
                             </div>
-
-                            {/* {form.getValues('prices.currency_code')} */}
-                            {loaderData.currencies.map(({ currency }, index) => PeriodUnit.enumValues.map(period => (
-                                <div key={`${currency.id}-${period}`} className="inline-grid col-span-full py-1 border-b grid-cols-3 sm:grid-cols-6">
+                            {currencies.map(({ currency }) => PeriodUnit.enumValues.map(period_unit => (
+                                <div className="inline-grid col-span-full py-1 border-b grid-cols-3 sm:grid-cols-6">
                                     <p className="leading-7 flex items-center gap-2 text-sm">
                                         <Flag className="h-5" currency_code={currency.currency_code} />
                                         {currency.currency_code}
                                     </p>
                                     <p className="leading-7 text-sm">
-                                        {_.startCase(period)}
+                                        {_.startCase(period_unit)}
                                     </p>
                                     <p className="leading-7 text-sm hidden sm:block">
                                         <span className="text-muted-foreground">
@@ -188,14 +199,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
                                         </span>
                                     </p>
                                     <div className="leading-7 text-sm">
-                                        <PricePanel
-                                            index={index}
-                                            currency={currency.currency_code}
-                                            period={period}
-                                            defaultValue={record?.prices.find(x => (
-                                                x.currency_code == currency.currency_code && x.period_unit == period
-                                            ))}
-                                        />
+                                        <PricePanel currency={currency} period_unit={period_unit} />
                                     </div>
                                     <p className="leading-7 text-sm hidden sm:block">
                                         <span className="text-muted-foreground">
@@ -212,7 +216,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
                         </div>
                         <div className="col-span-full text-muted-foreground">
                             <p className="leading-7 text-sm">
-                                Showing 1 - {loaderData.currencies.length * 4} of {loaderData.currencies.length * 4}
+                                Showing 1 - {currencies.length * 4} of {currencies.length * 4}
                             </p>
                         </div>
                     </Card>

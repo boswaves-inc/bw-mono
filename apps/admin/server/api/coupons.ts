@@ -3,7 +3,7 @@ import express from 'express'
 import { eq } from 'drizzle-orm';
 import type Chargebee from 'chargebee'
 import type { Postgres } from '@bw/core/postgres'
-import { CouponData, CouponType, Item, CouponInfo } from '@bw/core'
+import { CouponType, Item, ItemCoupon } from '@bw/core'
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import { z } from 'zod/v4';
 import * as zfd from 'zod-form-data'
@@ -19,7 +19,19 @@ export default ({ postgres, chargebee }: { postgres: Postgres, chargebee: Charge
             const start = Number(_start) ?? 0;
             const end = Number(_end) ?? 10;
 
-            const data = await postgres.select().from(CouponData).offset(start).limit(end - start)
+            const data = await postgres.select({
+                id: Item.id,
+                name: Item.name,
+                status: Item.status,
+                type: ItemCoupon.type,
+                value: ItemCoupon.value,
+                apply_on: ItemCoupon.apply_on,
+                created_at: Item.created_at,
+                updated_at: Item.updated_at,
+                archived_at: Item.archived_at,
+            })
+                .from(ItemCoupon)
+                .innerJoin(Item, eq(ItemCoupon.id, Item.id)).offset(start).limit(end - start)
 
             return res.json(data)
         }
@@ -33,7 +45,7 @@ export default ({ postgres, chargebee }: { postgres: Postgres, chargebee: Charge
     // Create
     router.post('/', async (req, res) => {
         const base = createInsertSchema(Item)
-            .extend(createInsertSchema(CouponInfo).shape)
+            .extend(createInsertSchema(ItemCoupon).shape)
             .omit({
                 id: true,
                 type: true,
@@ -53,7 +65,7 @@ export default ({ postgres, chargebee }: { postgres: Postgres, chargebee: Charge
 
             const result = await postgres.transaction(async (tx) => {
                 const item = await tx.insert(Item).values(data).returning().then(x => x[0])
-                const item_coupon = await tx.insert(CouponInfo).values({
+                const item_coupon = await tx.insert(ItemCoupon).values({
                     id: item.id,
                     type: data.type,
                     value: data.value,
@@ -61,7 +73,7 @@ export default ({ postgres, chargebee }: { postgres: Postgres, chargebee: Charge
 
                 }).returning().then(x => x[0])
 
-                await tx.refreshMaterializedView(CouponData)
+                // await tx.refreshMaterializedView(CouponData)
                 await chargebee.coupon.createForItems({
                     id: item.id,
                     name: data.name,
@@ -86,7 +98,21 @@ export default ({ postgres, chargebee }: { postgres: Postgres, chargebee: Charge
     // Show
     router.get('/:id', async (req, res) => {
         try {
-            const [result] = await postgres.select().from(CouponData).where(eq(CouponData.id, req.params.id)).limit(1)
+            const [result] = await postgres.select({
+                id: Item.id,
+                name: Item.name,
+                status: Item.status,
+                type: ItemCoupon.type,
+                value: ItemCoupon.value,
+                apply_on: ItemCoupon.apply_on,
+                created_at: Item.created_at,
+                updated_at: Item.updated_at,
+                archived_at: Item.archived_at,
+            })
+                .from(ItemCoupon)
+                .innerJoin(Item, eq(ItemCoupon.id, Item.id))
+                .where(eq(ItemCoupon.id, req.params.id))
+                .limit(1)
 
             return res.json(result).sendStatus(200)
         }
@@ -98,7 +124,7 @@ export default ({ postgres, chargebee }: { postgres: Postgres, chargebee: Charge
     // Update
     router.patch('/:id', async (req, res) => {
         const base = createInsertSchema(Item)
-            .extend(createInsertSchema(CouponInfo).shape)
+            .extend(createInsertSchema(ItemCoupon).shape)
             .omit({
                 id: true,
                 type: true,
@@ -117,7 +143,7 @@ export default ({ postgres, chargebee }: { postgres: Postgres, chargebee: Charge
             const result = await postgres.transaction(async tx => {
                 const { id } = req.params
 
-                const [current] = await tx.select().from(CouponInfo).where(eq(Item.id, id))
+                const [current] = await tx.select().from(ItemCoupon).where(eq(Item.id, id))
 
                 const type = data.type ?? current.type
                 const amount = type == 'fixed' ? data.value : undefined
@@ -125,14 +151,14 @@ export default ({ postgres, chargebee }: { postgres: Postgres, chargebee: Charge
 
                 await Promise.all([
                     tx.update(Item).set({ name: data.name, status: data.status, updated_at: new Date() }).where(eq(Item.id, id)),
-                    tx.update(CouponInfo).set({
+                    tx.update(ItemCoupon).set({
                         type: data.type,
                         value: data.value,
                         apply_on: data.apply_on,
-                    }).where(eq(CouponInfo.id, id))
+                    }).where(eq(ItemCoupon.id, id))
                 ])
 
-                await tx.refreshMaterializedView(CouponData)
+                // await tx.refreshMaterializedView(CouponData)
                 await chargebee.coupon.updateForItems(id, {
                     name: data.name,
                     discount_amount: amount,
@@ -157,10 +183,10 @@ export default ({ postgres, chargebee }: { postgres: Postgres, chargebee: Charge
 
                 await Promise.all([
                     tx.delete(Item).where(eq(Item.id, id)),
-                    tx.delete(CouponInfo).where(eq(CouponInfo.id, id))
+                    tx.delete(ItemCoupon).where(eq(ItemCoupon.id, id))
                 ])
 
-                await tx.refreshMaterializedView(CouponData)
+                // await tx.refreshMaterializedView(CouponData)
                 await chargebee.coupon.delete(id)
             })
 

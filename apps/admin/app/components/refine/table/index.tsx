@@ -1,9 +1,7 @@
-// 'use client'
-
 import type { BaseRecord } from "@refinedev/core";
 import { flexRender } from "@tanstack/react-table";
 import { Loader2 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/core/table";
 import { cn } from "~/utils";
 import { TablePagination } from "./pagnation";
@@ -100,53 +98,7 @@ export default <TData extends BaseRecord>({ table }: TableProps<TData>) => {
                         ))}
                     </TableHeader>
                     <TableBody className="relative">
-                        {isLoading ? (
-                            <>
-                                {Array.from({ length: pageSize < 1 ? 1 : pageSize }).map(
-                                    (_, rowIndex) => (
-                                        <TableRow
-                                            key={`skeleton-row-${rowIndex}`}
-                                            aria-hidden="true"
-                                        >
-                                            {leafColumns.map((column) => (
-                                                <TableCell
-                                                    key={`skeleton-cell-${rowIndex}-${column.id}`}
-                                                    style={{
-                                                        ...getCommonStyles({
-                                                            column,
-                                                            isOverflowing: isOverflowing,
-                                                        }),
-                                                    }}
-                                                    className={cn("truncate")}
-                                                >
-                                                    <div className="h-8" />
-                                                </TableCell>
-                                            ))}
-                                        </TableRow>
-                                    )
-                                )}
-                                <TableRow>
-                                    <TableCell
-                                        colSpan={columns.length}
-                                        className={cn("absolute", "inset-0", "pointer-events-none")}
-                                    >
-                                        <Loader2
-                                            className={cn(
-                                                "absolute",
-                                                "top-1/2",
-                                                "left-1/2",
-                                                "animate-spin",
-                                                "text-primary",
-                                                "h-8",
-                                                "w-8",
-                                                "-translate-x-1/2",
-                                                "-translate-y-1/2"
-                                            )}
-                                        />
-                                    </TableCell>
-                                </TableRow>
-                            </>
-                        ) : getRowModel().rows?.length ? (
+                        {getRowModel().rows?.length ? (
                             getRowModel().rows.map((row) => {
                                 return (
                                     <TableRow

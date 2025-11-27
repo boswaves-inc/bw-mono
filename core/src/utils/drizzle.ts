@@ -11,7 +11,8 @@ import {
     Table,
     Column,
     View,
-    Subquery
+    Subquery,
+    type NotNull
 } from "drizzle-orm";
 import {
     type PgTable,
@@ -120,6 +121,14 @@ export const json_build_object = <T extends Record<string, AnyColumn | SQL>>(obj
     return sql`json_build_object(${sql.join(entries, sql`, `)})`;
 }
 
+export const to_json = <T extends Table>(table: T): SQL<T['$inferSelect']> => {
+    return sql`to_json(${table})`;
+}
+
+export const to_json_nullable = <T extends Table>(table: T): SQL<T['$inferSelect'] | null> => {
+    return sql`to_json(${table})`;
+}
+
 export const json_agg = <C extends AnyColumn>(column: C): SQL<GetColumnData<C>[]> => {
     return sql<GetColumnData<C>[]>`json_agg(${column})`;
 }
@@ -145,12 +154,12 @@ export function exists<T>(aggr: SQL<T>, condition: SQL): SQL<{ exists: boolean }
 //  *
 //  * @todo Implement collapsing for null array with notNull option.
 //  */
-export function array_agg<
-    T extends SQLWrapper,
-//  N extends boolean = true
->(
-    expression: T
-    // { notNull = true as N }: { notNull?: N } = {}
-) {
-    return sql<InferData<T> | null>`array_agg(${expression})`;
+export function array_agg<T extends SQLWrapper>(expression: T): SQL<(InferData<T>)[] | null>;
+export function array_agg<T extends SQLWrapper>(expression: T, condition: SQL): SQL<InferData<T>[] | null>;
+export function array_agg<T extends SQLWrapper>(expression: T, condition?: SQL): SQL<InferData<T>[] | null> {
+    if (condition != undefined) {
+        return sql<InferData<T>[] | null>`array_agg(${expression}) filter (where ${condition})`;
+    }
+    
+    return sql<InferData<T>[] | null>`array_agg(${expression})`;
 }

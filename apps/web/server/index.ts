@@ -11,6 +11,10 @@ import "react-router";
 import { getSession } from "~/utils/session";
 import { cartSession } from "~/cookie";
 import { Maxmind } from "./maxmind";
+import type { Countries, Currencies } from "country-to-currency";
+import countryToCurrency from "country-to-currency";
+import { CartData } from "@bw/core";
+import { eq } from "drizzle-orm";
 
 if (!process.env.CB_SITE) {
   throw new Error('CB_SITE variable not set')
@@ -75,8 +79,41 @@ app_router.use(createRequestHandler({
       cartSession.getSession(req.headers.cookie)
     ])
 
-    const cart = session.get('id')
-    const geo = geo_client.city.get(req.ip || '')
+    const cart = await new Promise<CartData | undefined>(async resolve => {
+      const cookie = session.get('id')
+
+      if (cookie) {
+        const result = await pg_client.select().from(CartData).where(
+          eq(CartData.id, cookie)
+        ).limit(1).then(x => x.at(0));
+
+        if (result == undefined) {
+          session.unset('id')
+          
+          res.cookie('Set-Cookie', await cartSession.commitSession(session))
+        }
+
+        return resolve(result)
+      }
+
+      return resolve(undefined)
+    })
+
+    const geo = await new Promise<{ country: Countries, currency: Currencies }>(resolve => {
+      const location = geo_client.city.get(req.ip || '');
+
+      if (location?.country != undefined) {
+        const country = location.country.iso_code as Countries;
+
+        // check if currency is accepted in chargebee, if not, fallback to usd
+
+        const currency = countryToCurrency[country];
+
+        resolve({ country, currency })
+      }
+
+      return resolve({ country: 'US', currency: 'USD' })
+    });
 
     return {
       geo,
