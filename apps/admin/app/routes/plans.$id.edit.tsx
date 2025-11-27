@@ -184,8 +184,8 @@ export default ({ loaderData: { currencies }, params }: Route.ComponentProps) =>
                                     Trial (soon)
                                 </Label>
                             </div>
-                            {currencies.map(({ currency }) => PeriodUnit.enumValues.map(period_unit => (
-                                <div className="inline-grid col-span-full py-1 border-b grid-cols-3 sm:grid-cols-6">
+                            {currencies.map(({ currency }, cidx) => PeriodUnit.enumValues.map((period_unit, pidx) => (
+                                <div key={cidx * 4 + pidx} className="inline-grid col-span-full py-1 border-b grid-cols-3 sm:grid-cols-6">
                                     <p className="leading-7 flex items-center gap-2 text-sm">
                                         <Flag className="h-5" currency_code={currency.currency_code} />
                                         {currency.currency_code}

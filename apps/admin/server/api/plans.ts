@@ -1,16 +1,15 @@
 import _ from 'lodash';
 import express from 'express'
 import cors from "cors";
-import { eq, getTableColumns, isNotNull, isNull, ne, sql } from 'drizzle-orm';
+import { eq, getTableColumns } from 'drizzle-orm';
 import type Chargebee from 'chargebee'
 import type { Postgres } from '@bw/core/postgres'
 import { Item, ItemPrice, PeriodUnit, PricingModel, ItemScript } from '@bw/core'
 import type { TradingView } from '@bw/core/tradingview';
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
-import z, { array, object } from 'zod/v4';
-import { repeatableOfType, zfd } from 'zod-form-data';
-import { uuid } from 'drizzle-orm/gel-core';
-import { array_agg, coalesce, filter, json_agg_object } from '@bw/core/utils/drizzle.ts';
+import z, { array } from 'zod/v4';
+import { zfd } from 'zod-form-data';
+import { json_agg_object } from '@bw/core/utils/drizzle.ts';
 
 export default ({ family, postgres, tradingview, chargebee }: { family: string, postgres: Postgres, chargebee: Chargebee, tradingview: TradingView }) => {
     const router = express()
@@ -55,7 +54,13 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
         const schema = createInsertSchema(Item)
             .extend(createInsertSchema(ItemScript).shape)
             .extend({
-                item_price: array(createInsertSchema(ItemPrice).nullable())
+                item_price: array(z.object({
+                    price: zfd.numeric(),
+                    period: zfd.numeric(),
+                    period_unit: z.enum(PeriodUnit.enumValues),
+                    currency_code: zfd.text(),
+                    pricing_model: z.enum(PricingModel.enumValues),
+                })).nullable()
                     .default([])
                     .transform(x => x?.filter(x => x != undefined) ?? [])
             })
@@ -91,6 +96,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
 
                 const prices = data.item_price.length > 0 ? await tx.insert(ItemPrice).values(data.item_price.map(price => ({
                     ...price,
+                    item_id: item.id
                 }))).returning() : []
 
                 await chargebee.item.create({
@@ -130,7 +136,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
     })
 
     // Show
-    router.get('/:id', async (req, res) => {
+    router.get('/:id', async (_, res) => {
         try {
             const [result] = await postgres.select({
                 id: Item.id,
@@ -157,8 +163,6 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
 
     // Update
     router.patch('/:id', async (req, res) => {
-        console.log(req.body)
-
         const schema = createUpdateSchema(Item)
             .extend({
                 script: createInsertSchema(ItemScript).omit({
@@ -168,12 +172,12 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
             })
             .extend({
                 item_price: array(z.object({
+                    id: zfd.text().optional(),
                     price: zfd.numeric(),
                     period: zfd.numeric(),
-                    item_id: zfd.text().optional(),
                     period_unit: z.enum(PeriodUnit.enumValues),
-                    pricing_model: z.enum(PricingModel.enumValues),
                     currency_code: zfd.text(),
+                    pricing_model: z.enum(PricingModel.enumValues),
                 }).nullable()).transform(x => x.filter(x => x != undefined))
             })
             .omit({
@@ -184,26 +188,19 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
             })
 
         try {
-            console.log(req.body)
             const data = await schema.parseAsync(req.body)
-
-            // console.log(data)
-
-
             const result = await postgres.transaction(async tx => {
-                const { id } = req.params
-
                 if (data.name != undefined || data.status != undefined) {
                     await tx.update(Item).set({
                         name: data.name,
                         status: data.status,
                         updated_at: new Date()
-                    }).where(eq(Item.id, id));
+                    }).where(eq(Item.id, req.params.id));
                 }
 
                 await tx.insert(ItemScript).values({
-                    id,
                     image: '',
+                    id: req.params.id,
                     uuid: data.script.uuid,
                     type: data.script.type,
                     description: data.script.description,
@@ -216,25 +213,30 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                     }
                 })
 
-                await Promise.all(data.item_price.map(({ item_id, period, price, currency_code, pricing_model, period_unit }) => (
+                const item_prices = await Promise.all(data.item_price.map(({ id, period, price, currency_code, pricing_model, period_unit }) => (
                     tx.insert(ItemPrice).values({
                         price,
                         period,
                         period_unit,
                         currency_code,
                         pricing_model,
-                        item_id: item_id ?? id,
+                        item_id: req.params.id,
                     }).onConflictDoUpdate(({
-                        target: [ItemPrice.item_id, ItemPrice.currency_code, ItemPrice.period_unit],
+                        target: [
+                            ItemPrice.period,
+                            ItemPrice.item_id,
+                            ItemPrice.period_unit,
+                            ItemPrice.currency_code,
+                        ],
                         set: {
                             price,
                             pricing_model
                         }
-                    }))
+                    })).returning().then(x => x[0])
                 )))
 
-                await Promise.all(data.item_price.map(async ({ item_id, price, currency_code, pricing_model, period_unit }) => {
-                    if (item_id != undefined) {
+                await Promise.all(item_prices.map(async ({ id, price, currency_code, pricing_model, period_unit }) => {
+                    if (id != undefined) {
                         return chargebee.itemPrice.update(id, {
                             price,
                             period: 1,
@@ -248,16 +250,16 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                     return chargebee.itemPrice.create({
                         id,
                         price,
-                        item_id: id,
                         period: 1,
-                        name: _.snakeCase(`${data.name}_${currency_code}_${period_unit}`),
                         period_unit,
-                        currency_code,
                         pricing_model,
+                        currency_code,
+                        item_id: req.params.id,
+                        name: _.snakeCase(`${data.name}_${currency_code}_${period_unit}`),
                     })
                 }))
 
-                await chargebee.item.update(id, {
+                await chargebee.item.update(req.params.id, {
                     name: _.snakeCase(data.name),
                     external_name: data.name,
                     'cf_tv_uuid': data.script.uuid,

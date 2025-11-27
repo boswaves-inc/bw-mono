@@ -43,9 +43,9 @@ export const ItemPrice = pgTable('item_price', (t) => ({
     updated_at: t.timestamp().defaultNow().notNull(),
 }), (table) => [
     // primaryKey({ columns: [table.item_id, table.currency_code, table.period_unit] }),
-    index("plan_price_item_idx").on(table.id, table.item_id),
-    index("plan_price_currency_idx").on(table.currency_code),
-    index("plan_price_item_currency_idx").on(table.item_id, table.currency_code),
+    index("item_price_item_idx").on(table.item_id),
+    index("item_price_currency_idx").on(table.currency_code),
+    index("item_price_item_currency_idx").on(table.item_id, table.currency_code, table.period, table.period_unit),
 ]);
 
 export const ItemCoupon = pgTable("item_coupon", (t) => ({
