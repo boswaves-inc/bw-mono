@@ -150,7 +150,7 @@ export default ({ loaderData: { currencies }, params }: Route.ComponentProps) =>
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {Item.status.enumValues.map(value => (
+                                        {Item.status.enumValues.filter(x => x !== 'deleted').map(value => (
                                             <SelectItem key={value} value={value}>{_.upperFirst(value)}</SelectItem>
                                         ))}
                                     </SelectContent>

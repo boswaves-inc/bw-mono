@@ -123,29 +123,6 @@ export default ({ loaderData }: Route.ComponentProps) => {
                             </FormItem>
                         )}
                     />
-                    <FormField
-                        control={form.control}
-                        name="status"
-                        rules={{ required: "Status is required" }}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Status</FormLabel>
-                                <Select onValueChange={field.onChange}>
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select status" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        {Item.status.enumValues.map(value => (
-                                            <SelectItem key={value} value={value}>{_.upperFirst(value)}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
                     <Card className="px-6">
                         <h3 className="scroll-m-20 font-semibold tracking-tight">
                             Pricing

@@ -4,7 +4,7 @@ import cors from "cors";
 import { and, eq, getTableColumns, isNotNull, ne } from 'drizzle-orm';
 import type Chargebee from 'chargebee'
 import type { Postgres } from '@bw/core/postgres'
-import { Item, ItemPrice, PeriodUnit, PricingModel, ItemScript } from '@bw/core'
+import { Item, ItemPrice, PeriodUnit, PricingModel, ItemScript, Status } from '@bw/core'
 import type { TradingView } from '@bw/core/tradingview';
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z, { array } from 'zod/v4';
@@ -38,12 +38,10 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                     and(
                         eq(ItemPrice.item_id, Item.id),
                         ne(ItemPrice.status, 'deleted')
-                    ))
-                .where(
-                    and(
-                        eq(Item.type, 'plan'),
-                        ne(ItemPrice.status, 'deleted')
                     )
+                )
+                .where(
+                    eq(Item.type, 'plan'),
                 )
                 .groupBy(Item.id, ItemScript.id)
                 .offset(start)
@@ -60,14 +58,16 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
 
     // Create
     router.post('/', cors(), express.json(), express.urlencoded({ extended: true }), async (req, res) => {
-        const schema = createInsertSchema(Item)
+        const schema = createInsertSchema(Item).omit({
+            status: true
+        })
             .extend(createInsertSchema(ItemScript).shape)
             .extend({
                 item_price: array(z.object({
                     price: zfd.numeric(),
                     period: zfd.numeric(),
-                    period_unit: z.enum(PeriodUnit.enumValues),
                     currency_code: zfd.text(),
+                    period_unit: z.enum(PeriodUnit.enumValues),
                     pricing_model: z.enum(PricingModel.enumValues),
                 })).nullable()
                     .default([])
@@ -91,7 +91,8 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
             const result = await postgres.transaction(async (tx) => {
                 const item = await tx.insert(Item).values({
                     ...data,
-                    type: 'plan'
+                    type: 'plan',
+                    status: 'active'
                 }).returning().then(x => x[0])
 
                 const item_script = await tx.insert(ItemScript).values({
@@ -103,8 +104,9 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
 
                 const prices = data.item_price.length > 0 ? await tx.insert(ItemPrice).values(data.item_price.map(price => ({
                     ...price,
+                    item_id: item.id,
+                    status: 'active' as Status,
                     name: _.snakeCase(`${data.name}_${price.currency_code}_${price.period_unit}`),
-                    item_id: item.id
                 }))).returning() : []
 
                 await chargebee.item.create({
@@ -179,28 +181,27 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
 
     // Update
     router.patch('/:id', async (req, res) => {
-        const schema = createUpdateSchema(Item)
-            .extend({
-                script: createInsertSchema(ItemScript).omit({
-                    id: true,
-                    image: true
-                })
-            })
-            .extend({
-                item_price: array(z.object({
-                    id: zfd.text().optional().nullable(),
-                    price: zfd.numeric(),
-                    period: zfd.numeric(),
-                    period_unit: z.enum(PeriodUnit.enumValues),
-                    currency_code: zfd.text(),
-                    pricing_model: z.enum(PricingModel.enumValues),
-                }).nullable()).transform(x => x.filter(x => x != undefined))
-            })
-            .omit({
+        const schema = createUpdateSchema(Item).omit({
+            status: true
+        }).extend({
+            status: z.enum(['active', 'archived']),
+            script: createInsertSchema(ItemScript).omit({
                 id: true,
-                created_at: true,
-                updated_at: true,
-            })
+                image: true
+            }),
+            item_price: array(z.object({
+                id: zfd.text().optional().nullable(),
+                price: zfd.numeric(),
+                period: zfd.numeric(),
+                period_unit: z.enum(PeriodUnit.enumValues),
+                currency_code: zfd.text(),
+                pricing_model: z.enum(PricingModel.enumValues),
+            }).nullable()).transform(x => x.filter(x => x != undefined))
+        }).omit({
+            id: true,
+            created_at: true,
+            updated_at: true,
+        })
 
         try {
             const data = await schema.parseAsync(req.body)
@@ -243,6 +244,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                         period_unit,
                         currency_code,
                         pricing_model,
+                        status: 'active',
                         item_id: req.params.id,
                         name: _.snakeCase(`${data.name}_${currency_code}_${period_unit}`),
                     }).onConflictDoUpdate(({
@@ -297,6 +299,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                 await chargebee.item.update(req.params.id, {
                     name: _.snakeCase(data.name),
                     external_name: data.name,
+                    status: data.status,
                     'cf_tv_uuid': data.script.uuid,
                     'cf_tv_type': data.type,
                 })
@@ -311,29 +314,48 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
         }
     })
 
-    // // Delete
-    // router.delete('/:id', async (req, res) => {
-    //     try {
-    //         const result = await postgres.transaction(async tx => {
-    //             const { id } = req.params
+    // Delete
+    router.delete('/:id', async (req, res) => {
+        const { id } = req.params
 
-    //             await chargebee.item.delete(id)
+        try {
 
-    //             await Promise.all([
-    //                 tx.delete(Item).where(eq(Item.id, id)),
-    //                 tx.delete(ItemScript).where(eq(ItemScript.id, id))
-    //             ])
-    //         })
+            const result = await postgres.transaction(async tx => {
+                await tx.update(ItemPrice).set({
+                    status: 'deleted',
+                    updated_at: new Date()
+                }).where(
+                    and(
+                        eq(ItemPrice.item_id, id),
+                        eq(ItemPrice.status, 'active')
+                    )
+                ).returning().then(items => Promise.all(items.map(x => (
+                    chargebee.itemPrice.delete(x.id)
+                ))))
 
-    //         return res.json(result).sendStatus(200)
-    //     }
-    //     catch (err) {
-    //         console.error(err)
+                await tx.update(Item).set({
+                    status: 'deleted',
+                    updated_at: new Date()
+                }).where(
+                    and(
+                        eq(Item.id, id),
+                        eq(Item.status, 'active')
+                    )
+                ).returning().then(async ({ length }) => {
+                    if (length > 0) {
+                        await chargebee.item.delete(id)
+                    }
+                })
+            })
 
-    //         return res.destroy(err as any)
-    //     }
-    // })
+            return res.json(result).sendStatus(200)
+        }
+        catch (err) {
+            console.error(err)
 
+            return res.destroy(err as any)
+        }
+    })
 
     return router
 }

@@ -16,7 +16,7 @@ export const Item = pgTable("item", (t) => ({
     slug: t.text("slug").unique().notNull().generatedAlwaysAs(
         sql`lower(regexp_replace(name, '[^a-zA-Z0-9]+', '-', 'g'))`
     ),
-    status: Status("status").default('archived').notNull(),
+    status: Status("status").notNull(),
     created_at: t.timestamp().defaultNow().notNull(),
     updated_at: t.timestamp().defaultNow().notNull()
 }), table => [
@@ -38,7 +38,7 @@ export const ItemPrice = pgTable('item_price', (t) => ({
     currency_code: t.text("currency_code").notNull(), // ISO 4217: 'USD', 'EUR', 'GBP', etc.
     pricing_model: PricingModel("pricing_model").notNull(), // Price in smallest unit
 
-    status: Status('status').default('active').notNull(),
+    status: Status('status').notNull(),
     created_at: t.timestamp().defaultNow().notNull(),
     updated_at: t.timestamp().defaultNow().notNull(),
 }), (table) => [
