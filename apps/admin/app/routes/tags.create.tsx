@@ -40,7 +40,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-6 max-w-sm">
                     <FormField
                         control={form.control}
-                        name="value"
+                        name="name"
                         rules={{ required: "Name is required" }}
                         render={({ field }) => (
                             <FormItem>

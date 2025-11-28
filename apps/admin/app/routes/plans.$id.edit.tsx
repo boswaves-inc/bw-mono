@@ -184,8 +184,8 @@ export default ({ loaderData: { currencies, tags }, params }: Route.ComponentPro
                                                 <CommandGroup>
                                                     {tags.map((tag) => (
                                                         <CommandItem
-                                                            key={tag.value}
-                                                            value={tag.value}
+                                                            key={tag.slug}
+                                                            value={tag.slug}
                                                             onSelect={(value) => {
                                                                 // setSelectedStatus(
                                                                 //     statuses.find((priority) => priority.value === value) ||
@@ -194,7 +194,7 @@ export default ({ loaderData: { currencies, tags }, params }: Route.ComponentPro
                                                                 // setOpen(false)
                                                             }}
                                                         >
-                                                            {tag.value}
+                                                            {tag.slug}
                                                         </CommandItem>
                                                     ))}
                                                 </CommandGroup>

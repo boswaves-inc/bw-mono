@@ -47,7 +47,7 @@ export default ({ postgres, tradingview }: { postgres: Postgres, tradingview: Tr
             const result = await postgres.transaction(async (tx) => {
                 return await tx.insert(Tag).values({
                     status: 'active',
-                    value: data.value
+                    name: data.name,
                 }).returning().then(x => x[0])
             })
 
@@ -89,9 +89,9 @@ export default ({ postgres, tradingview }: { postgres: Postgres, tradingview: Tr
             const data = await schema.parseAsync(req.body)
 
             await postgres.transaction(async tx => {
-                if (data.value != undefined || data.status != undefined) {
+                if (data.name != undefined || data.status != undefined) {
                     await tx.update(Tag).set({
-                        value: data.value,
+                        name: data.name,
                         status: data.status,
                         updated_at: new Date()
                     }).where(eq(Tag.id, req.params.id));

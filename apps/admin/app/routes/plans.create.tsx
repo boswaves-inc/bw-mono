@@ -1,5 +1,4 @@
-import { Item, ItemPrice, ItemScript, PeriodUnit, PricingModel, Status } from "@bw/core";
-import { useFieldArray, useFormContext, useForm as useReactForm, useWatch } from 'react-hook-form'
+import { ItemScript, PeriodUnit } from "@bw/core";
 import { useForm } from "@refinedev/react-hook-form";
 import { data, useNavigate } from "react-router";
 import { Button } from "~/components/core/button";
@@ -9,15 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~
 import { Textarea } from "~/components/core/textarea";
 import { CreateView, CreateViewHeader } from "~/components/refine/views/create";
 import _ from 'lodash';
-import { Fragment, useState, type BaseSyntheticEvent, } from "react";
+import { type BaseSyntheticEvent, } from "react";
 import type { Route } from "./+types/plans.create";
 import { Card } from "~/components/core/card";
 import { Label } from "~/components/core/label";
-import { Pencil, Trash, XIcon } from "lucide-react";
 import { useMobile } from "~/hooks/mobile";
 import { Flag } from "~/components/flag";
-import { Panel, PanelClose, PanelContent, PanelDescription, PanelFooter, PanelHeader, PanelTitle, PanelTrigger } from "~/components/core/panel";
-import { formatCurrency } from '@coingecko/cryptoformat'
 import { PricePanel } from "~/components/refine/panel/price";
 import type { Currency } from "chargebee";
 

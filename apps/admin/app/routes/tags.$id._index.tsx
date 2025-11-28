@@ -1,22 +1,12 @@
-import { ItemScript, PeriodUnit, ItemPrice, PricingModel, type Item, Tag } from "@bw/core";
-import { useOne, useShow } from "@refinedev/core";
+import {  Tag } from "@bw/core";
+import { useOne } from "@refinedev/core";
 import _ from "lodash";
-import { data, Link } from "react-router";
-import { Badge } from "~/components/core/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/core/card";
-import { Label } from "~/components/core/label";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/core/card";
 import { Separator } from "~/components/core/separator";
-import { Flag } from "~/components/flag";
 import { ShowView, ShowViewHeader } from "~/components/refine/views/show";
 import type { Route } from "./+types/plans.$id._index";
 
-export const loader = async ({ context }: Route.LoaderArgs) => {
-    const { list: currencies } = await context.chargebee.currency.list()
-
-    return data({ currencies })
-}
-
-export default ({ loaderData, params }: Route.ComponentProps) => {
+export default ({ params }: Route.ComponentProps) => {
     
     const { result, query: { isLoading: loading }, } = useOne<Tag>({
         resource: "tags",
@@ -29,7 +19,7 @@ export default ({ loaderData, params }: Route.ComponentProps) => {
             <div className="space-y-6">
                 <Card>
                     <CardHeader>
-                        <CardTitle>{result?.value}</CardTitle>
+                        <CardTitle>{result?.name}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
@@ -42,9 +32,18 @@ export default ({ loaderData, params }: Route.ComponentProps) => {
                         <Separator />
 
                         <div>
-                            <h4 className="text-sm font-medium mb-2">Value</h4>
+                            <h4 className="text-sm font-medium mb-2">Name</h4>
                             <p className="text-sm text-muted-foreground">
-                                {loading ? "Loading..." : result?.value || "-"}
+                                {loading ? "Loading..." : result?.name || "-"}
+                            </p>
+                        </div>
+
+                        <Separator />
+
+                        <div>
+                            <h4 className="text-sm font-medium mb-2">Slug</h4>
+                            <p className="text-sm text-muted-foreground">
+                                {loading ? "Loading..." : result?.slug || "-"}
                             </p>
                         </div>
 

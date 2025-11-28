@@ -1,4 +1,4 @@
-import type { Item, User } from "@bw/core";
+import type {  User } from "@bw/core";
 import { useOne, useShow } from "@refinedev/core";
 import { Badge } from "~/components/core/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/core/card";

@@ -8,10 +8,10 @@ import { ShowButton } from "~/components/refine/button/show";
 import { DeleteButton } from "~/components/refine/button/delete";
 import Table from "~/components/refine/table";
 
-import { Item, User } from "@bw/core";
+import { User } from "@bw/core";
 import type { Route } from "./+types/users._index";
 
-export default ({ loaderData }: Route.ComponentProps) => {
+export default ({  }: Route.ComponentProps) => {
     const { result: { data }, query: { isLoading: loading } } = useList<User>({
         resource: "users",
         pagination: {

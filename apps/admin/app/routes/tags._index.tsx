@@ -7,8 +7,7 @@ import { EditButton } from "~/components/refine/button/edit";
 import { ShowButton } from "~/components/refine/button/show";
 import { DeleteButton } from "~/components/refine/button/delete";
 import Table from "~/components/refine/table";
-
-import { Item, ItemScript, ItemPrice, Tag } from "@bw/core";
+import { Tag } from "@bw/core";
 
 export default () => {
     const {
@@ -31,9 +30,14 @@ export default () => {
                 header: "ID",
                 enableSorting: false,
             }),
-            columnHelper.accessor('value', {
-                id: "value",
-                header: "Value",
+            columnHelper.accessor('name', {
+                id: "name",
+                header: "Name",
+                enableSorting: true,
+            }),
+            columnHelper.accessor('slug', {
+                id: "slug",
+                header: "Slug",
                 enableSorting: true,
             }),
             columnHelper.accessor('status', {

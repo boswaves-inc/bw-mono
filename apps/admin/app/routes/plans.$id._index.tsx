@@ -1,4 +1,4 @@
-import { ItemScript, PeriodUnit, ItemPrice, PricingModel, type Item } from "@bw/core";
+import { ItemScript, PeriodUnit, ItemPrice,  type Item } from "@bw/core";
 import { useOne, useShow } from "@refinedev/core";
 import _ from "lodash";
 import { data, Link } from "react-router";

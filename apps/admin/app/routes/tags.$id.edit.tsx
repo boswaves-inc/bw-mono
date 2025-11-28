@@ -1,27 +1,19 @@
-import { Item, ItemPrice, ItemScript, PeriodUnit, PricingModel, Status, Tag } from "@bw/core";
-import { useFieldArray, useFormContext, useForm as useReactForm, useWatch } from 'react-hook-form'
+import { Item, Tag } from "@bw/core";
 import { useForm } from "@refinedev/react-hook-form";
-import { data, useNavigate } from "react-router";
+import {  useNavigate } from "react-router";
 import { Button } from "~/components/core/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/core/form";
 import { Input } from "~/components/core/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/core/select";
-import { Textarea } from "~/components/core/textarea";
 import { CreateView, CreateViewHeader } from "~/components/refine/views/create";
 import _ from 'lodash';
-import { Fragment, useState, type BaseSyntheticEvent, } from "react";
+import { type BaseSyntheticEvent, } from "react";
 import type { Route } from "./+types/tags.$id.edit";
 
-import type { Currency } from "chargebee";
 import { useShow } from "@refinedev/core";
 
-export const loader = async ({ context }: Route.LoaderArgs) => {
-    const { list: currencies } = await context.chargebee.currency.list()
 
-    return data({ currencies })
-}
-
-export default ({ loaderData, params }: Route.ComponentProps) => {
+export default ({ params }: Route.ComponentProps) => {
     const navigate = useNavigate();
 
     const { result: record } = useShow<Tag>({
@@ -47,11 +39,11 @@ export default ({ loaderData, params }: Route.ComponentProps) => {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-6 max-w-sm">
                     <FormField
                         control={form.control}
-                        name="value"
-                        rules={{ required: "Value is required" }}
+                        name="name"
+                        rules={{ required: "Name is required" }}
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Value</FormLabel>
+                                <FormLabel>Name</FormLabel>
                                 <FormControl className="overflow-hidden">
                                     <Input
                                         {...field}
@@ -70,7 +62,7 @@ export default ({ loaderData, params }: Route.ComponentProps) => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Status</FormLabel>
-                                <Select {...field}>
+                                <Select {...field} onValueChange={field.onChange}>
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select status" />
@@ -88,7 +80,7 @@ export default ({ loaderData, params }: Route.ComponentProps) => {
                     />
                     <div className="flex gap-2 pb-6">
                         <Button type="button" {...form.saveButtonProps} disabled={form.formState.isSubmitting}>
-                            {form.formState.isSubmitting ? "Creating..." : "Create"}
+                            {form.formState.isSubmitting ? "Updating..." : "Update"}
                         </Button>
                         <Button type="button" variant="outline" onClick={() => navigate(-1)}>
                             Cancel

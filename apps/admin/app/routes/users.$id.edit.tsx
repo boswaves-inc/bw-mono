@@ -1,5 +1,4 @@
-import { Item, User } from "@bw/core";
-import { useSelect } from "@refinedev/core";
+import {  User } from "@bw/core";
 import { useForm } from "@refinedev/react-hook-form";
 import _ from "lodash";
 import { useNavigate } from "react-router";
@@ -7,7 +6,6 @@ import { Button } from "~/components/core/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/core/form";
 import { Input } from "~/components/core/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/core/select";
-import { Switch } from "~/components/core/switch";
 import { EditView, EditViewHeader } from "~/components/refine/views/edit";
 
 export default () => {
