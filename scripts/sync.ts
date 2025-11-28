@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { Item, PlanScript, ScriptType, TvScript } from '@bw/core'
+import { Item, ItemScript, ScriptType, TvScript } from '@bw/core'
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';
@@ -134,13 +134,13 @@ const main = async () => {
         console.log('⏳ Synchronizing plan scripts...');
 
         if (scripts.length > 0) {
-            await tx.insert(PlanScript).values(scripts.map(({ uuid, item_id, type, description, image }) => ({
+            await tx.insert(ItemScript).values(scripts.map(({ uuid, item_id, type, description, image }) => ({
                 uuid,
                 type,
                 description,
                 id: item_id,
                 image: image.big
-            }))).onConflictDoNothing({ target: PlanScript.id })
+            }))).onConflictDoNothing({ target: ItemScript.id })
         }
         else {
             console.log('>> skipping, no scripts found');

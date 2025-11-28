@@ -7,12 +7,13 @@ import FaqAccordion from "~/sections/faq/accordion";
 import { data, Link, useFetcher } from "react-router";
 import Button from "~/components/core/button";
 import Panel from "~/components/core/panel";
-import { Item, ItemPrice, ItemScript } from "@bw/core";
-import { and, eq, isNotNull } from "drizzle-orm";
+import { Item, ItemPrice, ItemScript, PeriodUnit } from "@bw/core";
+import { and, eq, getTableColumns, isNotNull } from "drizzle-orm";
 import { useCart } from "~/context/cart";
 import { includes } from "lodash";
 import { Fragment } from "react/jsx-runtime";
-import { array_agg } from "@bw/core/utils/drizzle.ts";
+import { array_agg, json_agg_object } from "@bw/core/utils/drizzle.ts";
+import { formatCurrency } from "@coingecko/cryptoformat";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -22,6 +23,8 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export async function loader({ params, context: { postgres, geo } }: Route.LoaderArgs) {
+  const period_unit: PeriodUnit = 'month'
+
   const product = await postgres.select({
     id: Item.id,
     name: Item.name,
@@ -31,10 +34,17 @@ export async function loader({ params, context: { postgres, geo } }: Route.Loade
     script: ItemScript,
     created_at: Item.created_at,
     updated_at: Item.updated_at,
-    prices: array_agg(ItemPrice, isNotNull(ItemPrice)),
+    item_price: ItemPrice
   }).from(Item)
     .innerJoin(ItemScript, eq(ItemScript.id, Item.id))
-    .innerJoin(ItemPrice, and(eq(ItemPrice.item_id, Item.id), eq(ItemPrice.currency_code, geo.currency)))
+    .innerJoin(ItemPrice,
+      and(
+        eq(ItemPrice.status, 'active'),
+        eq(ItemPrice.item_id, Item.id),
+        eq(ItemPrice.period_unit, period_unit),
+        eq(ItemPrice.currency_code, geo.currency),
+      )
+    )
     .where(
       and(
         eq(Item.type, 'plan'),
@@ -42,7 +52,6 @@ export async function loader({ params, context: { postgres, geo } }: Route.Loade
         eq(Item.slug, params.slug)
       )
     )
-    .groupBy(Item.id, ItemScript.id)
     .limit(1)
     .then(x => x.at(0))
 
@@ -59,16 +68,16 @@ export async function action({ request }: Route.ActionArgs) {
   return data({})
 }
 
-export default ({ loaderData }: Route.ComponentProps) => {
+export default ({ loaderData: { id, name,  script, item_price, created_at, ...rest} }: Route.ComponentProps) => {
   const cart = useCart()
-  const included = cart.includes(loaderData.id)
+  const included = cart.includes(item_price.id)
 
-  const onToggle = () => {
+  const onToggle = async () => {
     if (included) {
-      cart.pop(loaderData.id)
+      await cart.pop(item_price.id)
     }
     else {
-      // cart.push(loaderData)
+      await cart.push(item_price.id)
     }
   }
 
@@ -85,7 +94,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
         </Link>
         <div className="mt-6 flex flex-col sm:flex-row sm:justify-between sm:items-end">
           <div>
-            <Heading size="h1" className="">{loaderData.name}</Heading>
+            <Heading size="h1" className="">{name}</Heading>
             <div className="mt-4 flex items-center gap-x-4">
               <div className=" flex items-center">
                 <Star className="size-6 fill-yellow-400 stroke-none" />
@@ -100,7 +109,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
                   year: 'numeric',
                   month: 'short',
                   day: 'numeric'
-                }).format(loaderData.created_at)}
+                }).format(created_at)}
               </Paragraph>
             </div>
           </div>
@@ -113,12 +122,12 @@ export default ({ loaderData }: Route.ComponentProps) => {
         </div>
         <div className="block md:hidden mt-6">
           <div className="relative overflow-hidden rounded-2xl ring-1 shadow-xl ring-gray-900/5 dark:ring-white/5">
-            <img src={loaderData.script.image} className="aspect-4/3" />
+            <img src={script.image} className="aspect-4/3" />
           </div>
         </div>
         <div className="hidden md:block mt-6">
           <div className="relative overflow-hidden rounded-2xl ring-1 shadow-xl ring-gray-900/5 dark:ring-white/5 h-[500px]">
-            <img src={loaderData.script.image} className="absolute ring-1 w-[calc(100%+6px)] h-[500px] overflow-hidden" />
+            <img src={script.image} className="absolute ring-1 w-[calc(100%+6px)] h-[500px] overflow-hidden" />
             {/* <iframe src="https://s.tradingview.com/embed/ItnS5Inz" className="absolute -inset-x-1 outline-0 -top-px -bottom-6 ring w-[calc(100%+6px)] h-[524px] overflow-hidden" /> */}
           </div>
         </div>
@@ -174,9 +183,9 @@ export default ({ loaderData }: Route.ComponentProps) => {
                 The essentials to provide your best work for clients.
               </Paragraph>
               <div className="mt-6 flex gap-x-1 items-end">
-                <Heading size="h1">$299</Heading>
+                <Heading size="h1">{formatCurrency(item_price.price / 100, item_price.currency_code, 'US-en', false)}</Heading>
                 <Paragraph>
-                  /year
+                  /{item_price.period_unit}
                 </Paragraph>
               </div>
               <Button onClick={onToggle} className="w-full mt-6">
@@ -235,7 +244,6 @@ export default ({ loaderData }: Route.ComponentProps) => {
             <Paragraph className="mt-6">
               Developed under the Adaptive Gaussian Framework, this indicator extends the classical Gaussian model into a multi-stage smoothing and visualization system. By layering three progressive Gaussian filters and rendering their interactions as a gradient-based ribbon field, it translates market energy into a coherent, visually structured trend environment. Each ribbon layer represents a progressively smoothed component of price motion, producing a high-fidelity gradient field that evolves in sync with real-time trend strength and momentum.
             </Paragraph>
-
           </div>
 
           <div className="lg:max-w-none lg:col-span-3 lg:row-end-2 lg:row-span-1 max-w-2xl  mx-auto">

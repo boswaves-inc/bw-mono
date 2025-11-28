@@ -3,12 +3,11 @@ import { data, Link, useFetcher } from "react-router";
 import Button from "~/components/core/button";
 import type { Route } from "./+types/cart";
 import { formData } from "zod-form-data";
-import { object, z } from "zod/v4";
 import { cartSession } from "~/cookie";
 import { getSession } from "~/utils/session";
-import { Cart, CartData, CartItem, Item } from "@bw/core";
-import { and, eq, } from "drizzle-orm";
-import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
+import { Cart, CartItem, Item, ItemPrice } from "@bw/core";
+import { and, eq, getTableColumns, notExists, sql, } from "drizzle-orm";
+import { createInsertSchema } from "drizzle-zod";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -25,7 +24,7 @@ export async function loader({ }: Route.LoaderArgs) {
 export async function action({ request, context }: Route.ActionArgs) {
     const session = await getSession(request, cartSession)
     const schema = formData(createInsertSchema(CartItem).pick({
-        id: true,
+        item_price: true
     }))
 
     switch (request.method) {
@@ -33,32 +32,33 @@ export async function action({ request, context }: Route.ActionArgs) {
             const form = await request.formData()
             const result = await schema.parseAsync(form)
 
-            const cart = await context.postgres.transaction(async tx => {
-                const cart_id = await new Promise<string>(async resolve => {
-                    const current = session.get('id');
+            await context.postgres.transaction(async tx => {
+                const [cart, item] = await Promise.all([
+                    new Promise<string>(async resolve => {
+                        const current = session.get('id');
 
-                    if (current != undefined) {
-                        if (await tx.$count(Cart, eq(Cart.id, current)) > 0) {
-                            return resolve(current)
+                        if (current != undefined) {
+                            if (await tx.$count(Cart, eq(Cart.id, current)) > 0) {
+                                return resolve(current)
+                            }
+
+                            session.unset('id')
                         }
 
-                        session.unset('id')
-                    }
+                        // Create a new cart here
+                        const cart = await tx.insert(Cart).values({
+                            uid: undefined
+                        }).returning().then(x => x[0])
 
-                    // Create a new cart here
-                    const cart = await tx.insert(Cart).values({
-                        uid: undefined
-                    }).returning().then(x => x[0])
+                        // Set the cart to the session cookie for tracking
+                        session.set('id', cart.id)
 
-                    // Set the cart to the session cookie for tracking
-                    session.set('id', cart.id)
-
-                    return resolve(cart.id)
-                })
-
-                const item = await tx.select().from(Item).where(
-                    eq(Item.id, result.id)
-                ).then(x => x.at(0))
+                        return resolve(cart.id)
+                    }),
+                    tx.select({ id: ItemPrice.id }).from(ItemPrice)
+                        .where(eq(ItemPrice.id, result.item_price))
+                        .then(x => x.at(0))
+                ])
 
                 if (item == undefined) {
                     throw new Error('item does not exist');
@@ -68,22 +68,16 @@ export async function action({ request, context }: Route.ActionArgs) {
                 await Promise.all([
                     tx.update(Cart).set({
                         updated_at: new Date()
-                    }).where(eq(Cart.id, cart_id)),
+                    }).where(eq(Cart.id, cart)),
                     tx.insert(CartItem).values({
-                        id: cart_id,
-                        item: result.id,
-                        type: item.type
+                        id: cart,
+                        quantity: 1,
+                        item_price: result.item_price,
                     })
                 ])
-
-                const cart = await tx.select().from(CartData).where(
-                    eq(CartData.id, cart_id)
-                ).limit(1).then(x => x[0])
-
-                return cart
             })
 
-            return data(cart, {
+            return data({ success: true }, {
                 headers: [
                     ["Set-Cookie", await cartSession.commitSession(session)]
                 ]
@@ -97,20 +91,28 @@ export async function action({ request, context }: Route.ActionArgs) {
             }
 
             const form = await request.formData()
-            const result = await schema.parseAsync(form)
+            const req = await schema.parseAsync(form)
 
             await context.postgres.transaction(async tx => {
-                await tx.delete(CartItem).where(and(
-                    eq(CartItem.item, result.id),
-                    eq(CartItem.id, cart_id)
-                ))
+                await tx.delete(CartItem).where(
+                    and(
+                        eq(CartItem.item_price, req.item_price),
+                        eq(CartItem.id, cart_id)
+                    )
+                )
 
                 await tx.update(Cart).set({
                     updated_at: new Date()
-                })
+                }).returning()
+
+                await tx.delete(Cart).where(
+                    notExists(tx.select().from(CartItem).where(
+                        eq(CartItem.id, Cart.id))
+                    )
+                );
             })
 
-            return data({ items: [], coupons: [] })
+            return data({ success: true })
         };
     }
 }

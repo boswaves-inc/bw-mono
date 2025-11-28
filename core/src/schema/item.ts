@@ -1,6 +1,6 @@
 import {  ne, sql, type InferEnum, type InferSelectModel } from "drizzle-orm";
 import {  index, pgEnum, pgTable,  unique, uniqueIndex } from "drizzle-orm/pg-core";
-import { CouponApplication, CouponType, PeriodUnit, PricingModel, ScriptType, Status } from "./types";
+import {  PeriodUnit, PricingModel, ScriptType, Status } from "./types";
 
 export const ItemType = pgEnum('item_type', [
     "plan",
@@ -9,7 +9,7 @@ export const ItemType = pgEnum('item_type', [
     'addon'
 ])
 
-export const Item = pgTable("item", (t) => ({
+export const Item = pgTable("item_info", (t) => ({
     id: t.uuid().notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
     type: ItemType('type').notNull(),
     name: t.text("name").notNull(),
@@ -48,13 +48,6 @@ export const ItemPrice = pgTable('item_price', (t) => ({
     index("item_price_item_idx").on(table.item_id),
 ]);
 
-export const ItemCoupon = pgTable("item_coupon", (t) => ({
-    id: t.uuid().primaryKey().references(() => Item.id, { onDelete: 'cascade', onUpdate: 'cascade'}),
-    type: CouponType("type").notNull(),
-    value: t.doublePrecision("value").notNull(),
-    apply_on: CouponApplication("apply_on").notNull(),
-}))
-
 export const ItemScript = pgTable("item_script", (t) => ({
     id: t.uuid().primaryKey().references(() => Item.id, { onDelete: 'cascade', onUpdate: 'cascade'}),
     type: ScriptType("type").notNull(),
@@ -75,19 +68,5 @@ export type ItemPrice = InferSelectModel<typeof ItemPrice>
 /** https://apidocs.chargebee.com/docs/api/items */
 export type Item = InferSelectModel<typeof Item>
 
+/** Tradingview Script */
 export type ItemScript = InferSelectModel<typeof ItemScript>
-export type ItemCoupon = InferSelectModel<typeof ItemCoupon>
-
-// export const ItemPrice = pgTable("item_price", (t) => ({
-//     id: t.uuid().primaryKey().references(() => Item.id, {
-//         onUpdate: 'cascade',
-//         onDelete: 'cascade'
-//     }),
-    
-//     price: t.numeric(),
-//     currncy: t.text(),
-//     period: PeriodUnit().notNull(),
-// }));
-
-// export type ItemType = InferEnum<typeof ItemType>
-// export type PeriodUnit = InferEnum<typeof PeriodUnit>

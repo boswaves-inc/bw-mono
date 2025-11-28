@@ -1,4 +1,8 @@
+import type { AppLoadContext } from "react-router";
+
 type JsonObject = { [Key in string]: JsonValue; } & { [Key in string]?: JsonValue | undefined; };
 type JsonArray = JsonValue[] | readonly JsonValue[];
 type JsonPrimitive = string | number | boolean | null;
 type JsonValue = JsonPrimitive | JsonObject | JsonArray;
+
+export type Cart = AppLoadContext['cart']

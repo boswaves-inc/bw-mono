@@ -1,55 +1,52 @@
-import type { CartData, Item, ItemType } from "@bw/core"
 import { createContext, useContext, useEffect, useState, type PropsWithChildren } from "react"
-import { useFetcher } from "react-router"
+import { useFetcher, type AppLoadContext } from "react-router"
 
 const CONTEXT = createContext<{
-    items: Item[],
+    items: { item_price: string, quantity: number }[],
     empty: boolean,
     includes: (id: string) => boolean,
-    push: (id: Item) => void,
-    pop: (id: string) => void,
+    push: (id: string) => Promise<void>,
+    pop: (id: string) => Promise<void>,
 }>({} as any)
 
-export const CartProvider = ({ children, cart }: PropsWithChildren<{ cart: CartData | undefined }>) => {
-    const [inner, setInner] = useState<CartData>(cart ?? {
-        id: '0000-0000-0000-0000',
-        uid: null,
-        items: []
-    })
+export const CartProvider = ({ children, cart }: PropsWithChildren<{ cart: AppLoadContext['cart'] }>) => {
+    const [inner, setInner] = useState(cart)
 
-    const fetcher = useFetcher<CartData>()
-    const current = fetcher.data ?? inner
+    const fetcher = useFetcher<AppLoadContext['cart']>()
 
-    const includes = (id: string) => {
-        return current.items.findIndex(x => x.id == id) >= 0
+    const includes = (item_price: string) => {
+        return inner.items.findIndex(x => x.item_price == item_price) >= 0
     }
 
-    const push = async (item: Item) => {
-        if (current.items.findIndex(x => x.id == item.id) == -1) {
+    const push = async (item_price: string, quantity: number = 1) => {
+        if (!includes(item_price)) {
             setInner(current => ({
                 ...current,
-                items: current.items.concat(item)
+                items: current.items.concat({
+                    quantity,
+                    item_price,
+                })
             }))
-        }
 
-        await fetcher.submit({ id: item.id }, {
-            action: '/cart',
-            method: 'put'
-        })
+            await fetcher.submit({ item_price }, {
+                action: '/cart',
+                method: 'put'
+            })
+        }
     }
 
-    const pop = async (id: string) => {
-        if (current.items.findIndex(x => x.id == id) >= 0) {
+    const pop = async (item_price: string) => {
+        if (includes(item_price)) {
             setInner(current => ({
                 ...current,
-                items: current.items.filter(x => x.id !== id)
+                items: current.items.filter(x => x.item_price !== item_price)
             }))
-        }
 
-        await fetcher.submit({ id }, {
-            action: '/cart',
-            method: 'delete'
-        })
+            await fetcher.submit({ item_price }, {
+                action: '/cart',
+                method: 'delete'
+            })
+        }
     }
 
     useEffect(() => {
@@ -66,8 +63,8 @@ export const CartProvider = ({ children, cart }: PropsWithChildren<{ cart: CartD
 
     return (
         <CONTEXT.Provider value={{
-            items: current.items,
-            empty: current.items.length == 0,
+            items: inner.items,
+            empty: inner.items.length == 0,
             includes,
             push,
             pop,

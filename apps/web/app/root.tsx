@@ -22,7 +22,6 @@ import { getSession } from "./utils/session";
 import { cartSession } from "./cookie";
 // import { CartData } from "@bw/core/schema/cart.ts";
 import { count, countDistinct, eq, sql } from "drizzle-orm";
-import { Cart, CartData, CartItem } from "@bw/core";
 import countryToCurrency, { type Currencies, type Countries } from "country-to-currency";
 import { ISO3166 } from "./components/iso";
 
@@ -60,7 +59,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="antialiased relative  dark:bg-gray-900 dark:text-white text-gray-900 bg-white">
-        <CartProvider cart={data?.cart}>
+        <CartProvider cart={data.cart}>
           <Header />
           {children}
           <Footer />

@@ -13,8 +13,10 @@ import { cartSession } from "~/cookie";
 import { Maxmind } from "./maxmind";
 import type { Countries, Currencies } from "country-to-currency";
 import countryToCurrency from "country-to-currency";
-import { CartData } from "@bw/core";
-import { eq } from "drizzle-orm";
+import { Cart, CartItem } from "@bw/core";
+import { eq, isNotNull } from "drizzle-orm";
+import { json_agg_object } from "@bw/core/utils/drizzle.ts";
+import type { AppLoadContext } from "react-router";
 
 if (!process.env.CB_SITE) {
   throw new Error('CB_SITE variable not set')
@@ -75,28 +77,42 @@ app_router.use(createRequestHandler({
   build: () => import("virtual:react-router/server-build"),
   getLoadContext: async (req, res) => {
     const [theme, session] = await Promise.all([
-      getTheme(req),
-      cartSession.getSession(req.headers.cookie)
+      getTheme(req), cartSession.getSession(req.headers.cookie)
     ])
 
-    const cart = await new Promise<CartData | undefined>(async resolve => {
+    const cart = await new Promise<AppLoadContext['cart']>(async resolve => {
       const cookie = session.get('id')
 
       if (cookie) {
-        const result = await pg_client.select().from(CartData).where(
-          eq(CartData.id, cookie)
-        ).limit(1).then(x => x.at(0));
+        const result = await pg_client.select({
+          id: Cart.id,
+          uid: Cart.uid,
+          items: json_agg_object({
+            quantity: CartItem.quantity,
+            item_price: CartItem.item_price,
+          }, isNotNull(CartItem.id)).as('items')
+        }).from(Cart)
+          .innerJoin(CartItem, eq(Cart.id, CartItem.id))
+          .groupBy(Cart.id)
+          .where(eq(Cart.id, cookie))
+          .limit(1).then(x => x.at(0))
 
         if (result == undefined) {
           session.unset('id')
-          
+
           res.cookie('Set-Cookie', await cartSession.commitSession(session))
         }
+        else {
+          return resolve(result)
+        }
 
-        return resolve(result)
       }
 
-      return resolve(undefined)
+      return resolve({
+        id: '0000-0000-0000-0000',
+        uid: null,
+        items: []
+      })
     })
 
     const geo = await new Promise<{ country: Countries, currency: Currencies }>(resolve => {
@@ -114,6 +130,8 @@ app_router.use(createRequestHandler({
 
       return resolve({ country: 'US', currency: 'USD' })
     });
+
+    console.log(cart)
 
     return {
       geo,

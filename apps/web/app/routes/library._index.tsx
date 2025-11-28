@@ -9,12 +9,13 @@ import Label from "~/components/core/label";
 
 import Button from "~/components/core/button";
 import Section from "~/components/section";
-import { Item, ItemScript, ItemPrice, ScriptType, Status } from "@bw/core";
+import { Item, ItemScript, ItemPrice, ScriptType, Status, PeriodUnit } from "@bw/core";
 import _ from 'lodash'
 import type { Route } from "./+types/library._index";
 import { useCart } from "~/context/cart";
-import { and, eq, isNotNull, sql } from "drizzle-orm";
-import { array_agg, coalesce } from "@bw/core/utils/drizzle.ts";
+import { and, eq, getTableColumns, isNotNull, sql } from "drizzle-orm";
+import { array_agg, coalesce, json_agg_object } from "@bw/core/utils/drizzle.ts";
+import { formatCurrency } from "@coingecko/cryptoformat";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -23,7 +24,8 @@ export function meta({ }: Route.MetaArgs) {
   ];
 }
 
-export async function loader({ context: {postgres, geo} }: Route.LoaderArgs) {
+export async function loader({ context: { postgres, geo } }: Route.LoaderArgs) {
+  const period_unit: PeriodUnit = 'month'
 
   const result = await postgres.select({
     id: Item.id,
@@ -32,17 +34,23 @@ export async function loader({ context: {postgres, geo} }: Route.LoaderArgs) {
     slug: Item.slug,
     status: Item.status,
     script: ItemScript,
-    prices: array_agg(ItemPrice, isNotNull(ItemPrice)),
+    item_price: ItemPrice,
   }).from(Item)
     .innerJoin(ItemScript, eq(ItemScript.id, Item.id))
-    .leftJoin(ItemPrice, and(eq(ItemPrice.item_id, Item.id), eq(ItemPrice.currency_code, geo.currency)))
+    .innerJoin(ItemPrice,
+      and(
+        eq(ItemPrice.status, 'active'),
+        eq(ItemPrice.item_id, Item.id),
+        eq(ItemPrice.period_unit, period_unit),
+        eq(ItemPrice.currency_code, geo.currency),
+      )
+    )
     .where(
       and(
         eq(Item.type, 'plan'),
         eq(Item.status, 'active'),
       )
     )
-    .groupBy(Item.id, ItemScript.id)
 
   return data({ data: result })
 }
@@ -169,8 +177,7 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
                   </div>
 
                   <Paragraph size="lg" className="font-medium dark:text-white text-gray-900">
-                    {/* {product.price} */}
-                    25
+                    {formatCurrency(item.item_price.price / 100, item.item_price.currency_code, 'US-en')}
                   </Paragraph>
                 </div>
                 <Paragraph size="sm" className="mt-4 line-clamp-4">
@@ -179,7 +186,7 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
               </Link>
               <div className="block p-4 w-fit">
                 {/* <Link to={`./${item.slug}`}> */}
-                <Button data-selected={cart.includes(item.id)} className="group/button">
+                <Button data-selected={cart.includes(item.item_price.id)} className="group/button">
                   <div className="relative">
                     <PlusIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all duration-200 group-data-[selected=true]/button:scale-0 group-data-[selected=true]/button:-rotate-90" />
                     <CheckIcon className="absolute h-[1.2rem] inset-0 w-[1.2rem] rotate-90 scale-0 transition-all duration-200 group-data-[selected=true]/button:scale-100 group-data-[selected=true]/button:rotate-0" />

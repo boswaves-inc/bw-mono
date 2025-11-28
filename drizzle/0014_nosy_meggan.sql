@@ -1,0 +1,2 @@
+DROP VIEW "public"."cart_data";--> statement-breakpoint
+CREATE VIEW "public"."cart_data" AS (select "cart_info"."id", "cart_info"."uid", array_agg("item_info"."id") filter (where "item_info"."id" is not null) as "items" from "cart_info" left join "cart_item" on "cart_info"."id" = "cart_item"."id" inner join "item_price" on "cart_item"."item_price" = "item_price"."id" left join "item_info" on "item_price"."item_id" = "item_info"."id" group by "cart_info"."id");
