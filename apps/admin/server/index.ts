@@ -6,8 +6,10 @@ import { TradingView } from "@bw/core/tradingview";
 
 import "react-router";
 import theme, { getTheme } from "./theme";
-import users from "./api/users";
+
 import plans from "./api/plans";
+import tags from "./api/tags";
+import users from "./api/users";
 
 if (!process.env.CB_SITE) {
   throw new Error('CB_SITE variable not set')
@@ -44,6 +46,11 @@ router.use('/api/plans', plans({
   family: process.env.CB_FAMILY,
   tradingview: tv_client,
   chargebee: cb_client,
+  postgres: pg_client,
+}))
+
+router.use('/api/tags', tags({
+  tradingview: tv_client,
   postgres: pg_client,
 }))
 

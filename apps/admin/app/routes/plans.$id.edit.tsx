@@ -1,4 +1,4 @@
-import { Item, ItemScript, PeriodUnit, ItemPrice, PricingModel } from "@bw/core";
+import { Item, ItemScript, PeriodUnit, ItemPrice, PricingModel, Tag } from "@bw/core";
 import { useForm } from "@refinedev/react-hook-form";
 import _ from "lodash";
 import { data, useNavigate } from "react-router";
@@ -13,39 +13,43 @@ import { EditView, EditViewHeader } from "~/components/refine/views/edit";
 import type { Route } from "./+types/plans.$id.edit";
 import { Flag } from "~/components/flag";
 import { useShow } from "@refinedev/core";
-import { Fragment, useMemo, useState } from "react";
-import { useFieldArray, useFormContext, useForm as useReactForm, useWatch } from 'react-hook-form'
-import { Panel, PanelClose, PanelContent, PanelDescription, PanelFooter, PanelHeader, PanelTitle, PanelTrigger } from "~/components/core/panel";
-import { formatCurrency } from "@coingecko/cryptoformat";
-import { Pencil, Trash } from "lucide-react";
 import type { Currency } from "chargebee";
 import { PricePanel } from "~/components/refine/panel/price";
+import type { ItemTag } from "@bw/core/schema/item.ts";
+import { Popover, PopoverContent, PopoverTrigger } from "~/components/core/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "~/components/core/command";
+import { PlusIcon } from "lucide-react";
+import { eq } from "drizzle-orm";
 
 export const loader = async ({ context }: Route.LoaderArgs) => {
-    const { list: currencies } = await context.chargebee.currency.list()
+    const [{ list: currencies }, tags] = await Promise.all([
+        context.chargebee.currency.list(),
+        context.postgres.select().from(Tag).where(
+            eq(Tag.status, 'active')
+        )
+    ])
 
-    return data({ currencies })
+    return data({ currencies, tags })
 }
 
-export default ({ loaderData: { currencies }, params }: Route.ComponentProps) => {
+export default ({ loaderData: { currencies, tags }, params }: Route.ComponentProps) => {
     const navigate = useNavigate();
 
-    const { result: record } = useShow<Item & { script: ItemScript, item_price: ItemPrice[] }>({
+    const { result: record } = useShow<Item & { script: ItemScript, item_price: ItemPrice[], tags: ItemTag[] }>({
         resource: 'plans',
         id: params.id
     });
 
-    const { refineCore: { onFinish }, ...form } = useForm<Item & { script: ItemScript, item_price: ItemPrice[] }>({
+    const form = useForm<Item & { script: ItemScript, item_price: ItemPrice[], tags: ItemTag[] }>({
         defaultValues: record,
         refineCoreProps: {
             id: params.id,
             resource: 'plans',
         },
-
     });
 
     function onSubmit(values: Record<string, string>) {
-        onFinish(values);
+        form.refineCore.onFinish(values);
     }
 
     return (
@@ -140,6 +144,65 @@ export default ({ loaderData: { currencies }, params }: Route.ComponentProps) =>
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Status</FormLabel>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value || ""}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select status" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {Item.status.enumValues.filter(x => x !== 'deleted').map(value => (
+                                            <SelectItem key={value} value={value}>{_.upperFirst(value)}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        name="tags"
+                        control={form.control}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Tags</FormLabel>
+                                <Popover >
+                                    <PopoverTrigger asChild>
+                                        <Button variant="outline" className="justify-start w-fit">
+                                            <PlusIcon />
+                                            {/* {selectedStatus ? <>{selectedStatus.label}</> : <>+ Set status</>} */}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="p-0" side="right" align="start">
+                                        <Command>
+                                            <CommandInput placeholder="Change status..." />
+                                            <CommandList>
+                                                <CommandEmpty>No results found.</CommandEmpty>
+                                                <CommandGroup>
+                                                    {tags.map((tag) => (
+                                                        <CommandItem
+                                                            key={tag.value}
+                                                            value={tag.value}
+                                                            onSelect={(value) => {
+                                                                // setSelectedStatus(
+                                                                //     statuses.find((priority) => priority.value === value) ||
+                                                                //     null
+                                                                // )
+                                                                // setOpen(false)
+                                                            }}
+                                                        >
+                                                            {tag.value}
+                                                        </CommandItem>
+                                                    ))}
+                                                </CommandGroup>
+                                            </CommandList>
+                                        </Command>
+                                    </PopoverContent>
+                                </Popover>
+
                                 <Select
                                     onValueChange={field.onChange}
                                     value={field.value || ""}

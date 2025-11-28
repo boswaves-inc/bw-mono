@@ -12,7 +12,7 @@ export const UserRole = pgEnum('user_role', [
     'user'
 ])
 
-export const User = pgTable("user_info", (t) => ({
+export const User = pgTable("user", (t) => ({
     // Unique id
     uid: t.uuid().primaryKey().notNull().$defaultFn(() => crypto.randomUUID()),
     cbid: t.text().notNull(),

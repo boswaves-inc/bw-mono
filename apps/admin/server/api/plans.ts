@@ -229,6 +229,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                         uuid: data.script.uuid,
                         type: data.script.type,
                         description: data.script.description,
+                        updated_at: new Date()
                     }
                 })
 

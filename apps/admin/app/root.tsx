@@ -132,6 +132,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   }
                 },
                 {
+                  name: "tags",
+                  list: "/tags",
+                  show: "/tags/:id",
+                  edit: "/tags/:id/edit",
+                  create: "/tags/create",
+                  meta: {
+                    parent: 'catalog',
+                    canDelete: true,
+                  },
+                },
+                {
                   name: "plans",
                   list: "/plans",
                   show: "/plans/:id",

@@ -3,28 +3,31 @@
 // import { Status } from "./types";
 // import { ItemType } from "./item";
 
-// // export const CouponType = pgEnum('coupon_type', [
-// //     "fixed",
-// //     "percentage",
-// // ])
+import type { InferEnum } from "drizzle-orm"
+import { pgEnum } from "drizzle-orm/pg-core"
 
-// // export const CouponDuration = pgEnum('coupon_duration', [
-// //     "one_time",
-// //     "forever",
-// //     "limited_period"
-// // ])
+export const CouponType = pgEnum('coupon_type', [
+    "fixed",
+    "percentage",
+])
 
-// // export const CouponApplication = pgEnum('coupon_application', [
-// //     "invoice",
-// //     "item",
-// // ])
+export const CouponDuration = pgEnum('coupon_duration', [
+    "one_time",
+    "forever",
+    "limited_period"
+])
 
-// // export const CouponConstraint = pgEnum('coupon_constraint', [
-// //     "none",
-// //     "all",
-// //     "specific",
-// //     "criteria",
-// // ])
+export const CouponApplication = pgEnum('coupon_application', [
+    "invoice",
+    "item",
+])
+
+export const CouponConstraint = pgEnum('coupon_constraint', [
+    "none",
+    "all",
+    "specific",
+    "criteria",
+])
 
 // // export const Coupon = pgTable("coupon_info", (t) => ({
 // //     id: t.uuid().notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -60,7 +63,7 @@
 // // /** https://apidocs.chargebee.com/docs/api/coupons */
 // // export type CouponItem = InferSelectModel<typeof CouponItem>
 
-// // export type CouponType = InferEnum<typeof CouponType>
-// // export type CouponDuration = InferEnum<typeof CouponDuration>
-// // export type CouponConstraint = InferEnum<typeof CouponConstraint>
-// // export type CouponApplication = InferEnum<typeof CouponApplication>
+export type CouponType = InferEnum<typeof CouponType>
+export type CouponDuration = InferEnum<typeof CouponDuration>
+export type CouponConstraint = InferEnum<typeof CouponConstraint>
+export type CouponApplication = InferEnum<typeof CouponApplication>

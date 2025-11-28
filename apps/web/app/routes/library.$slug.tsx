@@ -68,7 +68,7 @@ export async function action({ request }: Route.ActionArgs) {
   return data({})
 }
 
-export default ({ loaderData: { id, name,  script, item_price, created_at, ...rest} }: Route.ComponentProps) => {
+export default ({ loaderData: { id, name, script, item_price, created_at, ...rest } }: Route.ComponentProps) => {
   const cart = useCart()
   const included = cart.includes(item_price.id)
 
@@ -152,16 +152,6 @@ export default ({ loaderData: { id, name,  script, item_price, created_at, ...re
               Indicator
             </Paragraph>
           </div>
-          {/* <div className="ring-1 ring-indigo-400 rounded-full py-1 px-4">
-              <Paragraph size="sm" className="font-medium dark:text-indigo-400">
-                Volume Based
-              </Paragraph>
-            </div>
-            <div className="ring-1 ring-indigo-400 rounded-full py-1 px-4">
-              <Paragraph size="sm" className="font-medium dark:text-indigo-400">
-                Liquidity
-              </Paragraph>
-            </div> */}
         </div>
         <div className=" xl:gap-x-16 mt-24 lg:gap-y-10 gap-y-16 lg:gap-x-8 lg:grid-cols-7 lg:grid-rows-1 grid">
           {/* Image */}

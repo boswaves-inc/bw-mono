@@ -45,61 +45,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
         <CreateView>
             <CreateViewHeader resource="plans" />
             <Form  {...form} >
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-6">
-                    <FormField
-                        control={form.control}
-                        name="name"
-                        rules={{ required: "Name is required" }}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Name</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        {...field}
-                                        value={field.value || ""}
-                                        placeholder="Enter name"
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="uuid"
-                        rules={{ required: "Uuid is required" }}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>UUID</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        {...field}
-                                        value={field.value || ""}
-                                        placeholder="Enter script uuid"
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="description"
-                        rules={{ required: "Description is required" }}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Description</FormLabel>
-                                <FormControl>
-                                    <Textarea
-                                        {...field}
-                                        value={field.value || ""}
-                                        placeholder="Enter description"
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-6 ">
                     <FormField
                         control={form.control}
                         name="type"
@@ -123,6 +69,64 @@ export default ({ loaderData }: Route.ComponentProps) => {
                             </FormItem>
                         )}
                     />
+                    <FormField
+                        control={form.control}
+                        name="name"
+                        rules={{ required: "Name is required" }}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Name</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        {...field}
+                                        value={field.value || ""}
+                                        placeholder="Enter name"
+                                        className="max-w-sm"
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="uuid"
+                        rules={{ required: "Uuid is required" }}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>UUID</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        {...field}
+                                        value={field.value || ""}
+                                        placeholder="Enter script uuid"
+                                        className="max-w-sm"
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="description"
+                        rules={{ required: "Description is required" }}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Description</FormLabel>
+                                <FormControl>
+                                    <Textarea
+                                        {...field}
+                                        value={field.value || ""}
+                                        placeholder="Enter description"
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
                     <Card className="px-6">
                         <h3 className="scroll-m-20 font-semibold tracking-tight">
                             Pricing

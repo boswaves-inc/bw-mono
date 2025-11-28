@@ -134,6 +134,27 @@
       "when": 1764306465654,
       "tag": "0018_odd_romulus",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1764343137588,
+      "tag": "0019_uneven_stranger",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1764345548459,
+      "tag": "0020_special_ben_grimm",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1764345608099,
+      "tag": "0021_pale_krista_starr",
+      "breakpoints": true
     }
   ]
 }
