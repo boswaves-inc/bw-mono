@@ -1,15 +1,12 @@
 import _ from 'lodash';
 import express from 'express'
 import cors from "cors";
-import { and, eq, getTableColumns, isNotNull, ne } from 'drizzle-orm';
-import type Chargebee from 'chargebee'
+import { eq } from 'drizzle-orm';
 import type { Postgres } from '@bw/core/postgres'
-import { Item, ItemPrice, PeriodUnit, PricingModel, ItemScript, Status, Tag } from '@bw/core'
+import { Item, Tag, ItemTag } from '@bw/core'
 import type { TradingView } from '@bw/core/tradingview';
-import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
-import z, { array } from 'zod/v4';
-import { zfd } from 'zod-form-data';
-import { json_agg_object } from '@bw/core/utils/drizzle.ts';
+import { createInsertSchema } from "drizzle-zod";
+import z, { object } from 'zod/v4';
 
 export default ({ postgres, tradingview }: { postgres: Postgres, tradingview: TradingView }) => {
     const router = express()
@@ -27,9 +24,11 @@ export default ({ postgres, tradingview }: { postgres: Postgres, tradingview: Tr
             return res.json(data)
         }
         catch (err) {
-            console.log(err)
+            if (err instanceof Error) {
+                return res.status(500).send(err.message)
+            }
 
-            return res.destroy(err as any)
+            return res.status(500).send(err)
         }
     })
 
@@ -51,12 +50,14 @@ export default ({ postgres, tradingview }: { postgres: Postgres, tradingview: Tr
                 }).returning().then(x => x[0])
             })
 
-            return res.json(result).status(200)
+            return res.json(result)
         }
         catch (err: any) {
-            console.log(err)
+            if (err instanceof Error) {
+                return res.status(500).send(err.message)
+            }
 
-            return res.sendStatus(404)
+            return res.status(500).send(err)
         }
     })
 
@@ -67,21 +68,21 @@ export default ({ postgres, tradingview }: { postgres: Postgres, tradingview: Tr
                 eq(Tag.id, req.params.id)
             ).limit(1)
 
-            return res.json(result).sendStatus(200)
+            return res.json(result)
         }
         catch (err) {
-            return res.destroy(err as any)
+            if (err instanceof Error) {
+                return res.status(500).send(err.message)
+            }
+
+            return res.status(500).send(err)
         }
     })
 
     // Update
     router.patch('/:id', async (req, res) => {
-        const schema = createUpdateSchema(Tag).omit({
-            id: true,
-            status: true,
-            created_at: true,
-            updated_at: true
-        }).extend({
+        const schema = object({
+            name: z.string(),
             status: z.enum(['archived', 'active'])
         })
 
@@ -89,13 +90,16 @@ export default ({ postgres, tradingview }: { postgres: Postgres, tradingview: Tr
             const data = await schema.parseAsync(req.body)
 
             await postgres.transaction(async tx => {
-                if (data.name != undefined || data.status != undefined) {
-                    await tx.update(Tag).set({
-                        name: data.name,
-                        status: data.status,
-                        updated_at: new Date()
-                    }).where(eq(Tag.id, req.params.id));
-                }
+                await tx.update(Tag).set({
+                    name: data.name,
+                    status: data.status,
+                    updated_at: new Date()
+                }).where(eq(Tag.id, req.params.id));
+
+                await tx.update(ItemTag).set({
+                    status: data.status,
+                    updated_at: new Date()
+                }).where(eq(ItemTag.id, req.params.id))
             })
 
             return res.sendStatus(200)
@@ -103,28 +107,41 @@ export default ({ postgres, tradingview }: { postgres: Postgres, tradingview: Tr
         catch (err: any) {
             console.error(err)
 
-            return res.destroy(err as any)
+            if (err instanceof Error) {
+                return res.status(500).send(err.message)
+            }
+
+            return res.status(500).send(err)
         }
     })
 
     // Delete
     router.delete('/:id', async (req, res) => {
-        const { id } = req.params
-
         try {
             const result = await postgres.transaction(async (tx) => {
+                await tx.update(ItemTag).set({
+                    status: 'deleted',
+                    updated_at: new Date()
+                }).where(eq(ItemTag.id, req.params.id))
+
                 return await tx.update(Tag).set({
                     status: 'deleted',
                     updated_at: new Date()
-                }).returning().then(x => x[0])
+                }).where(
+                    eq(Item.id, req.params.id)
+                ).returning().then(x => x[0])
             })
 
-            return res.json(result).sendStatus(200)
+            return res.json(result)
         }
         catch (err) {
             console.error(err)
 
-            return res.destroy(err as any)
+            if (err instanceof Error) {
+                return res.status(500).send(err.message)
+            }
+
+            return res.status(500).send(err)
         }
     })
 

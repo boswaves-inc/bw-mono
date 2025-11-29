@@ -120,5 +120,5 @@ export default <T extends Record<string, postgres.PostgresType>>(options?: postg
     const client = postgres(options);
     const store = drizzle(client, { schema });
 
-    return (req: Request, res: Response, next: NextFunction) => storage.run(store, next)
+    return (req: Request, res: Response, next: NextFunction) => storage.run(store, () => next('route'))
 }

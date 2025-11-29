@@ -20,7 +20,7 @@ export default () => {
             return res.status(400).json({ error: 'Invalid theme' })
         }
 
-        return res.header('Set-Cookie', await cookie.serialize(theme)).json({ theme })
+        return res.setHeader('Set-Cookie', await cookie.serialize(theme)).json({ theme })
     })
 
     return router

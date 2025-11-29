@@ -17,8 +17,8 @@ export const loader = async ({ context }: Route.LoaderArgs) => {
 }
 
 export default ({ loaderData, params }: Route.ComponentProps) => {
-    const { result: record } = useShow<Item & { script: ItemScript, item_price: ItemPrice[] }>({});
-    const { result, query: { isLoading: loading }, } = useOne<Item & { script: ItemScript, item_price: ItemPrice[] }>({
+    const { result: record } = useShow<Item & { item_script: ItemScript, item_price: ItemPrice[] }>({});
+    const { result, query: { isLoading: loading }, } = useOne<Item & { item_script: ItemScript, item_price: ItemPrice[] }>({
         resource: "plans",
         id: record?.id || "",
         queryOptions: {
@@ -54,7 +54,7 @@ export default ({ loaderData, params }: Route.ComponentProps) => {
                         <div>
                             <h4 className="text-sm font-medium mb-2">UUID</h4>
                             <p className="text-sm text-muted-foreground">
-                                {loading ? "Loading..." : result?.script.uuid || "-"}
+                                {loading ? "Loading..." : result?.item_script.uuid || "-"}
                             </p>
                         </div>
 
@@ -63,7 +63,7 @@ export default ({ loaderData, params }: Route.ComponentProps) => {
                         <div>
                             <h4 className="text-sm font-medium mb-2">Type</h4>
                             <p className="text-sm text-muted-foreground">
-                                {loading ? "Loading..." : result?.script.type || "-"}
+                                {loading ? "Loading..." : result?.item_script.type || "-"}
                             </p>
                         </div>
 
@@ -90,7 +90,7 @@ export default ({ loaderData, params }: Route.ComponentProps) => {
                         <div>
                             <h4 className="text-sm font-medium mb-2">Description</h4>
                             <p className="text-sm text-muted-foreground">
-                                {loading ? "Loading..." : result?.script.description || "-"}
+                                {loading ? "Loading..." : result?.item_script.description || "-"}
                             </p>
                         </div>
 
@@ -98,9 +98,9 @@ export default ({ loaderData, params }: Route.ComponentProps) => {
 
                         <div>
                             <h4 className="text-sm font-medium mb-2">Image</h4>
-                            <Link to={result?.script.image ?? './'} target="_blank">
+                            <Link to={result?.item_script.image ?? './'} target="_blank">
                                 <p className="text-sm text-blue-500">
-                                    {loading ? "Loading..." : result?.script.image || "-"}
+                                    {loading ? "Loading..." : result?.item_script.image || "-"}
                                 </p>
                             </Link>
                         </div>

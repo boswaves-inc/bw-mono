@@ -40,7 +40,7 @@ router.use(postgres({
   password: process.env.PG_PASSWORD
 }));
 
-router.use(theme())
+// router.use(theme())
 
 router.use('/api/plans', plans({
   family: process.env.CB_FAMILY,
@@ -63,12 +63,12 @@ router.use(createRequestHandler({
   // @ts-ignore
   build: () => import("virtual:react-router/server-build"),
   getLoadContext: async (req, res) => {
-    const theme = await getTheme(req)
+    // const theme = await getTheme(req)
 
     return {
       chargebee: cb_client,
       postgres: pg_client,
-      theme,
+      theme: 'dark',
     }
   }
 }));

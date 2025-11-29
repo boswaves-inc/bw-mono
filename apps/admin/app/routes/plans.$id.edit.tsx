@@ -35,12 +35,12 @@ export const loader = async ({ context }: Route.LoaderArgs) => {
 export default ({ loaderData: { currencies, tags }, params }: Route.ComponentProps) => {
     const navigate = useNavigate();
 
-    const { result: record } = useShow<Item & { script: ItemScript, item_price: ItemPrice[], tags: ItemTag[] }>({
+    const { result: record } = useShow<Item & { item_script: ItemScript, item_price: ItemPrice[], item_tag: ItemTag[] }>({
         resource: 'plans',
         id: params.id
     });
 
-    const form = useForm<Item & { script: ItemScript, item_price: ItemPrice[], tags: ItemTag[] }>({
+    const form = useForm<Item & { item_script: ItemScript, item_price: ItemPrice[], item_tag: ItemTag[] }>({
         defaultValues: record,
         refineCoreProps: {
             id: params.id,
@@ -76,7 +76,7 @@ export default ({ loaderData: { currencies, tags }, params }: Route.ComponentPro
                         )}
                     />
                     <FormField
-                        name="script.uuid"
+                        name="item_script.uuid"
                         control={form.control}
                         rules={{ required: "Uuid is required" }}
                         render={({ field }) => (
@@ -94,7 +94,7 @@ export default ({ loaderData: { currencies, tags }, params }: Route.ComponentPro
                         )}
                     />
                     <FormField
-                        name="script.description"
+                        name="item_script.description"
                         control={form.control}
                         rules={{ required: "Description is required" }}
                         render={({ field }) => (
@@ -112,7 +112,7 @@ export default ({ loaderData: { currencies, tags }, params }: Route.ComponentPro
                         )}
                     />
                     <FormField
-                        name="script.type"
+                        name="item_script.type"
                         control={form.control}
                         rules={{ required: "Type is required" }}
                         render={({ field }) => (
@@ -164,16 +164,19 @@ export default ({ loaderData: { currencies, tags }, params }: Route.ComponentPro
                         )}
                     />
                     <FormField
-                        name="tags"
+                        name="item_tag"
                         control={form.control}
-                        render={({ field }) => (
+                        render={({ field: { onChange, value, ...field } }) => (
                             <FormItem>
                                 <FormLabel>Tags</FormLabel>
                                 <Popover >
+                                    <FormControl >
+                                        <input {...field} value={value} hidden />
+                                    </FormControl>
                                     <PopoverTrigger asChild>
                                         <Button variant="outline" className="justify-start w-fit">
                                             <PlusIcon />
-                                            {/* {selectedStatus ? <>{selectedStatus.label}</> : <>+ Set status</>} */}
+                                            Add
                                         </Button>
                                     </PopoverTrigger>
                                     <PopoverContent className="p-0" side="right" align="start">
@@ -186,12 +189,8 @@ export default ({ loaderData: { currencies, tags }, params }: Route.ComponentPro
                                                         <CommandItem
                                                             key={tag.slug}
                                                             value={tag.slug}
-                                                            onSelect={(value) => {
-                                                                // setSelectedStatus(
-                                                                //     statuses.find((priority) => priority.value === value) ||
-                                                                //     null
-                                                                // )
-                                                                // setOpen(false)
+                                                            onSelect={(item) => {
+                                                                onChange([...value, item])
                                                             }}
                                                         >
                                                             {tag.slug}
@@ -202,22 +201,6 @@ export default ({ loaderData: { currencies, tags }, params }: Route.ComponentPro
                                         </Command>
                                     </PopoverContent>
                                 </Popover>
-
-                                <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value || ""}
-                                >
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select status" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        {Item.status.enumValues.filter(x => x !== 'deleted').map(value => (
-                                            <SelectItem key={value} value={value}>{_.upperFirst(value)}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
                                 <FormMessage />
                             </FormItem>
                         )}

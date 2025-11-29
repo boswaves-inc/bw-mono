@@ -44,7 +44,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-6 ">
                     <FormField
                         control={form.control}
-                        name="type"
+                        name="item_script.type"
                         rules={{ required: "Type is required" }}
                         render={({ field }) => (
                             <FormItem>
@@ -86,7 +86,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
                     />
                     <FormField
                         control={form.control}
-                        name="uuid"
+                        name="item_script.uuid"
                         rules={{ required: "Uuid is required" }}
                         render={({ field }) => (
                             <FormItem>
@@ -106,7 +106,7 @@ export default ({ loaderData }: Route.ComponentProps) => {
 
                     <FormField
                         control={form.control}
-                        name="description"
+                        name="item_script.description"
                         rules={{ required: "Description is required" }}
                         render={({ field }) => (
                             <FormItem>

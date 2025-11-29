@@ -1,68 +1,78 @@
 import _ from 'lodash';
 import express from 'express'
 import cors from "cors";
-import { and, eq, getTableColumns, isNotNull, ne } from 'drizzle-orm';
+import { and, eq, getTableColumns, isNotNull, ne, sql } from 'drizzle-orm';
 import type Chargebee from 'chargebee'
 import type { Postgres } from '@bw/core/postgres'
-import { Item, ItemPrice, PeriodUnit, PricingModel, ItemScript, Status } from '@bw/core'
+import { Item, ItemPrice, PeriodUnit, PricingModel, ItemScript, Status, ItemTag, ScriptType } from '@bw/core'
 import type { TradingView } from '@bw/core/tradingview';
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z, { array } from 'zod/v4';
 import { zfd } from 'zod-form-data';
-import { json_agg_object } from '@bw/core/utils/drizzle.ts';
+import { coalesce, json_agg_object } from '@bw/core/utils/drizzle.ts';
 
 export default ({ family, postgres, tradingview, chargebee }: { family: string, postgres: Postgres, chargebee: Chargebee, tradingview: TradingView }) => {
     const router = express()
 
     // List
     router.get('/', async (req, res) => {
-        try {
-            const { _end, _start } = req.query;
+        const { _end, _start } = req.query;
 
-            const start = Number(_start) ?? 0;
-            const end = Number(_end) ?? 10;
+        const start = Number(_start) ?? 0;
+        const end = Number(_end) ?? 10;
 
-            const data = await postgres.select({
-                id: Item.id,
-                name: Item.name,
-                type: Item.type,
-                slug: Item.slug,
-                status: Item.status,
-                script: ItemScript,
-                item_price: json_agg_object({
+        const data = await postgres.select({
+            id: Item.id,
+            name: Item.name,
+            type: Item.type,
+            slug: Item.slug,
+            status: Item.status,
+            item_tag: coalesce(
+                json_agg_object({
+                    ...getTableColumns(ItemTag)
+                }, isNotNull(ItemTag.id)),
+                sql`'[]'::json`
+            ),
+            item_price: coalesce(
+                json_agg_object({
                     ...getTableColumns(ItemPrice)
                 }, isNotNull(ItemPrice.id)),
-            }).from(Item)
-                .innerJoin(ItemScript, eq(ItemScript.id, Item.id))
-                .leftJoin(ItemPrice,
-                    and(
-                        eq(ItemPrice.item_id, Item.id),
-                        ne(ItemPrice.status, 'deleted')
-                    )
+                sql`'[]'::json`
+            ),
+            item_script: ItemScript,
+        }).from(Item)
+            .innerJoin(ItemScript, eq(ItemScript.id, Item.id))
+            .leftJoin(ItemPrice,
+                and(
+                    eq(ItemPrice.item_id, Item.id),
+                    ne(ItemPrice.status, 'deleted')
                 )
-                .where(
-                    eq(Item.type, 'plan'),
+            )
+            .leftJoin(ItemTag,
+                and(
+                    eq(ItemTag.item_id, Item.id),
+                    eq(ItemTag.status, Item.status)
                 )
-                .groupBy(Item.id, ItemScript.id)
-                .offset(start)
-                .limit(end - start)
+            )
+            .where(
+                eq(Item.type, 'plan'),
+            )
+            .groupBy(Item.id, ItemScript.id)
+            .offset(start)
+            .limit(end - start)
 
-            return res.json(data)
-        }
-        catch (err) {
-            console.log(err)
-
-            return res.destroy(err as any)
-        }
+        return res.json(data)
     })
 
     // Create
     router.post('/', cors(), express.json(), express.urlencoded({ extended: true }), async (req, res) => {
-        const schema = createInsertSchema(Item).omit({
-            status: true
-        })
-            .extend(createInsertSchema(ItemScript).shape)
+        const schema = createInsertSchema(Item)
             .extend({
+                name: z.string(),
+                status: z.enum(['active', 'archived']),
+                item_tag: array(z.object({
+                    id: zfd.text(),
+                })),
                 item_price: array(z.object({
                     price: zfd.numeric(),
                     period: zfd.numeric(),
@@ -71,18 +81,23 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                     pricing_model: z.enum(PricingModel.enumValues),
                 })).nullable()
                     .default([])
-                    .transform(x => x?.filter(x => x != undefined) ?? [])
+                    .transform(x => x?.filter(x => x != undefined) ?? []),
+                item_script: z.object({
+                    uuid: z.string(),
+                    type: z.enum(ScriptType.enumValues),
+                    description: z.string(),
+                })
             })
             .omit({
                 id: true,
-                image: true,
+                status: true,
                 created_at: true,
                 updated_at: true,
             })
 
         try {
             const data = await schema.parseAsync(req.body)
-            const script = await tradingview.script(data.uuid)
+            const script = await tradingview.script(data.item_script.uuid)
 
             if ("detail" in script) {
                 return res.json(script).status(400)
@@ -96,9 +111,8 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                 }).returning().then(x => x[0])
 
                 const item_script = await tx.insert(ItemScript).values({
-                    ...data,
+                    ...data.item_script,
                     id: item.id,
-                    uuid: script.uuid,
                     image: script.image.big
                 }).returning().then(x => x[0]);
 
@@ -136,7 +150,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                 return _.merge(item, { item_prices: prices, item_script })
             })
 
-            return res.json(result).status(200)
+            return res.json(result)
         }
         catch (err: any) {
             console.log(err)
@@ -145,47 +159,65 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
         }
     })
 
-    // Show
+    // Read
     router.get('/:id', async (req, res) => {
-        try {
-            const [result] = await postgres.select({
-                id: Item.id,
-                name: Item.name,
-                type: Item.type,
-                slug: Item.slug,
-                status: Item.status,
-                script: ItemScript,
-                item_price: json_agg_object({
+        const [result] = await postgres.select({
+            id: Item.id,
+            name: Item.name,
+            type: Item.type,
+            slug: Item.slug,
+            status: Item.status,
+            item_tag: coalesce(
+                json_agg_object({
+                    ...getTableColumns(ItemTag)
+                }, isNotNull(ItemTag.id)),
+                sql`'[]'::json`
+            ),
+            item_price: coalesce(
+                json_agg_object({
                     ...getTableColumns(ItemPrice)
                 }, isNotNull(ItemPrice.id)),
-            }).from(Item)
-                .innerJoin(ItemScript, eq(ItemScript.id, Item.id))
-                .leftJoin(ItemPrice,
-                    and(
-                        eq(ItemPrice.item_id, Item.id),
-                        ne(ItemPrice.status, 'deleted')
-                    ))
-                .groupBy(Item.id, ItemScript.id)
-                .where(
-                    and(
-                        eq(Item.id, req.params.id),
-                        ne(Item.status, 'deleted'),
-                    )
+                sql`'[]'::json`
+            ),
+            item_script: ItemScript,
+        }).from(Item)
+            .innerJoin(ItemScript,
+                eq(ItemScript.id, Item.id)
+            )
+            .leftJoin(ItemPrice,
+                and(
+                    eq(ItemPrice.item_id, Item.id),
+                    ne(ItemPrice.status, 'deleted')
                 )
-                .limit(1)
+            )
+            .leftJoin(ItemTag,
+                and(
+                    eq(ItemTag.item_id, Item.id),
+                    eq(ItemTag.status, Item.status),
+                )
+            )
+            .groupBy(Item.id, ItemScript.id)
+            .where(
+                and(
+                    eq(Item.id, req.params.id),
+                    ne(Item.status, 'deleted'),
+                )
+            )
+            .limit(1)
 
-            return res.json(result).sendStatus(200)
-        }
-        catch (err) {
-            return res.destroy(err as any)
-        }
+        return res.json(result)
     })
 
     // Update
     router.patch('/:id', async (req, res) => {
         const schema = createUpdateSchema(Item).omit({
-            status: true
+            id: true,
+            name: true,
+            status: true,
+            created_at: true,
+            updated_at: true
         }).extend({
+            name: z.string(),
             status: z.enum(['active', 'archived']),
             script: createInsertSchema(ItemScript).omit({
                 id: true,
@@ -199,40 +231,46 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                 currency_code: zfd.text(),
                 pricing_model: z.enum(PricingModel.enumValues),
             }).nullable()).transform(x => x.filter(x => x != undefined))
-        }).omit({
-            id: true,
-            created_at: true,
-            updated_at: true,
         })
 
         try {
             const data = await schema.parseAsync(req.body)
 
             await postgres.transaction(async tx => {
-                if (data.name != undefined || data.status != undefined) {
-                    await tx.update(Item).set({
+                await Promise.all([
+                    tx.update(Item).set({
                         name: data.name,
                         status: data.status,
                         updated_at: new Date()
-                    }).where(eq(Item.id, req.params.id));
-                }
+                    }).where(eq(Item.id, req.params.id)),
 
-                await tx.insert(ItemScript).values({
-                    image: '',
-                    id: req.params.id,
-                    uuid: data.script.uuid,
-                    type: data.script.type,
-                    description: data.script.description,
-                }).onConflictDoUpdate({
-                    target: ItemScript.id,
-                    set: {
+                    // tx.update(ItemTag).set({
+                    //     status: data.status
+                    // }).where(
+                    //     and(
+                    //         eq(ItemTag.item_id, req.params.id),
+                    //         ne(ItemTag.status, 'deleted')
+                    //     )
+                    // ),
+
+                    tx.insert(ItemScript).values({
+                        image: '',
+                        id: req.params.id,
                         uuid: data.script.uuid,
                         type: data.script.type,
                         description: data.script.description,
-                        updated_at: new Date()
-                    }
-                })
+                    }).onConflictDoUpdate({
+                        target: ItemScript.id,
+                        set: {
+                            uuid: data.script.uuid,
+                            type: data.script.type,
+                            description: data.script.description,
+                            updated_at: new Date()
+                        }
+                    })
+                ])
 
+                // Get the current non-deleted item_prices 
                 const current_prices = await tx.select().from(ItemPrice).where(
                     and(
                         eq(ItemPrice.item_id, req.params.id),
@@ -240,6 +278,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                     )
                 )
 
+                // Update all the item price instances in the database
                 const item_prices = await Promise.all(data.item_price.map(({ id, period, price, currency_code, pricing_model, period_unit }) => (
                     tx.insert(ItemPrice).values({
                         price,
@@ -256,18 +295,22 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                         set: {
                             price,
                             pricing_model,
+                            status: data.status,
                             updated_at: new Date()
                         },
                         targetWhere: ne(ItemPrice.status, 'deleted')
                     })).returning().then(x => ({ ...x[0], created: id == undefined }))
                 )))
 
+                // Check if any of the item_prices got deleted
                 const deleted_prices = current_prices.filter(x => item_prices.findIndex(y => y.id == x.id) == -1)
 
+                // Delete all the database instances first to unsure all succeed
                 await Promise.all(deleted_prices.map(item_price => tx.update(ItemPrice).set({
                     status: 'deleted'
                 }).where(eq(ItemPrice.id, item_price.id))))
 
+                // Update all chargebee instances
                 await Promise.all([
                     ...deleted_prices.map(({ id }) => {
                         return chargebee.itemPrice.delete(id)
@@ -297,6 +340,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
                     })
                 ])
 
+                // Update the chargebee root item instance 
                 await chargebee.item.update(req.params.id, {
                     name: _.snakeCase(data.name),
                     external_name: data.name,
@@ -310,8 +354,11 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
         }
         catch (err: any) {
             console.error(err)
+            if (err instanceof Error) {
+                return res.status(500).send(err.message)
+            }
 
-            return res.destroy(err as any)
+            return res.status(500).send(err)
         }
     })
 
@@ -319,43 +366,36 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
     router.delete('/:id', async (req, res) => {
         const { id } = req.params
 
-        try {
+        await postgres.transaction(async tx => {
+            await tx.update(ItemPrice).set({
+                status: 'deleted',
+                updated_at: new Date()
+            }).where(
+                eq(ItemPrice.item_id, id),
+            ).returning().then(items => Promise.all(items.map(x => (
+                chargebee.itemPrice.delete(x.id)
+            ))))
 
-            const result = await postgres.transaction(async tx => {
-                await tx.update(ItemPrice).set({
-                    status: 'deleted',
-                    updated_at: new Date()
-                }).where(
-                    and(
-                        eq(ItemPrice.item_id, id),
-                        eq(ItemPrice.status, 'active')
-                    )
-                ).returning().then(items => Promise.all(items.map(x => (
-                    chargebee.itemPrice.delete(x.id)
-                ))))
+            await tx.update(ItemTag).set({
+                status: 'deleted',
+                updated_at: new Date()
+            }).where(
+                eq(ItemTag.item_id, id),
+            ).returning()
 
-                await tx.update(Item).set({
-                    status: 'deleted',
-                    updated_at: new Date()
-                }).where(
-                    and(
-                        eq(Item.id, id),
-                        eq(Item.status, 'active')
-                    )
-                ).returning().then(async ({ length }) => {
-                    if (length > 0) {
-                        await chargebee.item.delete(id)
-                    }
-                })
+            await tx.update(Item).set({
+                status: 'deleted',
+                updated_at: new Date()
+            }).where(
+                eq(Item.id, id),
+            ).returning().then(async ({ length }) => {
+                if (length > 0) {
+                    await chargebee.item.delete(id)
+                }
             })
+        })
 
-            return res.json(result).sendStatus(200)
-        }
-        catch (err) {
-            console.error(err)
-
-            return res.destroy(err as any)
-        }
+        return res.send('success')
     })
 
     return router

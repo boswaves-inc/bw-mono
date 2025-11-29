@@ -23,7 +23,7 @@ export default () => {
     });
 
     const columns = useMemo(() => {
-        const columnHelper = createColumnHelper<Item & { script: ItemScript, item_price: ItemPrice[]}>();
+        const columnHelper = createColumnHelper<Item & { item_script: ItemScript, item_price: ItemPrice[]}>();
 
         return [
             columnHelper.accessor("id", {
@@ -31,7 +31,7 @@ export default () => {
                 header: "ID",
                 enableSorting: false,
             }),
-            columnHelper.accessor('script.uuid', {
+            columnHelper.accessor('item_script.uuid', {
                 id: "uuid",
                 header: "Script",
                 enableSorting: false,
@@ -62,7 +62,7 @@ export default () => {
     }, [data, loading]);
 
 
-    const table = useTable<Item & { script: ItemScript, item_price: ItemPrice[]}>({
+    const table = useTable<Item & { item_script: ItemScript, item_price: ItemPrice[]}>({
         columns,
         refineCoreProps: {
             syncWithLocation: false,
