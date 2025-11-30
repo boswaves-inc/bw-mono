@@ -1,26 +1,42 @@
 import type { Status } from "@bw/core";
-import { useDeleteButton, useEditButton, useOne } from "@refinedev/core";
+import { useDeleteButton, useEditButton, useOne, useRefineContext, useResourceParams, useShowButton, type BaseRecord } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
+import type { Cell, RowData } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState, type ReactNode } from "react";
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "~/components/core/alert-dialog";
 import { Button } from "~/components/core/button";
 import { DropdownMenu, DropdownMenuItem, DropdownMenuPanel, DropdownMenuSeparator, DropdownMenuTrigger } from "~/components/core/dropdown";
 
-export const TableAction = ({ resource, id }: { resource: string, id: string }) => {
+export const TableShowCell = <TData extends RowData, TValue extends ReactNode>({ cell }: { cell: Cell<TData, TValue> }) => {
+    const { resource } = useResourceParams()
+    const { to, LinkComponent } = useShowButton({ resource: resource?.name, id: cell.row.id });
+
+    return (
+        <Button asChild variant={'link'} className=" p-0 truncate w-auto text-sm h-auto inline">
+            <LinkComponent to={to}>
+                {cell.renderValue()}
+            </LinkComponent>
+        </Button>
+    )
+}
+
+export const TableActionCell = <TData extends RowData, TValue extends any>({ cell }: { cell: Cell<TData, TValue> }) => {
     const [dialog, setDialog] = useState(false)
     const [dropdown, setDropdown] = useState(false)
 
-    const edit = useEditButton({ resource, id });
-    const remove = useDeleteButton({ resource, id });
+    const { resource } = useResourceParams()
+    const { result } = useOne<{ status: Status }>({ resource: resource?.name, id: cell.row.id })
 
-    const { result } = useOne<{ status: Status }>({ resource, id })
+    const show = useShowButton({ resource: resource?.name, id: cell.row.id });
+    const edit = useEditButton({ resource: resource?.name, id: cell.row.id });
+    const remove = useDeleteButton({ resource: resource?.name, id: cell.row.id });
 
     const form = useForm({
         refineCoreProps: {
-            id,
-            resource,
             action: 'edit',
+            id: cell.row.id,
+            resource: resource?.name,
             onMutationSuccess: () => {
                 setDropdown(false)
             }
@@ -28,7 +44,7 @@ export const TableAction = ({ resource, id }: { resource: string, id: string }) 
     })
 
     useEffect(() => {
-        if(result != undefined){
+        if (result != undefined) {
             form.setValue('status', result.status === 'active' ? 'archived' : 'active')
         }
     }, [result])
@@ -42,9 +58,14 @@ export const TableAction = ({ resource, id }: { resource: string, id: string }) 
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuPanel align="start" side="bottom">
-                    <DropdownMenuItem disabled={edit.disabled} hidden={edit.hidden} asChild>
+                    <DropdownMenuItem disabled={edit.disabled} hidden={edit.hidden || result?.status === 'archived'} asChild>
                         <edit.LinkComponent to={edit.to} replace={false}>
                             Edit
+                        </edit.LinkComponent>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem disabled={show.disabled} hidden={show.hidden} asChild>
+                        <edit.LinkComponent to={show.to} replace={false}>
+                            Show
                         </edit.LinkComponent>
                     </DropdownMenuItem>
                     <DropdownMenuItem  {...form.saveButtonProps}>

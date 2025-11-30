@@ -5,7 +5,7 @@ import { ListView, ListViewHeader } from "~/components/refine/views/list";
 import { createColumnHelper } from "@tanstack/react-table";
 import Table from "~/components/refine/table";
 import { Script, Tag } from "@bw/core";
-import { TableAction } from "~/components/refine/table/action";
+import { TableActionCell, TableShowCell } from "~/components/refine/table/cell";
 
 export default () => {
     const {
@@ -27,6 +27,7 @@ export default () => {
                 id: "id",
                 header: "ID",
                 enableSorting: false,
+                cell: ({ cell }) => <TableShowCell cell={cell} />,
             }),
             columnHelper.accessor('uuid', {
                 id: "uuid",
@@ -52,7 +53,7 @@ export default () => {
                 id: "actions",
                 header: "",
                 enableSorting: false,
-                cell: ({ row }) => <TableAction resource="script" id={row.getValue('id')}/>,
+                cell: ({ cell }) => <TableActionCell cell={cell} />,
             }),
         ];
     }, [data, loading]);

@@ -6,7 +6,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import Table from "~/components/refine/table";
 
 import { Item, ItemScript, ItemPrice } from "@bw/core";
-import { TableAction } from "~/components/refine/table/action";
+import { TableActionCell, TableShowCell } from "~/components/refine/table/cell";
 
 export default () => {
     const {
@@ -28,6 +28,7 @@ export default () => {
                 id: "id",
                 header: "ID",
                 enableSorting: false,
+                cell: ({ cell }) => <TableShowCell cell={cell} />,
             }),
             columnHelper.accessor('item_script.uuid', {
                 id: "uuid",
@@ -48,7 +49,7 @@ export default () => {
                 id: "actions",
                 header: "",
                 enableSorting: false,
-                cell: ({ row }) => <TableAction resource="plan" id={row.getValue('id')}/>,
+                cell: ({ cell }) => <TableActionCell cell={cell} />,
             }),
         ];
     }, [data, loading]);
@@ -56,6 +57,7 @@ export default () => {
 
     const table = useTable<Item & { item_script: ItemScript, item_price: ItemPrice[]}>({
         columns,
+        getRowId: row => row.id,
         refineCoreProps: {
             syncWithLocation: false,
         }

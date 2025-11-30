@@ -6,7 +6,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import Table from "~/components/refine/table";
 import { Tag } from "@bw/core";
 
-import { TableAction } from "~/components/refine/table/action";
+import { TableActionCell, TableShowCell } from "~/components/refine/table/cell";
 
 export default () => {
     const {
@@ -28,6 +28,7 @@ export default () => {
                 id: "id",
                 header: "ID",
                 enableSorting: false,
+                cell: ({ cell }) => <TableShowCell cell={cell} />,
             }),
             columnHelper.accessor('name', {
                 id: "name",
@@ -48,7 +49,7 @@ export default () => {
                 id: "actions",
                 header: "",
                 enableSorting: false,
-                cell: ({ row }) => <TableAction resource="tag" id={row.getValue('id')} />,
+                cell: ({ cell }) => <TableActionCell cell={cell} />,
             }),
         ];
     }, [data, loading]);

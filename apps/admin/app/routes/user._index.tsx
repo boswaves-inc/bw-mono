@@ -7,7 +7,7 @@ import Table from "~/components/refine/table";
 
 import { User } from "@bw/core";
 import type { Route } from "./+types/user._index";
-import { TableAction } from "~/components/refine/table/action";
+import { TableActionCell } from "~/components/refine/table/cell";
 
 export default ({  }: Route.ComponentProps) => {
     const { result: { data }, query: { isLoading: loading } } = useList<User>({
@@ -46,7 +46,7 @@ export default ({  }: Route.ComponentProps) => {
                 id: "actions",
                 header: "",
                 enableSorting: false,
-                cell: ({ row }) => <TableAction resource="user" id={row.getValue('id')}/>,
+                cell: ({ cell }) => <TableActionCell cell={cell} />,
             }),
         ];
     }, [data, loading]);
