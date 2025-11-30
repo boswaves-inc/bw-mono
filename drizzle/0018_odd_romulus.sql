@@ -1,1 +1,0 @@
-DROP VIEW "public"."cart_data";

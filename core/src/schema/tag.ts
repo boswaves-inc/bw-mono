@@ -5,7 +5,7 @@ import { sql, type InferSelectModel } from "drizzle-orm";
 export const Tag = pgTable("tag", (t) => ({
     id: t.uuid().notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
     name: t.text().notNull(),
-    slug: t.text("slug").unique().notNull().generatedAlwaysAs(
+    slug: t.text("slug").notNull().generatedAlwaysAs(
         sql`lower(regexp_replace(name, '[^a-zA-Z0-9]+', '-', 'g'))`
     ),
     status: Status("status").notNull(),

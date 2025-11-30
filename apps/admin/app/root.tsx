@@ -27,7 +27,7 @@ import { Header } from "./components/header";
 import { ThemeProvider } from "./components/theme/provider";
 import { Sidebar } from "./components/sidebar";
 import dataProvider from "@refinedev/simple-rest";
-import { Box, CalendarClock, FileText, Receipt, Users } from "lucide-react";
+import { Box, CalendarClock, FileText, Layers, Receipt, Users } from "lucide-react";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -69,22 +69,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
               dataProvider={dataProvider(`${data?.origin}/api`)}
               resources={[
                 {
-                  name: "users",
-                  list: "/users",
-                  show: "/users/:id",
-                  edit: "/users/:id/edit",
-                  create: "/users/create",
+                  name: "user",
+                  list: "/user",
+                  show: "/user/:id",
+                  edit: "/user/:id/edit",
+                  create: "/user/create",
                   meta: {
                     icon: <Users />,
                     canDelete: true,
                   },
                 },
                 {
-                  name: "subscriptions",
-                  list: "/subscriptions",
-                  show: "/subscriptions/:id",
-                  edit: "/subscriptions/:id/edit",
-                  create: "/subscriptions/create",
+                  name: "subscription",
+                  list: "/subscription",
+                  show: "/subscription/:id",
+                  edit: "/subscription/:id/edit",
+                  create: "/subscription/create",
                   meta: {
                     icon: <CalendarClock />,
                     canDelete: true,
@@ -100,22 +100,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   }
                 },
                 {
-                  name: "invoices",
-                  list: "/invoices",
-                  show: "/invoices/:id",
-                  edit: "/invoices/:id/edit",
-                  create: "/invoices/create",
+                  name: "invoice",
+                  list: "/invoice",
+                  show: "/invoice/:id",
+                  edit: "/invoice/:id/edit",
+                  create: "/invoice/create",
                   meta: {
                     parent: 'financial',
                     canDelete: true,
                   },
                 },
                 {
-                  name: "credit_notes",
-                  list: "/credit_notes",
-                  show: "/credit_notes/:id",
-                  edit: "/credit_notes/:id/edit",
-                  create: "/credit_notes/create",
+                  name: "credit_note",
+                  list: "/credit_note",
+                  show: "/credit_note/:id",
+                  edit: "/credit_note/:id/edit",
+                  create: "/credit_note/create",
                   meta: {
                     parent: 'financial',
                     canDelete: true,
@@ -127,43 +127,86 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   name: 'catalog',
                   meta: {
 
-                    icon: <Box />,
-                    label: "Catalog"
+                    icon: <Layers />,
+                    label: "Product Catalog"
                   }
                 },
                 {
-                  name: "tags",
-                  list: "/tags",
-                  show: "/tags/:id",
-                  edit: "/tags/:id/edit",
-                  create: "/tags/create",
+                  name: "plan",
+                  list: "/plan",
+                  show: "/plan/:id",
+                  edit: "/plan/:id/edit",
+                  create: "/plan/create",
                   meta: {
                     parent: 'catalog',
                     canDelete: true,
                   },
                 },
                 {
-                  name: "plans",
-                  list: "/plans",
-                  show: "/plans/:id",
-                  edit: "/plans/:id/edit",
-                  create: "/plans/create",
+                  name: "addon",
+                  list: "/addon",
+                  show: "/addon/:id",
+                  edit: "/addon/:id/edit",
+                  create: "/addon/create",
                   meta: {
                     parent: 'catalog',
                     canDelete: true,
                   },
                 },
-                // {
-                //   name: "coupons",
-                //   list: "/coupons",
-                //   show: "/coupons/:id",
-                //   edit: "/coupons/:id/edit",
-                //   create: "/coupons/create",
-                //   meta: {
-                //     parent: 'catalog',
-                //     canDelete: true,
-                //   },
-                // },
+                {
+                  name: "charge",
+                  list: "/charge",
+                  show: "/charge/:id",
+                  edit: "/charge/:id/edit",
+                  create: "/charge/create",
+                  meta: {
+                    parent: 'catalog',
+                    canDelete: true,
+                  },
+                },
+                {
+                  name: "coupon",
+                  list: "/coupon",
+                  show: "/coupon/:id",
+                  edit: "/coupon/:id/edit",
+                  create: "/coupon/create",
+                  meta: {
+                    parent: 'catalog',
+                    canDelete: true,
+                  },
+                },
+               
+                // Misc
+                {
+                  name: 'misc',
+                  meta: {
+
+                    icon: <Box />,
+                    label: "Misc"
+                  }
+                },
+                {
+                  name: "tag",
+                  list: "/tag",
+                  show: "/tag/:id",
+                  edit: "/tag/:id/edit",
+                  create: "/tag/create",
+                  meta: {
+                    parent: 'misc',
+                    canDelete: true,
+                  },
+                },
+                {
+                  name: "script",
+                  list: "/script",
+                  show: "/script/:id",
+                  edit: "/script/:id/edit",
+                  create: "/script/create",
+                  meta: {
+                    parent: 'misc',
+                    canDelete: true,
+                  },
+                },
               ]}
               options={{
                 title: {

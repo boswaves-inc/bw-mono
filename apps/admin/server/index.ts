@@ -7,9 +7,10 @@ import { TradingView } from "@bw/core/tradingview";
 import "react-router";
 import theme, { getTheme } from "./theme";
 
-import plans from "./api/plans";
-import tags from "./api/tags";
-import users from "./api/users";
+import script from "./api/script";
+import plan from "./api/plan";
+import user from "./api/user";
+import tag from "./api/tag";
 
 if (!process.env.CB_SITE) {
   throw new Error('CB_SITE variable not set')
@@ -40,21 +41,27 @@ router.use(postgres({
   password: process.env.PG_PASSWORD
 }));
 
-// router.use(theme())
+router.use(theme())
 
-router.use('/api/plans', plans({
+
+router.use('/api/script', script({
+  tradingview: tv_client,
+  postgres: pg_client,
+}))
+
+router.use('/api/plan', plan({
   family: process.env.CB_FAMILY,
   tradingview: tv_client,
   chargebee: cb_client,
   postgres: pg_client,
 }))
 
-router.use('/api/tags', tags({
+router.use('/api/tag', tag({
   tradingview: tv_client,
   postgres: pg_client,
 }))
 
-router.use('/api/users', users({
+router.use('/api/user', user({
   chargebee: cb_client,
   postgres: pg_client
 }))
@@ -63,12 +70,12 @@ router.use(createRequestHandler({
   // @ts-ignore
   build: () => import("virtual:react-router/server-build"),
   getLoadContext: async (req, res) => {
-    // const theme = await getTheme(req)
+    const theme = await getTheme(req)
 
     return {
       chargebee: cb_client,
       postgres: pg_client,
-      theme: 'dark',
+      theme,
     }
   }
 }));

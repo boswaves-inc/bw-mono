@@ -1,6 +1,8 @@
-import { ne, sql, type InferEnum, type InferSelectModel } from "drizzle-orm";
-import { index, pgEnum, pgTable, unique, uniqueIndex } from "drizzle-orm/pg-core";
-import { citext, PeriodUnit, PricingModel, ScriptType, Status } from "./types";
+import { sql, type InferEnum, type InferSelectModel } from "drizzle-orm";
+import { index, pgEnum, pgTable, primaryKey, unique, uniqueIndex } from "drizzle-orm/pg-core";
+import { citext, PeriodUnit, PricingModel, Status } from "./types";
+import { Tag } from "./tag";
+import { Script } from "./script";
 
 export const ItemType = pgEnum('item_type', [
     "plan",
@@ -16,6 +18,7 @@ export const Item = pgTable("item", (t) => ({
     slug: t.text("slug").unique().notNull().generatedAlwaysAs(
         sql`lower(regexp_replace(name, '[^a-zA-Z0-9]+', '-', 'g'))`
     ),
+    description: t.text().notNull(),
     status: Status("status").notNull(),
     created_at: t.timestamp().defaultNow().notNull(),
     updated_at: t.timestamp().defaultNow().notNull()
@@ -48,24 +51,28 @@ export const ItemPrice = pgTable('item_price', (t) => ({
 ]);
 
 export const ItemScript = pgTable("item_script", (t) => ({
-    id: t.uuid().primaryKey().references(() => Item.id, {
+    id: t.uuid().references(() => Script.id, {
         onDelete: 'cascade',
         onUpdate: 'cascade'
     }),
-    type: ScriptType("type").notNull(),
-    uuid: t.text("uuid").unique().notNull(),
-    image: t.text("image").notNull(),
-    description: t.text("description").notNull(),
+    item_id: t.uuid().references(() => Item.id, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
+    }),
+    uuid: citext().notNull(),
+    status: Status('status').notNull(),
     created_at: t.timestamp().defaultNow().notNull(),
     updated_at: t.timestamp().defaultNow().notNull(),
 }), table => [
-    unique('item_script_uuid_unq').on(table.uuid),
     index('item_script_uuid_idx').on(table.uuid),
-    index('item_script_id_idx').on(table.id),
+    index('item_script_item_id_idx').on(table.item_id),
+    uniqueIndex('item_script_uuid_unq').on(table.item_id, table.uuid),
+    uniqueIndex('item_script_item_id_unq').on(table.uuid, table.id),
+    primaryKey({ columns: [table.item_id, table.id] }),
 ]);
 
 export const ItemTag = pgTable("item_tag", (t) => ({
-    id: t.uuid().primaryKey().references(() => Item.id, {
+    id: t.uuid().references(() => Tag.id, {
         onDelete: 'cascade',
         onUpdate: 'cascade'
     }),
@@ -73,14 +80,16 @@ export const ItemTag = pgTable("item_tag", (t) => ({
         onDelete: 'cascade',
         onUpdate: 'cascade'
     }).notNull(),
-    value: citext().notNull(),
+    slug: citext().notNull(),
     status: Status('status').notNull(),
     created_at: t.timestamp().defaultNow().notNull(),
     updated_at: t.timestamp().defaultNow().notNull()
 }), table => [
     index('item_tag_id_idx').on(table.id),
-    index('item_tag_value_idx').on(table.value),
-    uniqueIndex('item_tag_value_unq').on(table.id, table.value),
+    index('item_tag_slug_idx').on(table.slug),
+    index('item_tag_item_id_idx').on(table.item_id),
+    uniqueIndex('item_tag_item_id_unq').on(table.item_id).where(sql`status != 'deleted'`),
+    uniqueIndex('item_tag_item_slug_unq').on(table.item_id, table.slug).where(sql`status != 'deleted'`),
 ]);
 
 export type ItemType = InferEnum<typeof ItemType>

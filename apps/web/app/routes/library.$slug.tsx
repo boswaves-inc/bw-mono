@@ -36,7 +36,7 @@ export async function loader({ params, context: { postgres, geo } }: Route.Loade
     updated_at: Item.updated_at,
     item_price: ItemPrice
   }).from(Item)
-    .innerJoin(ItemScript, eq(ItemScript.id, Item.id))
+    .innerJoin(ItemScript, eq(ItemScript.item_id, Item.id))
     .innerJoin(ItemPrice,
       and(
         eq(ItemPrice.status, 'active'),

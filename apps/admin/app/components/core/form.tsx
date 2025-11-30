@@ -40,12 +40,14 @@ const FormField = <
   );
 };
 
-const useFormField = () => {
-  const fieldContext = React.useContext(FormFieldContext);
+const useFormField =  <TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TContext = any, TTransformedValues = TFieldValues>() => {
+  const fieldContext = React.useContext<FormFieldContextValue<TFieldValues, TName>>(FormFieldContext as any);
   const itemContext = React.useContext(FormItemContext);
-  const { getFieldState } = useFormContext();
-  const formState = useFormState({ name: fieldContext.name });
-  const fieldState = getFieldState(fieldContext.name, formState);
+
+  const { getFieldState } = useFormContext<TFieldValues, TContext, TTransformedValues>();
+  
+  const formState = useFormState<TFieldValues, TTransformedValues>({ name: fieldContext.name });
+  const fieldState = getFieldState<TName>(fieldContext.name, formState);
 
   if (!fieldContext) {
     throw new Error("useFormField should be used within <FormField>");

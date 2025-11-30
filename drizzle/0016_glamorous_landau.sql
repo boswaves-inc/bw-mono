@@ -1,2 +1,0 @@
-DROP VIEW "public"."cart_data";--> statement-breakpoint
-CREATE VIEW "public"."cart_data" AS (select "cart_info"."id", "cart_info"."uid", json_agg(json_build_object('id', "cart_item"."id", 'quantity', "cart_item"."quantity", 'item_price', "cart_item"."item_price")) FILTER (WHERE "cart_item"."id" is not null) as "items" from "cart_info" left join "cart_item" on "cart_info"."id" = "cart_item"."id" group by "cart_info"."id");

@@ -1,2 +1,0 @@
-ALTER TABLE "cart_item" ADD COLUMN "item" uuid NOT NULL;--> statement-breakpoint
-ALTER TABLE "cart_item" ADD CONSTRAINT "cart_item_item_item_info_id_fk" FOREIGN KEY ("item") REFERENCES "public"."item_info"("id") ON DELETE cascade ON UPDATE cascade;

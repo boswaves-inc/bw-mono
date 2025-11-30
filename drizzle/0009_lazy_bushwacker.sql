@@ -1,1 +1,0 @@
-DROP TABLE "cart_coupon" CASCADE;

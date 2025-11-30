@@ -13,6 +13,7 @@ import { Separator } from "~/components/core/separator";
 import { Button } from "~/components/core/button";
 import { RefreshButton } from "../button/refresh";
 import { EditButton } from "../button/edit";
+import { StatusButton } from "../button/status";
 
 type ShowViewProps = PropsWithChildren<{
     className?: string;
@@ -59,7 +60,7 @@ export const ShowViewHeader = ({
                 </div>
                 <Separator className={cn("absolute", "left-0", "right-0", "z-1")} />
             </div>
-            <div
+           <div
                 className={cn(
                     "flex",
                     "gap-1",
@@ -87,6 +88,11 @@ export const ShowViewHeader = ({
                         resource={resourceName}
                     />
                     <EditButton
+                        variant="outline"
+                        recordItemId={recordItemId}
+                        resource={resourceName}
+                    />
+                    <StatusButton
                         variant="outline"
                         recordItemId={recordItemId}
                         resource={resourceName}

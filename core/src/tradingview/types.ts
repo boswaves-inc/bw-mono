@@ -80,6 +80,7 @@ export interface TvIdeaMisc {
 
 export interface TvScript {
     id: number,
+    name: string,
     uuid: string,
     views: number,
     description: string,
