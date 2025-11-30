@@ -4,7 +4,7 @@ import { useTable } from "@refinedev/react-table";
 import { ListView, ListViewHeader } from "~/components/refine/views/list";
 import { createColumnHelper } from "@tanstack/react-table";
 import Table from "~/components/refine/table";
-import { Script, Tag } from "@bw/core";
+import { Script } from "@bw/core";
 import { TableActionCell, TableShowCell } from "~/components/refine/table/cell";
 
 export default () => {

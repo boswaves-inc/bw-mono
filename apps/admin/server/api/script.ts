@@ -3,10 +3,10 @@ import express from 'express'
 import cors from "cors";
 import { and, eq, exists, ne } from 'drizzle-orm';
 import type { Postgres } from '@bw/core/postgres'
-import { Item, Tag, ItemTag, Script, ItemScript, ScriptType } from '@bw/core'
+import { Script, ItemScript, ScriptType } from '@bw/core'
 import type { TradingView } from '@bw/core/tradingview';
-import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
-import z, { object } from 'zod/v4';
+import { createInsertSchema } from "drizzle-zod";
+import z from 'zod/v4';
 
 export default ({ postgres, tradingview }: { postgres: Postgres, tradingview: TradingView }) => {
     const router = express()
@@ -122,7 +122,7 @@ export default ({ postgres, tradingview }: { postgres: Postgres, tradingview: Tr
                                 ))
                         )
                     ))
-                    
+
                     await tx.update(Script).set({
                         status: data.status,
                         updated_at: new Date(),

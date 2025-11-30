@@ -1,4 +1,4 @@
-import { Item, Script, Tag } from "@bw/core";
+import {  Script } from "@bw/core";
 import { useForm } from "@refinedev/react-hook-form";
 import { useNavigate } from "react-router";
 import { Button } from "~/components/core/button";
@@ -8,10 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~
 import _ from 'lodash';
 import { type BaseSyntheticEvent, } from "react";
 import type { Route } from "./+types/script.$id.edit";
-
 import { useShow } from "@refinedev/core";
 import { EditView, EditViewHeader } from "~/components/refine/views/edit";
-import { Textarea } from "~/components/core/textarea";
 
 export default ({ params }: Route.ComponentProps) => {
     const navigate = useNavigate();

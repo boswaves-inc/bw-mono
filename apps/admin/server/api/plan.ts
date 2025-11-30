@@ -4,8 +4,7 @@ import cors from "cors";
 import { and, eq, exists, getTableColumns, inArray, isNotNull, ne, not, sql } from 'drizzle-orm';
 import type Chargebee from 'chargebee'
 import type { Postgres } from '@bw/core/postgres'
-import { Item, ItemPrice, PeriodUnit, PricingModel, ItemScript, Status, ItemTag, ScriptType, Tag, Script } from '@bw/core'
-import type { TradingView } from '@bw/core/tradingview';
+import { Item, ItemPrice, PeriodUnit, PricingModel, ItemScript, Status, ItemTag, Tag, Script } from '@bw/core'
 import { createInsertSchema } from "drizzle-zod";
 import z, { array } from 'zod/v4';
 import { zfd } from 'zod-form-data';
@@ -67,10 +66,10 @@ export default ({ family, postgres, chargebee }: { family: string, postgres: Pos
 
             return res.json(data)
         }
-        catch(err) {
+        catch (err) {
             console.error(err)
 
-            if(err instanceof Error){
+            if (err instanceof Error) {
                 return res.status(500).json(err.message)
             }
 
@@ -381,122 +380,6 @@ export default ({ family, postgres, chargebee }: { family: string, postgres: Pos
                         })
                     ])
                 }
-
-
-                // const [script] = await postgres.select().from(Script).where(
-                //     eq(Script.uuid, data.item_script)
-                // )
-
-                // await Promise.all([
-                //     tx.update(Item).set({
-                //         name: data.name,
-                //         status: data.status,
-                //         updated_at: new Date()
-                //     }).where(eq(Item.id, req.params.id)),
-                //     tx.update(ItemScript).set({
-                //         uuid: script.uuid,
-                //         status: data.status,
-                //         updated_at: new Date()
-                //     }).where(and(
-                //         eq(ItemScript.item_id, req.params.id),
-                //         ne(ItemScript.status, 'deleted')
-                //     )),
-                //     tx.update(ItemTag).set({
-                //         status: data.status,
-                //         updated_at: new Date()
-                //     }).where(and(
-                //         eq(ItemTag.item_id, req.params.id),
-                //         ne(ItemTag.status, 'deleted')
-                //     )),
-                //     tx.update(ItemTag).set({
-                //         status: 'deleted',
-                //         updated_at: new Date()
-                //     }).where(and(
-                //         ne(ItemTag.status, 'deleted'),
-                //         eq(ItemTag.item_id, req.params.id),
-                //         not(inArray(ItemTag.slug, data.item_tag)),
-                //     )),
-                // ])
-
-                // // Get the current non-deleted item_prices 
-                // const current_prices = await tx.select().from(ItemPrice).where(
-                //     and(
-                //         eq(ItemPrice.item_id, req.params.id),
-                //         ne(ItemPrice.status, 'deleted')
-                //     )
-                // )
-
-                // // Update all the item price instances in the database
-                // const item_prices = await Promise.all(data.item_price.map(({ id, period, price, currency_code, pricing_model, period_unit }) => (
-                //     tx.insert(ItemPrice).values({
-                //         price,
-                //         period,
-                //         period_unit,
-                //         currency_code,
-                //         pricing_model,
-                //         status: 'active',
-                //         id: id ?? undefined,
-                //         item_id: req.params.id,
-                //         name: _.snakeCase(`${data.name}_${currency_code}_${period_unit}`),
-                //     }).onConflictDoUpdate(({
-                //         target: [ItemPrice.item_id, ItemPrice.period, ItemPrice.period_unit, ItemPrice.currency_code],
-                //         set: {
-                //             price,
-                //             pricing_model,
-                //             status: data.status,
-                //             updated_at: new Date()
-                //         },
-                //         targetWhere: ne(ItemPrice.status, 'deleted')
-                //     })).returning().then(x => ({ ...x[0], created: id == undefined }))
-                // )))
-
-                // // Check if any of the item_prices got deleted
-                // const deleted_prices = current_prices.filter(x => item_prices.findIndex(y => y.id == x.id) == -1)
-
-                // // Delete all the database instances first to unsure all succeed
-                // await Promise.all(deleted_prices.map(item_price => tx.update(ItemPrice).set({
-                //     status: 'deleted'
-                // }).where(eq(ItemPrice.id, item_price.id))))
-
-                // // Update the chargebee root item instance 
-                // await chargebee.item.update(req.params.id, {
-                //     name: _.snakeCase(data.name),
-                //     external_name: data.name,
-                //     status: data.status,
-                //     'cf_tv_uuid': script.uuid,
-                //     'cf_tv_type': data.type,
-                // })
-
-                // // Update all chargebee instances
-                // await Promise.all([
-                //     ...deleted_prices.map(({ id }) => {
-                //         return chargebee.itemPrice.delete(id)
-                //     }),
-                //     ...item_prices.map(async ({ created, id, price, currency_code, status, pricing_model, period_unit }) => {
-                //         if (created) {
-                //             return await chargebee.itemPrice.create({
-                //                 id,
-                //                 price,
-                //                 period: 1,
-                //                 period_unit,
-                //                 pricing_model,
-                //                 currency_code,
-                //                 item_id: req.params.id,
-                //                 name: _.snakeCase(`${data.name}_${currency_code}_${period_unit}`),
-                //             })
-                //         }
-
-                //         return await chargebee.itemPrice.update(id, {
-                //             price,
-                //             status: data.status,
-                //             period: 1,
-                //             name: _.snakeCase(`${data.name}_${currency_code}_${period_unit}`),
-                //             period_unit,
-                //             currency_code,
-                //             pricing_model,
-                //         })
-                //     })
-                // ])
             })
 
             return res.json({})

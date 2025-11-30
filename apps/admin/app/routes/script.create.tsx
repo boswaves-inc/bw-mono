@@ -5,7 +5,6 @@ import { Button } from "~/components/core/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/core/form";
 import { Input } from "~/components/core/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/core/select";
-import { Textarea } from "~/components/core/textarea";
 import { CreateView, CreateViewHeader } from "~/components/refine/views/create";
 import _ from 'lodash';
 import { type BaseSyntheticEvent, } from "react";

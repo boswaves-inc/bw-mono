@@ -1,4 +1,4 @@
-import { ItemScript, PeriodUnit, Script, Tag } from "@bw/core";
+import { PeriodUnit, Script, Tag } from "@bw/core";
 import { useForm } from "@refinedev/react-hook-form";
 import { data, useNavigate } from "react-router";
 import { Button } from "~/components/core/button";
@@ -12,7 +12,6 @@ import { type BaseSyntheticEvent, } from "react";
 import type { Route } from "./+types/plan.create";
 import { Card } from "~/components/core/card";
 import { Label } from "~/components/core/label";
-import { useMobile } from "~/hooks/mobile";
 import { Flag } from "~/components/flag";
 import { PricePanel } from "~/components/refine/panel/price";
 import type { Currency } from "chargebee";

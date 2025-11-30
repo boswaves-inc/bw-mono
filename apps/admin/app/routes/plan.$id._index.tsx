@@ -1,7 +1,7 @@
 import { ItemScript, PeriodUnit, ItemPrice, type Item, Script } from "@bw/core";
-import { useOne, useShow } from "@refinedev/core";
+import { useOne } from "@refinedev/core";
 import _ from "lodash";
-import { data, Link } from "react-router";
+import { data } from "react-router";
 import { Badge } from "~/components/core/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/core/card";
 import { Label } from "~/components/core/label";

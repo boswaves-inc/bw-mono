@@ -5,7 +5,6 @@ import { useNavigate } from "react-router";
 import { Button } from "~/components/core/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/core/form";
 import { Input } from "~/components/core/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/core/select";
 import _ from 'lodash';
 import { type BaseSyntheticEvent, } from "react";
 import type { Route } from "./+types/tag.$id.edit";

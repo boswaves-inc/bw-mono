@@ -15,14 +15,6 @@ export default () => {
         refineCoreProps: {},
     });
 
-    // const { options: categoryOptions } = useSelect<User>({
-    //     resource: "user",
-    //     defaultValue: data?.uid,
-    //     queryOptions: {
-    //         enabled: !!data?.uid,
-    //     },
-    // });
-
     function onSubmit(values: Record<string, string>) {
         onFinish(values);
     }

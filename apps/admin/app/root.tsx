@@ -7,8 +7,6 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
-  type LinksFunction,
-  type LoaderFunctionArgs,
 } from "react-router";
 
 import "./root.css";
@@ -18,7 +16,6 @@ import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import { Refine } from "@refinedev/core";
 import routerProvider, {
   DocumentTitleHandler,
-  NavigateToResource,
   UnsavedChangesNotifier,
 } from "@refinedev/react-router";
 import { SidebarInset, SidebarProvider } from "./components/core/sidebar";
@@ -27,9 +24,9 @@ import { Header } from "./components/header";
 import { ThemeProvider } from "./components/theme/provider";
 import { Sidebar } from "./components/sidebar";
 import dataProvider from "@refinedev/simple-rest";
-import { Box, CalendarClock, FileText, Layers, Receipt, Users } from "lucide-react";
+import { Box, CalendarClock, Layers, Receipt, Users } from "lucide-react";
 
-export const links: LinksFunction = () => [
+export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
     rel: "preconnect",

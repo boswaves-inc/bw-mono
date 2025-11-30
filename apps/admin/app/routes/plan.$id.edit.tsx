@@ -16,7 +16,6 @@ import { useShow } from "@refinedev/core";
 import type { Currency } from "chargebee";
 import { PricePanel } from "~/components/refine/panel/price";
 import { eq } from "drizzle-orm";
-import { Badge } from "~/components/core/badge";
 import { TagControl, TagItem } from "~/components/refine/control/tag";
 
 type Plan = Pick<Item, 'name' | 'description' | 'status'> & { item_price: ItemPrice[], item_tag: string[], item_script: string }
