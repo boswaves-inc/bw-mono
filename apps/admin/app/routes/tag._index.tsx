@@ -57,6 +57,7 @@ export default () => {
 
     const table = useTable<Tag>({
         columns,
+        getRowId: row => row.id,
         refineCoreProps: {
             syncWithLocation: false,
         }

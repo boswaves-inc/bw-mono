@@ -61,6 +61,7 @@ export default () => {
 
     const table = useTable<Script>({
         columns,
+        getRowId: row => row.id,
         refineCoreProps: {
             syncWithLocation: false,
         }

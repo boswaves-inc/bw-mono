@@ -54,6 +54,7 @@ export default ({  }: Route.ComponentProps) => {
 
     const table = useTable<User>({
         columns,
+        getRowId: row => row.uid,
         refineCoreProps: {
             syncWithLocation: true,
         }
