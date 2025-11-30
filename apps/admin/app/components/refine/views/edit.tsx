@@ -10,7 +10,6 @@ import { Button } from "~/components/core/button";
 import { Separator } from "~/components/core/separator";
 import { cn } from "~/utils";
 import { RefreshButton } from "../button/refresh";
-import { StatusButton } from "../button/status";
 
 type EditViewProps = PropsWithChildren<{
     className?: string;
@@ -88,7 +87,6 @@ export const EditViewHeader = ({
                         recordItemId={recordItemId}
                         resource={resourceName}
                     />
-                    <StatusButton recordItemId={recordItemId} resource={resourceName}/>
                 </div>
             </div>
         </div>

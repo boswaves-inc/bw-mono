@@ -1,4 +1,4 @@
-import { ItemScript, PeriodUnit, ItemPrice,  type Item, Script } from "@bw/core";
+import { ItemScript, PeriodUnit, ItemPrice, type Item, Script } from "@bw/core";
 import { useOne, useShow } from "@refinedev/core";
 import _ from "lodash";
 import { data, Link } from "react-router";
@@ -17,26 +17,26 @@ export const loader = async ({ context }: Route.LoaderArgs) => {
 }
 
 export default ({ loaderData, params }: Route.ComponentProps) => {
-    const { result: record } = useShow<Item & { item_script: ItemScript, item_price: ItemPrice[] }>({});
-    const { result, query: { isLoading: loading }, } = useOne<Item & { item_script: Script, item_price: ItemPrice[] }>({
+    // const { result: record } = useShow<Item & { item_script: ItemScript, item_price: ItemPrice[] }>({});
+    const { result, query: { isLoading: loading }, } = useOne<Item & { item_script: ItemScript, item_price: ItemPrice[] }>({
         resource: "plan",
-        id: record?.id || "",
-        queryOptions: {
-            enabled: !!record,
-        },
+        id: params.id,
+        // queryOptions: {
+        //     enabled: !!record,
+        // },
     });
 
     return (
         <ShowView>
-            <ShowViewHeader resource="plan" />
+            <ShowViewHeader resource="plan" edit={result?.status === 'active'} status />
             <div className="space-y-6">
                 <Card>
                     <CardHeader>
-                        <CardTitle>{record?.name}</CardTitle>
+                        <CardTitle>{result?.name}</CardTitle>
                         <CardDescription>
                             <div className="flex items-center gap-4">
-                                <Badge variant={record?.status === "active" ? "default" : "secondary"}>
-                                    {record?.status}
+                                <Badge variant={result?.status === "active" ? "default" : "secondary"}>
+                                    {result?.status}
                                 </Badge>
                             </div>
                         </CardDescription>
@@ -52,18 +52,9 @@ export default ({ loaderData, params }: Route.ComponentProps) => {
                         <Separator />
 
                         <div>
-                            <h4 className="text-sm font-medium mb-2">UUID</h4>
-                            <p className="text-sm text-muted-foreground">
-                                {loading ? "Loading..." : result?.item_script.uuid || "-"}
-                            </p>
-                        </div>
-
-                        <Separator />
-
-                        <div>
                             <h4 className="text-sm font-medium mb-2">Script</h4>
                             <p className="text-sm text-muted-foreground">
-                                {loading ? "Loading..." : result?.item_script.name || "-"}
+                                {loading ? "Loading..." : result?.item_script.uuid || "-"}
                             </p>
                         </div>
 
@@ -97,20 +88,9 @@ export default ({ loaderData, params }: Route.ComponentProps) => {
                         <Separator />
 
                         <div>
-                            <h4 className="text-sm font-medium mb-2">Image</h4>
-                            <Link to={result?.item_script.image ?? './'} target="_blank">
-                                <p className="text-sm text-blue-500">
-                                    {loading ? "Loading..." : result?.item_script.image || "-"}
-                                </p>
-                            </Link>
-                        </div>
-
-                        <Separator />
-
-                        <div>
                             <h4 className="text-sm font-medium mb-2">Created At</h4>
                             <p className="text-sm text-muted-foreground">
-                                {record?.created_at ? new Date(record.created_at).toLocaleString() : "-"}
+                                {result?.created_at ? new Date(result.created_at).toLocaleString() : "-"}
                             </p>
                         </div>
 
@@ -119,7 +99,7 @@ export default ({ loaderData, params }: Route.ComponentProps) => {
                         <div>
                             <h4 className="text-sm font-medium mb-2">Updated At</h4>
                             <p className="text-sm text-muted-foreground">
-                                {record?.updated_at ? `${new Date(record.updated_at).toLocaleString()}` : "-"}
+                                {result?.updated_at ? `${new Date(result.updated_at).toLocaleString()}` : "-"}
                             </p>
                         </div>
 

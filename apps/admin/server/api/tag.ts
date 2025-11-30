@@ -3,12 +3,11 @@ import express from 'express'
 import cors from "cors";
 import { and, eq, exists, ne } from 'drizzle-orm';
 import type { Postgres } from '@bw/core/postgres'
-import { Item, Tag, ItemTag } from '@bw/core'
-import type { TradingView } from '@bw/core/tradingview';
+import { Tag, ItemTag } from '@bw/core'
 import { createInsertSchema } from "drizzle-zod";
-import z, { object, union } from 'zod/v4';
+import z, { union } from 'zod/v4';
 
-export default ({ postgres, tradingview }: { postgres: Postgres, tradingview: TradingView }) => {
+export default ({ postgres }: { postgres: Postgres }) => {
     const router = express()
 
     // List

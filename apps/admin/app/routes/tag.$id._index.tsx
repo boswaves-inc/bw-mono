@@ -15,7 +15,7 @@ export default ({ params }: Route.ComponentProps) => {
 
     return (
         <ShowView>
-            <ShowViewHeader resource="tag" />
+            <ShowViewHeader resource="tag" edit={result?.status === 'active'} status  />
             <div className="space-y-6">
                 <Card>
                     <CardHeader>

@@ -30,6 +30,9 @@ type ShowViewHeaderProps = PropsWithChildren<{
     title?: string;
     wrapperClassName?: string;
     headerClassName?: string;
+    
+    edit?: boolean
+    status?: boolean
 }>;
 
 export const ShowViewHeader = ({
@@ -37,6 +40,8 @@ export const ShowViewHeader = ({
     title: titleFromProps,
     wrapperClassName,
     headerClassName,
+    status,
+    edit,
 }: ShowViewHeaderProps) => {
     const back = useBack();
     const getUserFriendlyName = useUserFriendlyName();
@@ -88,11 +93,13 @@ export const ShowViewHeader = ({
                         resource={resourceName}
                     />
                     <EditButton
+                        hidden={edit !== true}
                         variant="outline"
                         recordItemId={recordItemId}
                         resource={resourceName}
-                    />
+                        />
                     <StatusButton
+                        hidden={status !== true}
                         variant="outline"
                         recordItemId={recordItemId}
                         resource={resourceName}

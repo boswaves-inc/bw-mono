@@ -19,7 +19,7 @@ export default () => {
 
     return (
         <ShowView>
-            <ShowViewHeader resource="user" />
+            <ShowViewHeader resource="user" status />
             <div className="space-y-6">
                 <Card>
                     <CardHeader>

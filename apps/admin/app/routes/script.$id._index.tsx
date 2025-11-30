@@ -15,7 +15,7 @@ export default ({ params }: Route.ComponentProps) => {
 
     return (
         <ShowView>
-            <ShowViewHeader resource="script" />
+            <ShowViewHeader resource="script" edit={result?.status === 'active'} status  />
             <div className="space-y-6">
                 <Card>
                     <CardHeader>

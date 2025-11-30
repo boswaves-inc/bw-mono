@@ -7,6 +7,7 @@ import Table from "~/components/refine/table";
 
 import { Item, ItemScript, ItemPrice } from "@bw/core";
 import { TableActionCell, TableShowCell } from "~/components/refine/table/cell";
+import { Badge } from "~/components/core/badge";
 
 export default () => {
     const {
@@ -14,14 +15,10 @@ export default () => {
         query: { isLoading: loading },
     } = useList({
         resource: "plan",
-        pagination: {
-            currentPage: 1,
-            pageSize: 999,
-        },
     });
 
     const columns = useMemo(() => {
-        const columnHelper = createColumnHelper<Item & { item_script: ItemScript, item_price: ItemPrice[]}>();
+        const columnHelper = createColumnHelper<Item & { item_script: ItemScript, item_price: ItemPrice[] }>();
 
         return [
             columnHelper.accessor("id", {
@@ -44,6 +41,11 @@ export default () => {
                 id: "status",
                 header: "Status",
                 enableSorting: true,
+                cell: ({ cell }) => (
+                    <Badge variant={cell.getValue() == 'deleted' ? 'destructive' : cell.getValue() == 'active' ? 'default' : 'outline'}>
+                        {cell.renderValue()}
+                    </Badge>
+                )
             }),
             columnHelper.display({
                 id: "actions",
@@ -55,7 +57,7 @@ export default () => {
     }, [data, loading]);
 
 
-    const table = useTable<Item & { item_script: ItemScript, item_price: ItemPrice[]}>({
+    const table = useTable<Item & { item_script: ItemScript, item_price: ItemPrice[] }>({
         columns,
         getRowId: row => row.id,
         refineCoreProps: {

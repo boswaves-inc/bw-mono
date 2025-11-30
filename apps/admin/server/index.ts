@@ -51,13 +51,11 @@ router.use('/api/script', script({
 
 router.use('/api/plan', plan({
   family: process.env.CB_FAMILY,
-  tradingview: tv_client,
   chargebee: cb_client,
   postgres: pg_client,
 }))
 
 router.use('/api/tag', tag({
-  tradingview: tv_client,
   postgres: pg_client,
 }))
 

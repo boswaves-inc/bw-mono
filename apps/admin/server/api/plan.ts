@@ -6,12 +6,12 @@ import type Chargebee from 'chargebee'
 import type { Postgres } from '@bw/core/postgres'
 import { Item, ItemPrice, PeriodUnit, PricingModel, ItemScript, Status, ItemTag, ScriptType, Tag, Script } from '@bw/core'
 import type { TradingView } from '@bw/core/tradingview';
-import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
+import { createInsertSchema } from "drizzle-zod";
 import z, { array } from 'zod/v4';
 import { zfd } from 'zod-form-data';
 import { coalesce, json_agg_object } from '@bw/core/utils/drizzle.ts';
 
-export default ({ family, postgres, tradingview, chargebee }: { family: string, postgres: Postgres, chargebee: Chargebee, tradingview: TradingView }) => {
+export default ({ family, postgres, chargebee }: { family: string, postgres: Postgres, chargebee: Chargebee }) => {
     const router = express()
 
     // List
@@ -21,54 +21,61 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
         const start = Number(_start) ?? 0;
         const end = Number(_end) ?? 10;
 
-        const data = await postgres.select({
-            id: Item.id,
-            name: Item.name,
-            type: Item.type,
-            slug: Item.slug,
-            status: Item.status,
-            description: Item.description,
-            item_tag: coalesce(
-                json_agg_object({
-                    ...getTableColumns(Tag)
-                }, isNotNull(Tag.id)),
-                sql`'[]'::json`
-            ).as('item_tag'),
-            item_price: coalesce(
-                json_agg_object({
-                    ...getTableColumns(ItemPrice)
-                }, isNotNull(ItemPrice.id)),
-                sql`'[]'::json`
-            ).as('item_price'),
-            item_script: ItemScript,
-        }).from(Item)
-            .innerJoin(ItemScript, eq(ItemScript.item_id, Item.id))
-            .leftJoin(ItemPrice,
-                and(
-                    eq(ItemPrice.item_id, Item.id),
-                    ne(ItemPrice.status, 'deleted')
-                )
-            )
-            .leftJoin(ItemTag,
-                and(
-                    eq(ItemTag.item_id, Item.id),
-                    eq(ItemTag.status, Item.status)
-                )
-            )
-            .leftJoin(Tag,
-                and(
-                    eq(ItemTag.id, Tag.id),
-                    eq(ItemTag.status, Tag.status)
-                )
-            )
-            .where(
-                eq(Item.type, 'plan'),
-            )
-            .groupBy(Item.id, ItemScript.id, ItemScript.item_id)
-            .offset(start)
-            .limit(end - start)
+        try {
 
-        return res.json(data)
+            const data = await postgres.select({
+                ...getTableColumns(Item),
+                item_tag: coalesce(
+                    json_agg_object({
+                        ...getTableColumns(Tag)
+                    }, isNotNull(Tag.id)),
+                    sql`'[]'::json`
+                ).as('item_tag'),
+                item_price: coalesce(
+                    json_agg_object({
+                        ...getTableColumns(ItemPrice)
+                    }, isNotNull(ItemPrice.id)),
+                    sql`'[]'::json`
+                ).as('item_price'),
+                item_script: ItemScript,
+            }).from(Item)
+                .innerJoin(ItemScript, eq(ItemScript.item_id, Item.id))
+                .leftJoin(ItemPrice,
+                    and(
+                        eq(ItemPrice.item_id, Item.id),
+                        ne(ItemPrice.status, 'deleted')
+                    )
+                )
+                .leftJoin(ItemTag,
+                    and(
+                        eq(ItemTag.item_id, Item.id),
+                        eq(ItemTag.status, Item.status)
+                    )
+                )
+                .leftJoin(Tag,
+                    and(
+                        eq(ItemTag.id, Tag.id),
+                        eq(ItemTag.status, Tag.status)
+                    )
+                )
+                .where(
+                    eq(Item.type, 'plan'),
+                )
+                .groupBy(Item.id, ItemScript.id, ItemScript.item_id)
+                .offset(start)
+                .limit(end - start)
+
+            return res.json(data)
+        }
+        catch(err) {
+            console.error(err)
+
+            if(err instanceof Error){
+                return res.status(500).json(err.message)
+            }
+
+            return res.status(500).json(err)
+        }
     })
 
     // Create
@@ -164,12 +171,7 @@ export default ({ family, postgres, tradingview, chargebee }: { family: string, 
     // Read
     router.get('/:id', async (req, res) => {
         const [result] = await postgres.select({
-            id: Item.id,
-            name: Item.name,
-            type: Item.type,
-            slug: Item.slug,
-            status: Item.status,
-            description: Item.description,
+            ...getTableColumns(Item),
             item_tag: coalesce(
                 json_agg_object({
                     ...getTableColumns(ItemTag)
