@@ -24,7 +24,8 @@ export default ({ params }: Route.ComponentProps) => {
     const { refineCore: { onFinish }, ...form } = useForm<Script>({
         defaultValues: record,
         refineCoreProps: {
-            resource: 'script'
+            resource: 'script',
+            id: params.id
         }
     });
 
@@ -77,29 +78,6 @@ export default ({ params }: Route.ComponentProps) => {
                                         placeholder="Enter name"
                                     />
                                 </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        name="status"
-                        control={form.control}
-                        rules={{ required: "Status is required" }}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Status</FormLabel>
-                                <Select {...field} onValueChange={field.onChange}>
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select status" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        {Item.status.enumValues.filter(x => x !== 'deleted').map(value => (
-                                            <SelectItem key={value} value={value}>{_.upperFirst(value)}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
                                 <FormMessage />
                             </FormItem>
                         )}

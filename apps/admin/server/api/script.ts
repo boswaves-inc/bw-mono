@@ -107,14 +107,6 @@ export default ({ postgres, tradingview }: { postgres: Postgres, tradingview: Tr
 
             await postgres.transaction(async tx => {
                 if ('status' in data) {
-                    await tx.update(Script).set({
-                        status: data.status,
-                        updated_at: new Date(),
-                    }).where(and(
-                        ne(Script.status, 'deleted'),
-                        eq(Script.id, req.params.id)
-                    ));
-
                     await tx.update(ItemScript).set({
                         status: data.status,
                         updated_at: new Date()
@@ -130,6 +122,15 @@ export default ({ postgres, tradingview }: { postgres: Postgres, tradingview: Tr
                                 ))
                         )
                     ))
+                    
+                    await tx.update(Script).set({
+                        status: data.status,
+                        updated_at: new Date(),
+                    }).where(and(
+                        ne(Script.status, 'deleted'),
+                        eq(Script.id, req.params.id)
+                    ));
+
                 }
                 else {
                     await tx.update(Script).set({

@@ -45,7 +45,6 @@ export default ({ loaderData: { currencies, tags, scripts }, params }: Route.Com
 
     const form = useForm<any, any, Plan>({
         defaultValues: {
-            status: record?.status,
             item_price: record?.item_price,
             item_script: record?.item_script.uuid,
         },
@@ -115,33 +114,7 @@ export default ({ loaderData: { currencies, tags, scripts }, params }: Route.Com
                             </FormItem>
                         )}
                     />
-                    <FormField
-                        name="status"
-                        control={form.control}
-                        disabled={record?.status === 'archived'}
-                        rules={{ required: "Status is required" }}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Status</FormLabel>
-                                <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value || ""}
-                                >
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select status" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        {Item.status.enumValues.filter(x => x !== 'deleted').map(value => (
-                                            <SelectItem key={value} value={value}>{_.upperFirst(value)}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                   
                     <FormField
                         name="item_script"
                         control={form.control}
