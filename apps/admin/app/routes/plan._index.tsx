@@ -48,7 +48,7 @@ export default () => {
                 id: "actions",
                 header: "",
                 enableSorting: false,
-                cell: ({ row }) => <TableAction resource="tag" id={row.getValue('id')}/>,
+                cell: ({ row }) => <TableAction resource="plan" id={row.getValue('id')}/>,
             }),
         ];
     }, [data, loading]);
