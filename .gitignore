@@ -5,6 +5,7 @@
 .wireguard
 CLAUDE.md
 
+/temp/
 /node_modules/
 
 blobs

@@ -1,5 +1,3 @@
-"use client";
-
 import { cn } from "../../utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import * as React from "react";
@@ -65,7 +63,7 @@ function Calendar({
         IconRight: ({ className, ...props }) => (
           <ChevronRight className={cn("size-4", className)} {...props} />
         ),
-      }}
+      } as any}
       {...props}
     />
   );

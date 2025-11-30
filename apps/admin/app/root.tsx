@@ -9,6 +9,7 @@ import {
   useLoaderData,
 } from "react-router";
 
+
 import "./root.css";
 import { twMerge } from "tailwind-merge";
 import type { Route } from "./+types/root";
@@ -25,6 +26,8 @@ import { ThemeProvider } from "./components/theme/provider";
 import { Sidebar } from "./components/sidebar";
 import dataProvider from "@refinedev/simple-rest";
 import { Box, CalendarClock, Layers, Receipt, Users } from "lucide-react";
+import { Toaster } from "./components/core/sonner";
+import { useNotificationProvider } from "./components/refine/toast/provider";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -61,7 +64,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <RefineKbarProvider>
           <ThemeProvider theme={data?.theme}>
             <Refine
-              // notificationProvider={useNotificationProvider()}
+              notificationProvider={useNotificationProvider()}
               routerProvider={routerProvider}
               dataProvider={dataProvider(`${data?.origin}/api`)}
               resources={[
@@ -239,7 +242,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   </main>
                 </SidebarInset>
               </SidebarProvider>
-              {/* <Toaster /> */}
+              <Toaster />
               <RefineKbar />
               <UnsavedChangesNotifier />
               <DocumentTitleHandler />

@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "./button";
 import { cn } from "../../utils";
 import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react";

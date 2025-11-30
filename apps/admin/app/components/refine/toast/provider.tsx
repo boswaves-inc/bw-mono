@@ -1,0 +1,61 @@
+import type { NotificationProvider } from "@refinedev/core";
+import { toast } from "sonner";
+import { UndoableNotification } from "./undoable";
+import { Check } from "lucide-react";
+
+export function useNotificationProvider(): NotificationProvider {
+  return {
+    open: ({
+      key,
+      type,
+      message,
+      description,
+      undoableTimeout,
+      cancelMutation,
+    }) => {
+      switch (type) {
+        case "success": toast.success(message, {
+          id: key,
+          description,
+          richColors: false,
+          className: 'border-success/30!',
+          classNames: {
+            icon: 'text-success',
+            description: 'text-muted-foreground!'
+          },
+        }); return;
+        case "error": toast.error(message, {
+          id: key,
+          description,
+          richColors: false,
+          className: 'border-destructive/30!',
+          classNames: {
+            icon: 'text-destructive',
+            description: 'text-muted-foreground!'
+          },
+        }); return;
+        case "progress": {
+          const toastId = key || Date.now();
+
+          toast(() => (
+            <UndoableNotification
+              message={message}
+              description={description}
+              undoableTimeout={undoableTimeout}
+              cancelMutation={cancelMutation}
+              onClose={() => toast.dismiss(toastId)}
+            />
+          ), {
+            id: toastId,
+            duration: (undoableTimeout || 5) * 1000,
+            unstyled: true,
+          });
+        }; return;
+        default: return;
+      }
+    },
+    close: (id) => {
+      toast.dismiss(id);
+    },
+  };
+}
