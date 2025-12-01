@@ -8,7 +8,7 @@ import Paragraph from "~/components/core/paragraph";
 import Label from "~/components/core/label";
 
 import Section from "~/components/section";
-import { Item, ItemScript, ItemPrice, ScriptType, Status, PeriodUnit } from "@bw/core";
+import { Item, ItemScript, ItemPrice, ScriptType, Status, PeriodUnit, Script } from "@bw/core";
 import _ from 'lodash'
 import type { Route } from "./+types/library._index";
 import { useCart } from "~/context/cart";
@@ -29,24 +29,21 @@ export async function loader({ context: { postgres, geo } }: Route.LoaderArgs) {
 
   const result = await postgres.select({
     ...getTableColumns(Item),
-    script: ItemScript,
+    item_script: Script,
     item_price: ItemPrice,
   }).from(Item)
     .innerJoin(ItemScript, eq(ItemScript.item_id, Item.id))
-    .innerJoin(ItemPrice,
-      and(
-        eq(ItemPrice.status, 'active'),
-        eq(ItemPrice.item_id, Item.id),
-        eq(ItemPrice.period_unit, period_unit),
-        eq(ItemPrice.currency_code, geo.currency),
-      )
-    )
-    .where(
-      and(
-        eq(Item.type, 'plan'),
-        eq(Item.status, 'active'),
-      )
-    )
+    .innerJoin(Script, eq(Script.id, ItemScript.id))
+    .innerJoin(ItemPrice, and(
+      eq(ItemPrice.status, 'active'),
+      eq(ItemPrice.item_id, Item.id),
+      eq(ItemPrice.period_unit, period_unit),
+      eq(ItemPrice.currency_code, geo.currency),
+    ))
+    .where(and(
+      eq(Item.type, 'plan'),
+      eq(Item.status, 'active'),
+    ))
 
   return data({ data: result })
 }
@@ -157,7 +154,7 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
               <Link to={`/library/${item.slug}`} className=" peer">
                 <img
                   alt={item.slug}
-                  src={item.script.image}
+                  src={item.item_script.image}
                   className="aspect-square peer w-full bg-gray-200 dark:bg-gray-800 object-cover xl:aspect-8/7"
                 />
               </Link>
@@ -168,7 +165,7 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
                       {item.name}
                     </Heading>
                     <Paragraph size="sm" className="">
-                      {_.startCase(item.script.type)}
+                      {_.startCase(item.item_script.type)}
                     </Paragraph>
                   </div>
 
