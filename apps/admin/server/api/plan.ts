@@ -295,14 +295,7 @@ export default ({ family, postgres, chargebee }: { family: string, postgres: Pos
                         throw new Error('script is archived')
                     }
 
-                    const [deleted, _arg0, _arg1, _arg2, ...actual] = await Promise.all([
-                        tx.update(ItemPrice).set({
-                            status: 'deleted'
-                        }).where(and(
-                            eq(ItemPrice.item_id, req.params.id),
-                            eq(ItemPrice.status, 'active'),
-                            not(inArray(ItemPrice.id, data.item_price.map(x => x.id).filter(x => x != undefined)))
-                        )).returning(),
+                    const [_arg0, _arg1, _arg2, ...actual] = await Promise.all([
                         tx.update(Item).set({
                             name: data.name,
                             updated_at: new Date()
@@ -345,6 +338,14 @@ export default ({ family, postgres, chargebee }: { family: string, postgres: Pos
                         )),
                     ])
 
+                    const deleted = await tx.update(ItemPrice).set({
+                        status: 'deleted'
+                    }).where(and(
+                        eq(ItemPrice.status, 'active'),
+                        eq(ItemPrice.item_id, req.params.id),
+                        not(inArray(ItemPrice.id, actual.map(x => x.id)))
+                    )).returning();
+
                     // Update the chargebee root item instance 
                     await chargebee.item.update(req.params.id, {
                         name: _.snakeCase(data.name),
@@ -356,7 +357,7 @@ export default ({ family, postgres, chargebee }: { family: string, postgres: Pos
                     await Promise.all([
                         ...deleted.map(({ id }) => chargebee.itemPrice.delete(id)),
                         ...actual.map(async ({ created, id, price, currency_code, pricing_model, period_unit }) => {
-                            if (created) {
+                            if (created == true) {
                                 return await chargebee.itemPrice.create({
                                     id,
                                     price,
@@ -368,15 +369,16 @@ export default ({ family, postgres, chargebee }: { family: string, postgres: Pos
                                     name: _.snakeCase(`${data.name}_${currency_code}_${period_unit}`),
                                 })
                             }
-
-                            return await chargebee.itemPrice.update(id, {
-                                price,
-                                period: 1,
-                                name: _.snakeCase(`${data.name}_${currency_code}_${period_unit}`),
-                                period_unit,
-                                currency_code,
-                                pricing_model,
-                            })
+                            else {
+                                return await chargebee.itemPrice.update(id, {
+                                    price,
+                                    period: 1,
+                                    name: _.snakeCase(`${data.name}_${currency_code}_${period_unit}`),
+                                    period_unit,
+                                    currency_code,
+                                    pricing_model,
+                                })
+                            }
                         })
                     ])
                 }

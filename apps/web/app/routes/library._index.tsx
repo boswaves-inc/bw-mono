@@ -7,7 +7,6 @@ import Heading from "~/components/core/heading";
 import Paragraph from "~/components/core/paragraph";
 import Label from "~/components/core/label";
 
-import Button from "~/components/core/button";
 import Section from "~/components/section";
 import { Item, ItemScript, ItemPrice, ScriptType, Status, PeriodUnit } from "@bw/core";
 import _ from 'lodash'
@@ -16,6 +15,7 @@ import { useCart } from "~/context/cart";
 import { and, eq, getTableColumns, isNotNull, sql } from "drizzle-orm";
 import { array_agg, coalesce, json_agg_object } from "@bw/core/utils/drizzle.ts";
 import { formatCurrency } from "@coingecko/cryptoformat";
+import { ButtonV2 } from "~/components/core/v2/button";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -28,11 +28,7 @@ export async function loader({ context: { postgres, geo } }: Route.LoaderArgs) {
   const period_unit: PeriodUnit = 'month'
 
   const result = await postgres.select({
-    id: Item.id,
-    name: Item.name,
-    type: Item.type,
-    slug: Item.slug,
-    status: Item.status,
+    ...getTableColumns(Item),
     script: ItemScript,
     item_price: ItemPrice,
   }).from(Item)
@@ -181,18 +177,18 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
                   </Paragraph>
                 </div>
                 <Paragraph size="sm" className="mt-4 line-clamp-4">
-                  {item.script.description}
+                  {item.description}
                 </Paragraph>
               </Link>
               <div className="block p-4 w-fit">
                 {/* <Link to={`./${item.slug}`}> */}
-                <Button data-selected={cart.includes(item.item_price.id)} className="group/button">
+                <ButtonV2 data-selected={cart.includes(item.item_price.id)} className="group/button">
                   <div className="relative">
                     <PlusIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all duration-200 group-data-[selected=true]/button:scale-0 group-data-[selected=true]/button:-rotate-90" />
                     <CheckIcon className="absolute h-[1.2rem] inset-0 w-[1.2rem] rotate-90 scale-0 transition-all duration-200 group-data-[selected=true]/button:scale-100 group-data-[selected=true]/button:rotate-0" />
                   </div>
                   Added to toolbox
-                </Button>
+                </ButtonV2>
                 {/* </Link> */}
               </div>
             </div>

@@ -5,15 +5,15 @@ import Heading from "~/components/core/heading";
 import { Check, ChevronLeft, Flame, Star } from "lucide-react";
 import FaqAccordion from "~/sections/faq/accordion";
 import { data, Link, useFetcher } from "react-router";
-import Button from "~/components/core/button";
 import Panel from "~/components/core/panel";
-import { Item, ItemPrice, ItemScript, PeriodUnit } from "@bw/core";
+import { Item, ItemPrice, ItemScript, PeriodUnit, Script } from "@bw/core";
 import { and, eq, getTableColumns, isNotNull } from "drizzle-orm";
 import { useCart } from "~/context/cart";
 import { includes } from "lodash";
 import { Fragment } from "react/jsx-runtime";
 import { array_agg, json_agg_object } from "@bw/core/utils/drizzle.ts";
 import { formatCurrency } from "@coingecko/cryptoformat";
+import { ButtonV2 } from "~/components/core/v2/button";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -31,12 +31,13 @@ export async function loader({ params, context: { postgres, geo } }: Route.Loade
     type: Item.type,
     slug: Item.slug,
     status: Item.status,
-    script: ItemScript,
+    script: Script,
     created_at: Item.created_at,
     updated_at: Item.updated_at,
     item_price: ItemPrice
   }).from(Item)
     .innerJoin(ItemScript, eq(ItemScript.item_id, Item.id))
+    .innerJoin(Script, eq(Script.id, ItemScript.id))
     .innerJoin(ItemPrice,
       and(
         eq(ItemPrice.status, 'active'),
@@ -178,7 +179,7 @@ export default ({ loaderData: { id, name, script, item_price, created_at, ...res
                   /{item_price.period_unit}
                 </Paragraph>
               </div>
-              <Button onClick={onToggle} className="w-full mt-6">
+              <ButtonV2 onClick={onToggle} className="w-full mt-6">
                 {included ? (
                   <Fragment>
                     <Check />
@@ -187,7 +188,7 @@ export default ({ loaderData: { id, name, script, item_price, created_at, ...res
                 ) : (
                   <span>Add to Toolbox</span>
                 )}
-              </Button>
+              </ButtonV2>
               <ul className="xl:mt-10 dark:text-gray-300 text-sm/6 mt-8">
                 <li className="flex gap-x-3 not-last:mb-3">
                   <Check className="text-indigo-400" />

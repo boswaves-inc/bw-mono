@@ -16,7 +16,7 @@ export const PricePanel = ({ currency, period_unit: period }: { period_unit: Per
     const [open, setOpen] = useState<boolean>(false)
 
     const root = useFormContext<{
-        item_price: (Pick<ItemPrice, 'period_unit' | 'period' | 'currency_code' | 'pricing_model' | 'price'> & { id?: string } | null)[]
+        item_price: (Pick<ItemPrice, 'period_unit' | 'period' | 'currency_code' | 'pricing_model' | 'price'> & { id?: string | undefined } | null)[]
     }>()
 
     const prices = useFieldArray({
@@ -37,7 +37,7 @@ export const PricePanel = ({ currency, period_unit: period }: { period_unit: Per
         values: field ?? undefined
     });
 
-    const onValid = (data: Pick<ItemPrice, 'pricing_model' | 'price'> & { id?: string }) => {
+    const onValid = (data: Pick<ItemPrice, 'pricing_model' | 'price'> & { id?: string | undefined }) => {
         if (index >= 0) {
             prices.update(index, {
                 period: 1,

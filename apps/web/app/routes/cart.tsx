@@ -1,6 +1,5 @@
 import Section from "~/components/section";
 import { data, Link, useFetcher } from "react-router";
-import Button from "~/components/core/button";
 import type { Route } from "./+types/cart";
 import { formData } from "zod-form-data";
 import { cartSession } from "~/cookie";
@@ -8,6 +7,7 @@ import { getSession } from "~/utils/session";
 import { Cart, CartItem, Item, ItemPrice } from "@bw/core";
 import { and, eq, getTableColumns, notExists, sql, } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
+import { ButtonV2 } from "~/components/core/v2/button";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -124,7 +124,7 @@ export default function renderer() {
         <div>
             <Section>
                 <Link to={'/checkout'}>
-                    <Button>Checkout</Button>
+                    <ButtonV2>Checkout</ButtonV2>
                 </Link>
             </Section>
         </div>

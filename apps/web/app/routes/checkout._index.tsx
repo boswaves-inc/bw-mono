@@ -1,7 +1,6 @@
 import type { Route } from "./+types/checkout._index";
 import Section from "~/components/section";
 import { data, Link, useFetcher, useLoaderData } from "react-router";
-import Button from "~/components/core/button";
 import { useState, type FormEvent } from "react";
 import { CardGroup, CardCvc, CardExpiry, CardNumber, useCard } from "~/components/chargebee";
 import Heading from "~/components/core/heading";
@@ -14,6 +13,7 @@ import { formatCurrency } from "@coingecko/cryptoformat";
 import { AppleLogo, GoogleLogo, StripeLogo } from "~/components/icons/logo";
 import { CartData } from "@bw/core";
 import { eq } from "drizzle-orm";
+import { ButtonV2 } from "~/components/core/v2/button";
 
 export async function loader({ context }: Route.LoaderArgs) {
     const cart = await new Promise<CartData | undefined>(async resolve => {
@@ -292,9 +292,9 @@ export default function renderer() {
 
                             </div>
                         </CardGroup>
-                        <Button className="mt-10 w-full">
+                        <ButtonV2 className="mt-10 w-full">
                             Continue
-                        </Button>
+                        </ButtonV2>
                         <div className="relative mt-6">
                             <div aria-hidden={true} className="items-center flex inset-0 absolute">
                                 <div className=" border-gray-200 dark:border-gray-700 w-full border-t" />
@@ -306,14 +306,14 @@ export default function renderer() {
                             </div>
                         </div>
                         <div className="gap-x-6 flex mt-6">
-                            <Button className=" text-white dark:bg-white dark:text-black w-full items-center h-10 justify-center flex">
+                            <ButtonV2 className=" text-white dark:bg-white dark:text-black w-full items-center h-10 justify-center flex">
                                 <span className="sr-only">Pay with Google Pay</span>
                                 <GoogleLogo className="h-4.5 w-fit" />
-                            </Button>
-                            <Button className=" text-white dark:bg-white dark:text-black w-full items-center h-10 justify-center flex">
+                            </ButtonV2>
+                            <ButtonV2 className=" text-white dark:bg-white dark:text-black w-full items-center h-10 justify-center flex">
                                 <span className="sr-only">Pay with Apple Pay</span>
                                 <AppleLogo className="w-auto h-4.5" />
-                            </Button>
+                            </ButtonV2>
                         </div>
                         <div className="mt-10">
                             <Heading size="h5" className="text-lg/7 justify-center items-center flex dark:fill-indigo-400 dark:text-indigo-400 gap-2">

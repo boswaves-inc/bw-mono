@@ -1,10 +1,10 @@
 import HeroScreenshot from "~/sections/hero/screenshot";
 import TestemonialsGrid from "~/sections/testemonials/grid";
-import Button from "~/components/core/button";
 import Heading from "~/components/core/heading";
 import ContentPanel from "~/sections/content/panel";
-import type { LoaderFunctionArgs, MetaArgs } from "react-router";
+import { Link, type LoaderFunctionArgs, type MetaArgs } from "react-router";
 import type { Route } from "../+types/root";
+import { ButtonV2 } from "~/components/core/v2/button";
 
 export function meta({ }: MetaArgs) {
   return [
@@ -58,8 +58,16 @@ export default function renderer() {
                     ))}
                     </dl> */}
                 <div className="mt-10 flex items-center  gap-x-6">
-                  <Button >Get Started</Button>
-                  <a href="#" className="text-sm/6 font-semibold text-gray-900 dark:text-white">Learn more <span aria-hidden="true">→</span></a>
+                  <ButtonV2 size="lg" asChild>
+                    <Link to={'#'}>
+                      Get Started
+                    </Link>
+                  </ButtonV2>
+                  <ButtonV2 size="lg" variant="link" className="text-foreground" asChild>
+                    <Link to={'#'}>
+                      Learn more
+                    </Link>
+                  </ButtonV2>
                 </div>
               </div>
             </div>
@@ -99,7 +107,7 @@ export default function renderer() {
                   You choose the indicators, modules, and insights you need, and only pay for what delivers real value. No clutter. No overpricing. Just precision-built trading - tailored to you
                 </p>
                 <div className="mt-10 flex items-center  gap-x-6">
-                  <Button >Get Started</Button>
+                  <ButtonV2 >Get Started</ButtonV2>
                   <a href="#" className="text-sm/6 font-semibold text-gray-900 dark:text-white">Learn more <span aria-hidden="true">→</span></a>
                 </div>
               </div>
