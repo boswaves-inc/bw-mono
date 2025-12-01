@@ -6,6 +6,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import Table from "~/components/refine/table";
 import { Script } from "@bw/core";
 import { TableActionCell, TableShowCell } from "~/components/refine/table/cell";
+import { Badge } from "~/components/core/badge";
 
 export default () => {
     const {
@@ -48,10 +49,15 @@ export default () => {
                 id: "status",
                 header: "Status",
                 enableSorting: true,
+                cell: ({ cell }) => (
+                    <Badge variant={cell.getValue() == 'deleted' ? 'destructive' : cell.getValue() == 'active' ? 'default' : 'outline'}>
+                        {cell.renderValue()}
+                    </Badge>
+                )
             }),
             columnHelper.display({
-                id: "actions",
                 header: "",
+                id: "actions",
                 enableSorting: false,
                 cell: ({ cell }) => <TableActionCell cell={cell} />,
             }),

@@ -47,8 +47,8 @@ export default () => {
                 )
             }),
             columnHelper.display({
-                id: "actions",
                 header: "",
+                id: "actions",
                 enableSorting: false,
                 cell: ({ cell }) => <TableActionCell cell={cell} />,
             }),

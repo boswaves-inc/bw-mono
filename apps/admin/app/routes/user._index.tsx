@@ -43,8 +43,8 @@ export default ({  }: Route.ComponentProps) => {
                 enableSorting: true,
             }),
             columnHelper.display({
-                id: "actions",
                 header: "",
+                id: "actions",
                 enableSorting: false,
                 cell: ({ cell }) => <TableActionCell cell={cell} />,
             }),

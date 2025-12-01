@@ -53,11 +53,11 @@ export const TableActionCell = <TData extends RowData, TValue extends any>({ cel
         <Fragment>
             <DropdownMenu open={dropdown} onOpenChange={setDropdown}>
                 <DropdownMenuTrigger asChild >
-                    <Button variant={'ghost'} size={'sm'} >
+                    <Button className="" variant={'ghost'} size={'sm'} >
                         <MoreHorizontal />
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuPanel align="start" side="bottom">
+                <DropdownMenuPanel align="end" side="bottom">
                     <DropdownMenuItem disabled={edit.disabled} hidden={edit.hidden || result?.status === 'archived'} asChild>
                         <edit.LinkComponent to={edit.to} replace={false}>
                             Edit
