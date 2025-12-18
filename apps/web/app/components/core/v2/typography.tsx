@@ -5,7 +5,7 @@ import { cn } from "~/utils/class"
 const headerVariant = tv({
     variants: {
         size: {
-            title: 'sroll-m-20 text-5xl font-semibold tracking-tight text-balance sm:text-7xl',
+            title: 'text-5xl font-semibold tracking-tight text-balance sm:text-7xl',
             h1: 'sroll-m-20 text-4xl font-semibold tracking-tight text-balance sm:text-5xl',
             h2: 'sroll-m-20 tracking-tight font-semibold text-4xl',
             h3: 'sroll-m-20 tracking-tight font-semibold text-2xl sm:text-3xl',

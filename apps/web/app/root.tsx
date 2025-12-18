@@ -49,8 +49,6 @@ export async function loader({ request, context: { theme, cart, geo } }: Route.L
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const data = useLoaderData<typeof loader>()
-
   return (
     <html lang="en" className={twMerge('dark', '')} style={{ "--scroll-y": 0 } as CSSProperties}>
       <head>
@@ -60,11 +58,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="antialiased relative text-foreground bg-background">
-        <CartProvider cart={data.cart}>
-          <Header />
-          {children}
-          <Footer />
-        </CartProvider>
+        {children}
         <ScrollProvider />
         <Scripts />
         <script src="https://js.chargebee.com/v2/chargebee.js" defer />
@@ -88,7 +82,6 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
   return (
     <Page>
-
       <main className="container mx-auto overflow-hidden antialiased relative  ">
         <h1>{message}</h1>
         <p>{details}</p>
@@ -102,9 +95,13 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   );
 }
 
-export default function App() {
+export default function App({ loaderData: { cart } }: Route.ComponentProps) {
   return (
-    <Outlet />
+    <CartProvider cart={cart}>
+      <Header />
+      <Outlet />
+      <Footer />
+    </CartProvider>
   );
 }
 

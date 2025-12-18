@@ -1,12 +1,11 @@
 import { data, Form, Link, useSearchParams } from "react-router";
-import { Checkbox  } from "~/components/core/v2/checkbox";
+import { Checkbox } from "~/components/core/v2/checkbox";
 import { Popover, PopoverButton, PopoverPanel } from "~/components/core/popover";
 import { Menu, MenuItem, MenuItems, MenuButton } from "~/components/core/menu";
 import { CheckIcon, ChevronDown, PlusIcon } from 'lucide-react'
 import Paragraph from "~/components/core/paragraph";
 import Label from "~/components/core/label";
 
-import Section from "~/components/page";
 import { Item, ItemScript, ItemPrice, ScriptType, Status, PeriodUnit, Script } from "@bw/core";
 import _ from 'lodash'
 import type { Route } from "./+types/library._index";
@@ -16,6 +15,8 @@ import { array_agg, coalesce, json_agg_object } from "@bw/core/utils/drizzle.ts"
 import { formatCurrency } from "@coingecko/cryptoformat";
 import { Button } from "~/components/core/v2/button";
 import { Heading } from "~/components/core/v2/typography";
+import Page from "~/components/page";
+import Section from "~/components/section";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -52,10 +53,9 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
   const cart = useCart()
 
   return (
-    <Section>
-
-      {/* toolbar */}
-        <div className="pb-24 mt-13">
+    <Page>
+      <Section>
+        <div>
           <Heading size="h1">
             Your Trading Toolbox Starts Here
           </Heading>
@@ -64,7 +64,7 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
             Mix, match, and master - customize your indicator setup to perfection.
           </Paragraph>
         </div>
-        <section aria-labelledby="filter-heading" className="py-6 px-4 sm:px-0 border-gray-200 dark:border-y-gray-700 border-t">
+        <div className="border-t pt-6 mt-18">
           <h2 id="filter-heading" className="sr-only">Product filters</h2>
           <div className="justify-between items-center flex">
             <Menu>
@@ -146,7 +146,8 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
 
             </div>
           </div>
-        </section>
+        </div>
+
         <div className={"grid grid-cols-1 gap-x-6 gap-y-10 py-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8"}>
           {loaderData.data.slice(0, 10).map((item) => (
             <div key={item.slug} className="ring-1 group ring-gray-900/10 shadow-xl bg-gray-900/5 dark:bg-white/5 dark:ring-white/10 rounded-lg overflow-hidden">
@@ -189,10 +190,8 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
               </div>
             </div>
           ))}
-      </div>
-
-      {/* <ProductList /> */}
-      {/* <ProductList /> */}
-    </Section>
+        </div>
+      </Section>
+    </Page>
   )
 }

@@ -3,7 +3,7 @@ import { Minus, Plus } from "lucide-react";
 import { forwardRef, type ComponentProps } from "react";
 import Paragraph from "~/components/core/paragraph";
 import { Heading } from "~/components/core/v2/typography";
-import Section from "~/components/page";
+import Section from "~/components/section";
 
 const config = [
     {

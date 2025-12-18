@@ -1,5 +1,5 @@
 import type { Route } from "./+types/library.$slug";
-import Section from "~/components/page";
+import Section from "~/components/section";
 import Paragraph from "~/components/core/paragraph";
 import { Check, ChevronLeft, Flame, Star } from "lucide-react";
 import FaqAccordion from "~/sections/faq/accordion";
@@ -14,6 +14,7 @@ import { array_agg, json_agg_object } from "@bw/core/utils/drizzle.ts";
 import { formatCurrency } from "@coingecko/cryptoformat";
 import { Button } from "~/components/core/v2/button";
 import { Heading } from "~/components/core/v2/typography";
+import Page from "~/components/page";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -83,8 +84,8 @@ export default ({ loaderData: { id, name, script, item_price, created_at, ...res
   }
 
   return (
-    <div>
-      <Section className="" >
+    <Page>
+      <Section>
         <Link relative="path" to='..' className="block w-fit">
           <Heading size="h4" className="w-fit">
             <span className=" flex gap-x-2 items-center w-fit">
@@ -319,67 +320,10 @@ export default ({ loaderData: { id, name, script, item_price, created_at, ...res
                 </div>
               </div>
             </div>
-
-
-
-            {/* <div className="flex flex-col-reverse">
-              <div className="mt-4">
-                <Heading size="h3" className="">Application UI Icon Pack</Heading>
-                <Paragraph size="sm">Version 1.0 (Updated June 5, 2021)</Paragraph>
-              </div>
-              <div className=" flex items-center">
-                <Star className="size-6 fill-yellow-400 stroke-none" />
-                <Star className="size-6 fill-yellow-400 stroke-none" />
-                <Star className="size-6 fill-yellow-400 stroke-none" />
-                <Star className="size-6 fill-yellow-400 stroke-none" />
-                <Star className="size-6 fill-gray-300 stroke-none" />
-              </div>
-            </div> */}
-            {/* <Paragraph className="mt-6">
-              The Application UI Icon Pack comes with over 200 icons in 3 styles: outline, filled, and branded. This playful icon pack is tailored for complex application user interfaces with a friendly and legible look.
-            </Paragraph>
-            <div className="grid sm:grid-cols-2 gap-x-8 grid-cols-1 mt-10">
-              <Button color='primary' size="lg">Add to Cart</Button>
-              <Button color="secundary" size="lg">Preview</Button>
-            </div>
-            <div className="mt-10 border-t dark:border-white/10 border-gray-900 pt-10">
-              <Heading size="h5">Highlights</Heading>
-              <Paragraph size="sm" className="my-4 pl-5">
-                <ul className="list-disc">
-                  <li className="pl-2 not-last:mb-1">200+ SVG icons in 3 unique styles</li>
-                  <li className="pl-2 not-last:mb-1">Compatible with Figma, Sketch, and Adobe XD</li>
-                  <li className="pl-2 not-last:mb-1">Drawn on 24 x 24 pixel grid</li>
-                </ul>
-              </Paragraph>
-            </div>
-            <div className="mt-10 border-t dark:border-white/10 border-gray-900 pt-10">
-              <Heading size="h5">
-                License
-              </Heading>
-              <Paragraph size="sm" className="mt-4">
-                For personal and professional use. You cannot resell or redistribute these icons in their original or modified state.
-              </Paragraph>
-            </div>
-            <div className="mt-10 border-t dark:border-white/10 border-gray-900 pt-10">
-              <Heading size="h5">Share</Heading>
-            </div> */}
-            {/* <Panel className="grow flex p-6 sm:p-6 sm:py-6 lg:py-6 py-6  ">
-              <div className="ring-1 ring-white/10 bg-zinc-900 p-24 rounded-xl h-full w-full">
-                test
-              </div>
-            </Panel> */}
           </div>
-
-          {/* Tabs */}
-
         </div>
       </Section>
-      {/* <ContentTiles/>
-      <FaqAccordion /> */}
-      {/* <ContentPanel/> */}
       <FaqAccordion />
-      {/* <ProductOverview /> */}
-      {/* <ProductList heading="Others also bought" /> */}
-    </div>
+    </Page>
   );
 }
