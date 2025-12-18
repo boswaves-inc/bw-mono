@@ -1,13 +1,12 @@
 import { data, Form, Link, useSearchParams } from "react-router";
-import { Checkbox } from "~/components/core/checkbox";
+import { Checkbox  } from "~/components/core/v2/checkbox";
 import { Popover, PopoverButton, PopoverPanel } from "~/components/core/popover";
 import { Menu, MenuItem, MenuItems, MenuButton } from "~/components/core/menu";
 import { CheckIcon, ChevronDown, PlusIcon } from 'lucide-react'
-import Heading from "~/components/core/heading";
 import Paragraph from "~/components/core/paragraph";
 import Label from "~/components/core/label";
 
-import Section from "~/components/section";
+import Section from "~/components/page";
 import { Item, ItemScript, ItemPrice, ScriptType, Status, PeriodUnit, Script } from "@bw/core";
 import _ from 'lodash'
 import type { Route } from "./+types/library._index";
@@ -15,7 +14,8 @@ import { useCart } from "~/context/cart";
 import { and, eq, getTableColumns, isNotNull, sql } from "drizzle-orm";
 import { array_agg, coalesce, json_agg_object } from "@bw/core/utils/drizzle.ts";
 import { formatCurrency } from "@coingecko/cryptoformat";
-import { ButtonV2 } from "~/components/core/v2/button";
+import { Button } from "~/components/core/v2/button";
+import { Heading } from "~/components/core/v2/typography";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -55,7 +55,6 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
     <Section>
 
       {/* toolbar */}
-      <div className="px-4 sm:px-6 lg:px-8 sm:max-w-7xl max-w-160 mx-auto">
         <div className="pb-24 mt-13">
           <Heading size="h1">
             Your Trading Toolbox Starts Here
@@ -179,18 +178,17 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
               </Link>
               <div className="block p-4 w-fit">
                 {/* <Link to={`./${item.slug}`}> */}
-                <ButtonV2 data-selected={cart.includes(item.item_price.id)} className="group/button">
+                <Button data-selected={cart.includes(item.item_price.id)} className="group/button">
                   <div className="relative">
                     <PlusIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all duration-200 group-data-[selected=true]/button:scale-0 group-data-[selected=true]/button:-rotate-90" />
                     <CheckIcon className="absolute h-[1.2rem] inset-0 w-[1.2rem] rotate-90 scale-0 transition-all duration-200 group-data-[selected=true]/button:scale-100 group-data-[selected=true]/button:rotate-0" />
                   </div>
                   Added to toolbox
-                </ButtonV2>
+                </Button>
                 {/* </Link> */}
               </div>
             </div>
           ))}
-        </div>
       </div>
 
       {/* <ProductList /> */}

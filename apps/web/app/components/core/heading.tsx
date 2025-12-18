@@ -6,8 +6,8 @@ const variants = tv({
     base: 'text-gray-900 dark:text-white',
     variants: {
         size: {
-            title: 'text-5xl font-semibold tracking-tight sm:text-7xl',
-            h1: 'text-4xl font-semibold tracking-tight sm:text-5xl',
+            title: 'text-5xl font-semibold tracking-tight text-balance sm:text-7xl',
+            h1: 'text-4xl font-semibold tracking-tight text-balance sm:text-5xl',
             h2: 'tracking-tight font-semibold text-4xl',
             h3: 'tracking-tight font-semibold text-2xl sm:text-3xl',
             h4: 'text-base/7 font-semibold dark:text-indigo-400 text-indigo-600',

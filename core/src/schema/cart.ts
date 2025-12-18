@@ -3,19 +3,19 @@ import { ItemPrice } from "./item";
 import { index, pgTable, uniqueIndex } from "drizzle-orm/pg-core";
 import { type InferSelectModel, } from "drizzle-orm";
 
-export const Cart = pgTable("cart", t => ({
+export const Cart = pgTable("carts", t => ({
     id: t.uuid().primaryKey().notNull().$defaultFn(() => crypto.randomUUID()),
     uid: t.uuid().references(() => User.uid, {
         onDelete: 'cascade',
         onUpdate: 'cascade'
     }),
-    created_at: t.timestamp().defaultNow().notNull(),
-    updated_at: t.timestamp().defaultNow().notNull(),
+    created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
+    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
 }), t => [
     index('cart_uid_idx').on(t.uid)
 ]);
 
-export const CartItem = pgTable("cart_item", t => ({
+export const CartItem = pgTable("cart_items", t => ({
     id: t.uuid().primaryKey().references(() => Cart.id, {
         onDelete: 'cascade',
         onUpdate: 'cascade'
@@ -25,15 +25,15 @@ export const CartItem = pgTable("cart_item", t => ({
         onDelete: 'cascade',
         onUpdate: 'cascade'
     }).notNull(),
-    created_at: t.timestamp().defaultNow().notNull(),
-    updated_at: t.timestamp().defaultNow().notNull(),
+    created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
+    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
 }), t => [
     index('cart_item_id_idx').on(t.id),
     index('cart_item_item_price_idx').on(t.item_price),
     uniqueIndex('cart_item_id_item_price_idx').on(t.id, t.item_price),
 ]);
 
-export const CartCoupon = pgTable("cart_coupon", t => ({
+export const CartCoupon = pgTable("cart_coupons", t => ({
     id: t.uuid().primaryKey().references(() => Cart.id, {
         onDelete: 'cascade',
         onUpdate: 'cascade'
@@ -42,8 +42,8 @@ export const CartCoupon = pgTable("cart_coupon", t => ({
         onDelete: 'cascade',
         onUpdate: 'cascade'
     }).notNull(),
-    created_at: t.timestamp().defaultNow().notNull(),
-    updated_at: t.timestamp().defaultNow().notNull(),
+    created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
+    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
 }), t => [
     index('cart_coupon_id_idx').on(t.id),
     index('cart_coupon_item_price_idx').on(t.coupon),

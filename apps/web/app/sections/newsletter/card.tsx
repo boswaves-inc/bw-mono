@@ -2,9 +2,8 @@ import { Input } from "@headlessui/react";
 import { forwardRef, type ComponentProps } from "react";
 import { Form } from "react-router";
 import Panel from "~/components/core/panel";
-import Heading from "~/components/core/heading";
-import Paragraph from "~/components/core/paragraph";
-import Section from "~/components/section";
+import { Heading, Paragraph } from "~/components/core/v2/typography";
+import Section from "~/components/page";
 
 export default ({ ...props }: ComponentProps<typeof Section>) => (
     <Section {...props}>

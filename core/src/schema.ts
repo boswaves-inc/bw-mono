@@ -1,9 +1,10 @@
 import { Tag } from './schema/tag'
-import { Script } from './schema/script'
+import { Script, ScriptType } from './schema/script'
 import { Cart, CartItem } from './schema/cart'
-import { Item, ItemScript, ItemType, ItemPrice, ItemTag } from './schema/item'
+import { CouponDuration, CouponDiscount, CouponApplication, Coupon } from './schema/coupon'
+import { Item, ItemScript, ItemType, ItemPrice, ItemTag, ItemPriceModel } from './schema/item'
 import { User, UserCredentials, UserProvider } from './schema/user'
-import { ScriptType, Status, PeriodUnit, PricingModel } from './schema/types'
+import {  Status, PeriodUnit } from './schema/types'
 import type { TvComment, TvIdeaMisc, TvImage, TvScript, TvScriptUpdate, TvSymbol, TvTag, TvUser } from './tradingview/types'
 
 export default {
@@ -11,9 +12,10 @@ export default {
     Script,
     Cart, CartItem,
     PeriodUnit, ItemType,
-    ScriptType, Status, PricingModel,
+    ScriptType, Status, ItemPriceModel,
     User, UserCredentials, UserProvider,
     Item, ItemScript, ItemPrice, ItemTag,
+    CouponDuration, CouponDiscount, CouponApplication, Coupon
 }
 
 export {
@@ -21,9 +23,10 @@ export {
     Script,
     Cart, CartItem,
     PeriodUnit, ItemType,
-    ScriptType, Status, PricingModel,
+    ScriptType, Status, ItemPriceModel,
     User, UserCredentials, UserProvider,
     Item, ItemScript, ItemPrice, ItemTag,
+    CouponDuration, CouponDiscount, CouponApplication, Coupon
 }
 
 export type {

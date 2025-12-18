@@ -7,6 +7,7 @@ import { TradingView } from "@bw/core/tradingview";
 import "react-router";
 import theme, { getTheme } from "./theme";
 
+import coupon from "./api/coupon";
 import script from "./api/script";
 import plan from "./api/plan";
 import user from "./api/user";
@@ -43,6 +44,11 @@ router.use(postgres({
 
 router.use(theme())
 
+
+router.use('/api/coupon', coupon({
+  chargebee: cb_client,
+  postgres: pg_client,
+}))
 
 router.use('/api/script', script({
   tradingview: tv_client,

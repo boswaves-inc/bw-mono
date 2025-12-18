@@ -1,8 +1,8 @@
 import { forwardRef, type ComponentProps } from "react";
 import { Link } from "react-router";
-import Heading from "~/components/core/heading";
 import Paragraph from "~/components/core/paragraph";
-import { ButtonV2 } from "~/components/core/v2/button";
+import { Button } from "~/components/core/v2/button";
+import { Heading } from "~/components/core/v2/typography";
 
 export default ({ ...props }: ComponentProps<'section'>) => (
     <section {...props}>
@@ -35,14 +35,14 @@ export default ({ ...props }: ComponentProps<'section'>) => (
                         Pick you indicators, check out, and start trading with your custom BOSWaves setup - streamlined, precise, and tailored to you
                     </Paragraph>
                     <div className="mt-10 flex items-center justify-center gap-x-6">
-                        <ButtonV2 color="primary">
+                        <Button color="primary">
                             Get Started
-                        </ButtonV2>
-                        <ButtonV2 size="lg" variant="link" className="text-foreground" asChild>
+                        </Button>
+                        <Button size="lg" variant="link" className="text-foreground" asChild>
                             <Link to={'#'}>
                                 Learn more
                             </Link>
-                        </ButtonV2>
+                        </Button>
                     </div>
                 </div>
             </div>

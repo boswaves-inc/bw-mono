@@ -1,10 +1,9 @@
 import { Star } from "lucide-react";
 import { forwardRef, type ComponentProps } from "react";
-import Heading from "~/components/core/heading";
-import Paragraph from "~/components/core/paragraph";
-import Section from "~/components/section";
+import Section from "~/components/page";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "~/components/core/tab";
-import { ButtonV2 } from "~/components/core/v2/button";
+import { Button } from "~/components/core/v2/button";
+import { Heading, Paragraph } from "~/components/core/v2/typography";
 
 
 export default ({ ...props }: ComponentProps<typeof Section>) => (
@@ -34,8 +33,8 @@ export default ({ ...props }: ComponentProps<typeof Section>) => (
                     The Application UI Icon Pack comes with over 200 icons in 3 styles: outline, filled, and branded. This playful icon pack is tailored for complex application user interfaces with a friendly and legible look.
                 </Paragraph>
                 <div className="grid sm:grid-cols-2 gap-x-8 grid-cols-1 mt-10">
-                    <ButtonV2 size="lg">Add to Cart</ButtonV2>
-                    <ButtonV2 variant="secondary" size="lg">Preview</ButtonV2>
+                    <Button size="lg">Add to Cart</Button>
+                    <Button variant="secondary" size="lg">Preview</Button>
                 </div>
                 <div className="mt-10 border-t dark:border-white/10 border-gray-900 pt-10">
                     <Heading size="h5">Highlights</Heading>

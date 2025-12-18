@@ -1,9 +1,8 @@
 import type { Route } from "./+types/checkout._index";
-import Section from "~/components/section";
+import Section from "~/components/page";
 import { data, Link, useFetcher, useLoaderData } from "react-router";
 import { useState, type FormEvent } from "react";
 import { CardGroup, CardCvc, CardExpiry, CardNumber, useCard } from "~/components/chargebee";
-import Heading from "~/components/core/heading";
 import Paragraph from "~/components/core/paragraph";
 import Label from "~/components/core/label";
 import { Check, ChevronLeft, LockIcon, RotateCw } from "lucide-react";
@@ -11,21 +10,45 @@ import { Radio, RadioGroup } from "~/components/core/radio";
 import { Field, } from "@headlessui/react";
 import { formatCurrency } from "@coingecko/cryptoformat";
 import { AppleLogo, GoogleLogo, StripeLogo } from "~/components/icons/logo";
-import { CartData } from "@bw/core";
-import { eq } from "drizzle-orm";
-import { ButtonV2 } from "~/components/core/v2/button";
+import { Cart, CartItem } from "@bw/core";
+import { and, eq, getTableColumns, isNotNull, sql } from "drizzle-orm";
+import { Button } from "~/components/core/v2/button";
+import { coalesce, json_agg_object } from "@bw/core/utils/drizzle.ts";
+import { CartCoupon } from "@bw/core/schema/cart.ts";
+import _ from "lodash";
+import { Heading } from "~/components/core/v2/typography";
 
 export async function loader({ context }: Route.LoaderArgs) {
-    const cart = await new Promise<CartData | undefined>(async resolve => {
-        if (context.cart) {
-            return resolve(await context.postgres.select().from(CartData).where(
-                eq(CartData.id, context.cart)
-            ).limit(1).then(x => x.at(0)))
-        }
-
-        return resolve(undefined)
+    const result = await context.postgres.select({
+        ...getTableColumns(Cart),
+        cart_item: coalesce(
+            json_agg_object({
+                ...getTableColumns(CartItem)
+            }, isNotNull(CartItem.id)),
+            sql`'[]'::json`
+        ).as('cart_item'),
+        cart_coupon: coalesce(
+            json_agg_object({
+                ...getTableColumns(CartCoupon)
+            }, isNotNull(CartCoupon.id)),
+            sql`'[]'::json`
+        ).as('cart_item'),
     })
+        .from(Cart)
+        .leftJoin(CartItem, and(
+            eq(CartItem.id, Cart.id)
+        ))
+        .leftJoin(CartCoupon, and(
+            eq(CartCoupon.id, CartCoupon.id),
+        ))
+        .where(eq(Cart.id, context.cart.id))
+        .groupBy(Cart.id)
+        .limit(1)
+        .then(x => x.at(0))
 
+    if (result == undefined) {
+        throw new Error('failed to load cart')
+    }
 
     const plans = [
         {
@@ -43,29 +66,32 @@ export async function loader({ context }: Route.LoaderArgs) {
         }
     ]
 
-    // const cart = context.postgres.select()
-    //     .from(CartItem)
-    //     .where(eq(CartItem.uid, user.uid));
+    result.cart_item.map(({ quantity, item_price }) => ({
+        item_price_id: item_price,
+        quantity
+    }))
 
-    const ss = await context.chargebee.estimate.createSubItemEstimate({
+    const { estimate } = await context.chargebee.estimate.createSubItemEstimate({
         tax_providers_fields: [],
-        // invoice_date: 5680261800,
-        subscription_items: [
-            {
-                item_price_id: 'cbdemo_business-suite-monthly',
-                quantity: 1,
-            }
-        ],
+        subscription_items: result.cart_item.map(({ quantity, item_price }) => ({
+            item_price_id: item_price,
+            quantity
+        })),
+        coupon_ids: [
+            '60f4cc6c-8f26-4657-b25e-3b24071f6769'
+        ]
     })
-    // const prices = await context.chargebee.itemPrice.list({
-    //     item_id: { in: ['cbdemo_business-suite'] },
-    // })
 
-    console.log(ss)
+    if (estimate.invoice_estimate == undefined) {
+        throw new Error('failed to estimate invoce')
+    }
 
+    const total_discount = _.sum(estimate.invoice_estimate.discounts?.map(x => x.amount))
 
     return data({
         currency: 'USD',
+        estimate: estimate.invoice_estimate,
+        total_discount,
         plans,
     })
 }
@@ -113,10 +139,7 @@ export async function action({ request, context }: Route.ActionArgs) {
     return data({})
 }
 
-
-export default function renderer() {
-    const { plans, currency } = useLoaderData<typeof loader>()
-
+export default function renderer({ loaderData: { plans, currency, estimate, total_discount } }: Route.ComponentProps) {
     const card = useCard()
     const fetcher = useFetcher()
 
@@ -130,8 +153,7 @@ export default function renderer() {
 
         const component = card.component()!;
 
-        const auth = await component.authorizeWith3ds(
-            intent,
+        const auth = await component.authorizeWith3ds(intent,
             {
                 billingAddress: {
                     firstName: 'Peter',
@@ -203,7 +225,7 @@ export default function renderer() {
                                     Subtotal
                                 </Heading>
                                 <Heading size="h5" className="text-base/7 font-semibold">
-                                    {formatCurrency(348, currency, 'en', false, false)}
+                                    {formatCurrency(estimate.sub_total / 100, currency, 'en', false, false)}
                                 </Heading>
                             </div>
                             <div className="flex justify-between mt-2">
@@ -211,7 +233,7 @@ export default function renderer() {
                                     Discount
                                 </Heading>
                                 <Heading size="h5" className="text-base/7 font-semibold">
-                                    {formatCurrency(-10.54, currency, 'en', false, false)}
+                                    {formatCurrency(total_discount / 100, currency, 'en', false, false)}
                                 </Heading>
                             </div>
                             <div className="flex justify-between mt-2">
@@ -219,22 +241,22 @@ export default function renderer() {
                                     Tax
                                 </Heading>
                                 <Heading size="h5" className="text-base/7 font-semibold">
-                                    {formatCurrency(10.54, currency, 'en', false, false)}
+                                    {formatCurrency(0, currency, 'en', false, false)}
                                 </Heading>
                             </div>
-                            {/* <div className="flex gap-6 mt-6">
-                                <Button color="secundary" size="base" className="text-nowrap dark:bg-gray-700">
+                            <div className="flex gap-6 mt-6">
+                                <Button variant="outline">
                                     Add promotion code
                                 </Button>
-                            </div> */}
+                            </div>
                         </div>
-                        <div className="pt-10 mt-10 border-t border-gray-200 dark:border-gray-700">
+                        <div className="pt-10 mt-10 border-t">
                             <div className="flex justify-between">
                                 <Heading size="h5" className="text-lg/7 font-semibold">
                                     Total due
                                 </Heading>
                                 <Heading size="h5" className="text-lg/7 font-semibold">
-                                    {formatCurrency(348, currency, 'en', false, false)}
+                                    {formatCurrency(estimate.amount_due! / 100, currency, 'en', false, false)}
                                 </Heading>
                             </div>
                         </div>
@@ -246,19 +268,19 @@ export default function renderer() {
                         </Heading>
                         <RadioGroup value={plan} onChange={setPlan} className="mt-2 outline bg-gray-900 dark:outline-white/10 rounded-md outline-gray-900/10">
                             {plans.map(({ id, interval, discount, title, total }) => (
-                                <Field key={id} className='group/field not-last:border-b dark:border-white/10 border-gray-900/10'>
-                                    <Radio value={id} className="p-4 outline-indigo-400 touch-none  data-checked:outline-2 group/radio group-first/field:rounded-t-md flex justify-between items-start group-last/field:rounded-b-md data-checked:bg-gray-800">
+                                <Field key={id} className='group/field not-last:border-b'>
+                                    <Radio value={id} className="p-4 outline-primary touch-none data-checked:outline-2 group/radio group-first/field:rounded-t-md flex justify-between items-start group-last/field:rounded-b-md data-checked:bg-gray-800">
                                         <div>
                                             <Label>{title}</Label>
                                             <Paragraph size="sm">{formatCurrency(total, currency, 'en', false, true)}/{interval}</Paragraph>
                                         </div>
                                         <div className="flex items-start gap-x-3">
                                             {discount && (
-                                                <span className="text-xs/4 p-0.5 px-2 block rounded-full bg-indigo-400">
+                                                <span className="text-xs/4 p-0.5 px-2 block rounded-full bg-primary">
                                                     {discount}% OFF
                                                 </span>
                                             )}
-                                            <span className="rounded-full flex size-5 group-data-checked/radio:bg-indigo-400 ring-1 ring-gray-200 dark:ring-gray-700">
+                                            <span className="rounded-full flex size-5 group-data-checked/radio:bg-primary ring-1">
                                                 <Check strokeWidth={4} className="size-3 m-auto transiop group-data-checked/radio:opacity-100 opacity-0" />
                                             </span>
                                         </div>
@@ -292,31 +314,30 @@ export default function renderer() {
 
                             </div>
                         </CardGroup>
-                        <ButtonV2 className="mt-10 w-full">
+                        <Button size="lg" className="mt-10 w-full">
                             Continue
-                        </ButtonV2>
+                        </Button>
                         <div className="relative mt-6">
-                            <div aria-hidden={true} className="items-center flex inset-0 absolute">
+                            <div className=" flex relative justify-center items-center">
                                 <div className=" border-gray-200 dark:border-gray-700 w-full border-t" />
-                            </div>
-                            <div className=" flex relative justify-center">
-                                <Paragraph className="px-4 dark:bg-gray-950 text-base bg-white">
+                                <Paragraph className="px-4 text-base">
                                     or
                                 </Paragraph>
+                                <div className="w-full border-t" />
                             </div>
                         </div>
                         <div className="gap-x-6 flex mt-6">
-                            <ButtonV2 className=" text-white dark:bg-white dark:text-black w-full items-center h-10 justify-center flex">
+                            <Button size="lg" className=" grow">
                                 <span className="sr-only">Pay with Google Pay</span>
-                                <GoogleLogo className="h-4.5 w-fit" />
-                            </ButtonV2>
-                            <ButtonV2 className=" text-white dark:bg-white dark:text-black w-full items-center h-10 justify-center flex">
+                                <GoogleLogo className="size-5!" />
+                            </Button>
+                            <Button size="lg" className="grow">
                                 <span className="sr-only">Pay with Apple Pay</span>
-                                <AppleLogo className="w-auto h-4.5" />
-                            </ButtonV2>
+                                <AppleLogo className="w-auto! h-5!" />
+                            </Button>
                         </div>
                         <div className="mt-10">
-                            <Heading size="h5" className="text-lg/7 justify-center items-center flex dark:fill-indigo-400 dark:text-indigo-400 gap-2">
+                            <Heading size="h5" className="text-lg/7 justify-center items-center flex dark:fill-primary dark:text-primary gap-2">
                                 <span>
                                     Powered by
                                 </span>

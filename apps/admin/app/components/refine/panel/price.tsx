@@ -1,4 +1,4 @@
-import { ItemPrice, PricingModel, type PeriodUnit } from "@bw/core";
+import { ItemPrice, ItemPriceModel, type PeriodUnit } from "@bw/core";
 import { formatCurrency } from "@coingecko/cryptoformat";
 import type { Currency } from "chargebee";
 import _ from "lodash";
@@ -158,7 +158,7 @@ export const PricePanel = ({ currency, period_unit: period }: { period_unit: Per
                                                     <SelectValue placeholder="Select type" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    {PricingModel.enumValues.map(x => (
+                                                    {ItemPriceModel.enumValues.map(x => (
                                                         <SelectItem key={x} value={x}>
                                                             {_.startCase(x)}
                                                         </SelectItem>

@@ -9,7 +9,6 @@ import {
   useLoaderData,
 } from "react-router";
 
-
 import "./root.css";
 import { twMerge } from "tailwind-merge";
 import type { Route } from "./+types/root";

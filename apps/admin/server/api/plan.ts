@@ -4,7 +4,7 @@ import cors from "cors";
 import { and, eq, exists, getTableColumns, inArray, isNotNull, ne, not, sql } from 'drizzle-orm';
 import type Chargebee from 'chargebee'
 import type { Postgres } from '@bw/core/postgres'
-import { Item, ItemPrice, PeriodUnit, PricingModel, ItemScript, Status, ItemTag, Tag, Script } from '@bw/core'
+import { Item, ItemPrice, PeriodUnit, ItemPriceModel, ItemScript, Status, ItemTag, Tag, Script } from '@bw/core'
 import { createInsertSchema } from "drizzle-zod";
 import z, { array } from 'zod/v4';
 import { zfd } from 'zod-form-data';
@@ -90,7 +90,7 @@ export default ({ family, postgres, chargebee }: { family: string, postgres: Pos
                     period: zfd.numeric(),
                     currency_code: zfd.text(),
                     period_unit: z.enum(PeriodUnit.enumValues),
-                    pricing_model: z.enum(PricingModel.enumValues),
+                    pricing_model: z.enum(ItemPriceModel.enumValues),
                 })).nullable()
                     .default([])
                     .transform(x => x?.filter(x => x != undefined) ?? []),
@@ -228,7 +228,7 @@ export default ({ family, postgres, chargebee }: { family: string, postgres: Pos
                     period: zfd.numeric(),
                     period_unit: z.enum(PeriodUnit.enumValues),
                     currency_code: zfd.text(),
-                    pricing_model: z.enum(PricingModel.enumValues),
+                    pricing_model: z.enum(ItemPriceModel.enumValues),
                 }).nullable()).transform(x => x.filter(x => x != undefined)),
             })
         ])

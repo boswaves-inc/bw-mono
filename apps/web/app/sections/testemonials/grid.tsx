@@ -1,6 +1,6 @@
 import { forwardRef, type ComponentProps } from "react";
-import Heading from "~/components/core/heading";
-import Section from "~/components/section";
+import { Heading } from "~/components/core/v2/typography";
+import Section from "~/components/page";
 
 export default ({ ...props }: ComponentProps<typeof Section>) => (
     <Section {...props}>

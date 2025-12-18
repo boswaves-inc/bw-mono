@@ -1,9 +1,9 @@
 import { CloudUpload, Hammer, LucidePackageOpen } from "lucide-react";
 import { forwardRef, type ComponentProps } from "react";
-import Heading from "~/components/core/heading";
 import Paragraph from "~/components/core/paragraph";
-import { ButtonV2 } from "~/components/core/v2/button";
-import Section from "~/components/section";
+import { Button } from "~/components/core/v2/button";
+import { Heading } from "~/components/core/v2/typography";
+import Section from "~/components/page";
 
 export default ({ ...props }: ComponentProps<typeof Section>) => (
     <Section {...props}>
@@ -55,7 +55,7 @@ export default ({ ...props }: ComponentProps<typeof Section>) => (
 
                 {/* Optional */}
                 <div className="mt-10 flex items-center  gap-x-6">
-                    <ButtonV2 >Get Started</ButtonV2>
+                    <Button >Get Started</Button>
                     <a href="#" className="text-sm/6 font-semibold text-gray-900 dark:text-white">Learn more <span aria-hidden="true">→</span></a>
                 </div>
             </div>

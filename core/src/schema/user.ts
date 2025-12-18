@@ -12,7 +12,7 @@ export const UserRole = pgEnum('user_role', [
     'user'
 ])
 
-export const User = pgTable("user", (t) => ({
+export const User = pgTable("users", (t) => ({
     // Unique id
     uid: t.uuid().primaryKey().notNull().$defaultFn(() => crypto.randomUUID()),
     cbid: t.text().notNull(),
@@ -33,8 +33,8 @@ export const User = pgTable("user", (t) => ({
     // tradingview_id: t.varchar({ length: 255 }).unique(),
 
     // Timestamps
-    created_at: t.timestamp().defaultNow().notNull(),
-    updated_at: t.timestamp().defaultNow().notNull(),
+    created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
+    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
 }));
 
 export const UserCredentials = pgTable("user_credentials", (t) => ({

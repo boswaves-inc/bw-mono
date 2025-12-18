@@ -1,1 +1,0 @@
-ALTER TABLE "script" DROP COLUMN "description";

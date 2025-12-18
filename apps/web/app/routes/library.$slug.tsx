@@ -1,7 +1,6 @@
 import type { Route } from "./+types/library.$slug";
-import Section from "~/components/section";
+import Section from "~/components/page";
 import Paragraph from "~/components/core/paragraph";
-import Heading from "~/components/core/heading";
 import { Check, ChevronLeft, Flame, Star } from "lucide-react";
 import FaqAccordion from "~/sections/faq/accordion";
 import { data, Link, useFetcher } from "react-router";
@@ -13,7 +12,8 @@ import { includes } from "lodash";
 import { Fragment } from "react/jsx-runtime";
 import { array_agg, json_agg_object } from "@bw/core/utils/drizzle.ts";
 import { formatCurrency } from "@coingecko/cryptoformat";
-import { ButtonV2 } from "~/components/core/v2/button";
+import { Button } from "~/components/core/v2/button";
+import { Heading } from "~/components/core/v2/typography";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -179,7 +179,7 @@ export default ({ loaderData: { id, name, script, item_price, created_at, ...res
                   /{item_price.period_unit}
                 </Paragraph>
               </div>
-              <ButtonV2 onClick={onToggle} className="w-full mt-6">
+              <Button onClick={onToggle} size="lg" className="w-full mt-6">
                 {included ? (
                   <Fragment>
                     <Check />
@@ -188,7 +188,7 @@ export default ({ loaderData: { id, name, script, item_price, created_at, ...res
                 ) : (
                   <span>Add to Toolbox</span>
                 )}
-              </ButtonV2>
+              </Button>
               <ul className="xl:mt-10 dark:text-gray-300 text-sm/6 mt-8">
                 <li className="flex gap-x-3 not-last:mb-3">
                   <Check className="text-indigo-400" />

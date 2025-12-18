@@ -24,6 +24,7 @@ import { cartSession } from "./cookie";
 import { count, countDistinct, eq, sql } from "drizzle-orm";
 import countryToCurrency, { type Currencies, type Countries } from "country-to-currency";
 import { ISO3166 } from "./components/iso";
+import Page from "./components/page";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -58,7 +59,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="antialiased relative  dark:bg-gray-900 dark:text-white text-gray-900 bg-white">
+      <body className="antialiased relative text-foreground bg-background">
         <CartProvider cart={data.cart}>
           <Header />
           {children}
@@ -86,15 +87,18 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto overflow-hidden antialiased relative  ">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full p-4">
-          <code className="whitespace-break-spaces">{stack}</code>
-        </pre>
-      )}
-    </main>
+    <Page>
+
+      <main className="container mx-auto overflow-hidden antialiased relative  ">
+        <h1>{message}</h1>
+        <p>{details}</p>
+        {stack && (
+          <pre className="w-full">
+            <code className="whitespace-break-spaces">{stack}</code>
+          </pre>
+        )}
+      </main>
+    </Page>
   );
 }
 

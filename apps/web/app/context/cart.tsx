@@ -15,14 +15,14 @@ export const CartProvider = ({ children, cart }: PropsWithChildren<{ cart: AppLo
     const fetcher = useFetcher<AppLoadContext['cart']>()
 
     const includes = (item_price: string) => {
-        return inner.items.findIndex(x => x.item_price == item_price) >= 0
+        return inner.cart_item.findIndex(x => x.item_price == item_price) >= 0
     }
 
     const push = async (item_price: string, quantity: number = 1) => {
         if (!includes(item_price)) {
             setInner(current => ({
                 ...current,
-                items: current.items.concat({
+                items: current.cart_item.concat({
                     quantity,
                     item_price,
                 })
@@ -39,7 +39,7 @@ export const CartProvider = ({ children, cart }: PropsWithChildren<{ cart: AppLo
         if (includes(item_price)) {
             setInner(current => ({
                 ...current,
-                items: current.items.filter(x => x.item_price !== item_price)
+                items: current.cart_item.filter(x => x.item_price !== item_price)
             }))
 
             await fetcher.submit({ item_price }, {
@@ -63,8 +63,8 @@ export const CartProvider = ({ children, cart }: PropsWithChildren<{ cart: AppLo
 
     return (
         <CONTEXT.Provider value={{
-            items: inner.items,
-            empty: inner.items.length == 0,
+            items: inner.cart_item,
+            empty: inner.cart_item.length == 0,
             includes,
             push,
             pop,

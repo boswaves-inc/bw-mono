@@ -1,13 +1,16 @@
-import Section from "~/components/section";
-import { data, Link, useFetcher } from "react-router";
+import Page from "~/components/page";
+import { data, Form, Link, Outlet, useFetcher } from "react-router";
 import type { Route } from "./+types/cart";
 import { formData } from "zod-form-data";
 import { cartSession } from "~/cookie";
 import { getSession } from "~/utils/session";
 import { Cart, CartItem, Item, ItemPrice } from "@bw/core";
-import { and, eq, getTableColumns, notExists, sql, } from "drizzle-orm";
+import { and, eq, getTableColumns, isNotNull, notExists, sql, } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
-import { ButtonV2 } from "~/components/core/v2/button";
+import { Button } from "~/components/core/v2/button";
+import { coalesce, json_agg_object } from "@bw/core/utils/drizzle.ts";
+import { CartCoupon } from "@bw/core/schema/cart.ts";
+import { Heading, Paragraph } from "~/components/core/v2/typography";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -16,9 +19,35 @@ export function meta({ }: Route.MetaArgs) {
     ];
 }
 
-export async function loader({ }: Route.LoaderArgs) {
+export async function loader({ context }: Route.LoaderArgs) {
+    const cart = await context.postgres.select({
+        ...getTableColumns(Cart),
+        cart_item: coalesce(
+            json_agg_object({
+                ...getTableColumns(CartItem)
+            }, isNotNull(CartItem.id)),
+            sql`'[]'::json`
+        ).as('cart_item'),
+        cart_coupon: coalesce(
+            json_agg_object({
+                ...getTableColumns(CartCoupon)
+            }, isNotNull(CartCoupon.id)),
+            sql`'[]'::json`
+        ).as('cart_item'),
+    })
+        .from(Cart)
+        .leftJoin(CartItem, and(
+            eq(CartItem.id, Cart.id)
+        ))
+        .leftJoin(CartCoupon, and(
+            eq(CartCoupon.id, CartCoupon.id),
+        ))
+        .where(eq(Cart.id, context.cart.id))
+        .groupBy(Cart.id)
+        .limit(1)
+        .then(x => x.at(0))
 
-    return data({})
+    return data({ cart })
 }
 
 export async function action({ request, context }: Route.ActionArgs) {
@@ -117,16 +146,42 @@ export async function action({ request, context }: Route.ActionArgs) {
     }
 }
 
-export default function renderer() {
-    const cart = useFetcher({ key: 'cart' })
+export default function renderer({ loaderData: { cart } }: Route.ComponentProps) {
+
 
     return (
-        <div>
-            <Section>
-                <Link to={'/checkout'}>
-                    <ButtonV2>Checkout</ButtonV2>
-                </Link>
-            </Section>
-        </div>
+        <Page>
+            <Heading className=" text-left" >
+                Shopping Cart
+            </Heading>
+            <Form className="xl:gap-x-16 lg:gap-x-12 lg:items-start lg:grid-cols-12 lg:grid mt-12">
+                <section aria-labelledby="cart-heading" className=" lg:col-span-7">
+                    <h2 className="sr-only">Items in your shopping cart</h2>
+                    <ul role="list" className="list-none border-y">
+                        <li className=" sm:py-10 py-6 not-last:border-b flex">
+                            <div className="shrink-0">
+                                <img src="https://tailwindcss.com/plus-assets/img/ecommerce-images/shopping-cart-page-01-product-01.jpg" className="sm:size-48 size-24 max-w-full object-cover rounded-sm" />
+                            </div>
+                            <div className=" flex-col flex flex-1 ml-4 sm:ml-6 justify-between">
+                                <div className="sm:gap-x-6 sm:grid-cols-2 grid pr-9 sm:pr-0 relative">
+                                    <div >
+                                        <Paragraph variant="label">Quick Valuation Osscilator</Paragraph>
+                                        <Paragraph className="flex mt-1" variant="muted">
+                                            <span>
+                                                Indicator
+                                            </span>
+                                            <span className=" ml-4 border-l pl-4">
+                                                Volume
+                                            </span>
+                                        </Paragraph>
+                                        <Paragraph className="mt-1" variant="label">$30.00</Paragraph>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+            </Form>
+        </Page>
     );
 }

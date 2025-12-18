@@ -1,11 +1,11 @@
 {
-  "id": "fd5f8d1b-2d92-48c9-acbb-92646d4c5ef2",
-  "prevId": "d633c03c-52fd-459b-906a-2884092a33d9",
+  "id": "c9d1982f-e90e-45db-97c5-39b2528bfb3c",
+  "prevId": "48091e5e-f660-4be0-a2d3-517b6bf88574",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.cart": {
-      "name": "cart",
+    "public.carts": {
+      "name": "carts",
       "schema": "",
       "columns": {
         "id": {
@@ -22,14 +22,14 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
@@ -53,10 +53,10 @@
         }
       },
       "foreignKeys": {
-        "cart_uid_user_uid_fk": {
-          "name": "cart_uid_user_uid_fk",
-          "tableFrom": "cart",
-          "tableTo": "user",
+        "carts_uid_users_uid_fk": {
+          "name": "carts_uid_users_uid_fk",
+          "tableFrom": "carts",
+          "tableTo": "users",
           "columnsFrom": [
             "uid"
           ],
@@ -73,8 +73,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.cart_coupon": {
-      "name": "cart_coupon",
+    "public.cart_coupons": {
+      "name": "cart_coupons",
       "schema": "",
       "columns": {
         "id": {
@@ -91,14 +91,14 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
@@ -158,10 +158,10 @@
         }
       },
       "foreignKeys": {
-        "cart_coupon_id_cart_id_fk": {
-          "name": "cart_coupon_id_cart_id_fk",
-          "tableFrom": "cart_coupon",
-          "tableTo": "cart",
+        "cart_coupons_id_carts_id_fk": {
+          "name": "cart_coupons_id_carts_id_fk",
+          "tableFrom": "cart_coupons",
+          "tableTo": "carts",
           "columnsFrom": [
             "id"
           ],
@@ -171,10 +171,10 @@
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "cart_coupon_coupon_item_price_id_fk": {
-          "name": "cart_coupon_coupon_item_price_id_fk",
-          "tableFrom": "cart_coupon",
-          "tableTo": "item_price",
+        "cart_coupons_coupon_item_prices_id_fk": {
+          "name": "cart_coupons_coupon_item_prices_id_fk",
+          "tableFrom": "cart_coupons",
+          "tableTo": "item_prices",
           "columnsFrom": [
             "coupon"
           ],
@@ -191,8 +191,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.cart_item": {
-      "name": "cart_item",
+    "public.cart_items": {
+      "name": "cart_items",
       "schema": "",
       "columns": {
         "id": {
@@ -215,14 +215,14 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
@@ -282,10 +282,10 @@
         }
       },
       "foreignKeys": {
-        "cart_item_id_cart_id_fk": {
-          "name": "cart_item_id_cart_id_fk",
-          "tableFrom": "cart_item",
-          "tableTo": "cart",
+        "cart_items_id_carts_id_fk": {
+          "name": "cart_items_id_carts_id_fk",
+          "tableFrom": "cart_items",
+          "tableTo": "carts",
           "columnsFrom": [
             "id"
           ],
@@ -295,10 +295,10 @@
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "cart_item_item_price_item_price_id_fk": {
-          "name": "cart_item_item_price_item_price_id_fk",
-          "tableFrom": "cart_item",
-          "tableTo": "item_price",
+        "cart_items_item_price_item_prices_id_fk": {
+          "name": "cart_items_item_price_item_prices_id_fk",
+          "tableFrom": "cart_items",
+          "tableTo": "item_prices",
           "columnsFrom": [
             "item_price"
           ],
@@ -315,8 +315,204 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.item": {
-      "name": "item",
+    "public.coupons": {
+      "name": "coupons",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "apply_on": {
+          "name": "apply_on",
+          "type": "coupon_application",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "period": {
+          "name": "period",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "period_unit": {
+          "name": "period_unit",
+          "type": "period_unit",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "duration_type": {
+          "name": "duration_type",
+          "type": "coupon_duration",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "discount_type": {
+          "name": "discount_type",
+          "type": "coupon_discount",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "discount_amount": {
+          "name": "discount_amount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "discount_currency": {
+          "name": "discount_currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "discount_percentage": {
+          "name": "discount_percentage",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valid_from": {
+          "name": "valid_from",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valid_till": {
+          "name": "valid_till",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "max_redemptions": {
+          "name": "max_redemptions",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "coupons_name_unq": {
+          "name": "coupons_name_unq",
+          "columns": [
+            {
+              "expression": "name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "status != 'deleted'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "coupons_discount_check": {
+          "name": "coupons_discount_check",
+          "value": "(discount_type = 'percentage' AND discount_percentage IS NOT NULL) OR (discount_type = 'fixed_amount' AND discount_currency IS NOT NULL AND discount_amount IS NOT NULL)"
+        },
+        "coupons_valid_check": {
+          "name": "coupons_valid_check",
+          "value": "(valid_from IS NULL AND valid_till IS NULL) OR (valid_from IS NOT NULL AND valid_till IS NOT NULL and valid_till > valid_from)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.coupon_codes": {
+      "name": "coupon_codes",
+      "schema": "",
+      "columns": {
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.coupon_sets": {
+      "name": "coupon_sets",
+      "schema": "",
+      "columns": {
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.items": {
+      "name": "items",
       "schema": "",
       "columns": {
         "id": {
@@ -348,6 +544,12 @@
             "type": "stored"
           }
         },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "status": {
           "name": "status",
           "type": "status",
@@ -355,22 +557,16 @@
           "primaryKey": false,
           "notNull": true
         },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
@@ -388,6 +584,7 @@
             }
           ],
           "isUnique": true,
+          "where": "status != 'deleted'",
           "concurrently": false,
           "method": "btree",
           "with": {}
@@ -433,21 +630,13 @@
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "item_slug_unique": {
-          "name": "item_slug_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.item_price": {
-      "name": "item_price",
+    "public.item_prices": {
+      "name": "item_prices",
       "schema": "",
       "columns": {
         "id": {
@@ -495,7 +684,7 @@
         },
         "pricing_model": {
           "name": "pricing_model",
-          "type": "pricing_model",
+          "type": "item_price_model",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
@@ -509,14 +698,14 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
@@ -605,10 +794,10 @@
         }
       },
       "foreignKeys": {
-        "item_price_item_id_item_id_fk": {
-          "name": "item_price_item_id_item_id_fk",
-          "tableFrom": "item_price",
-          "tableTo": "item",
+        "item_prices_item_id_items_id_fk": {
+          "name": "item_prices_item_id_items_id_fk",
+          "tableFrom": "item_prices",
+          "tableTo": "items",
           "columnsFrom": [
             "item_id"
           ],
@@ -625,8 +814,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.item_script": {
-      "name": "item_script",
+    "public.item_scripts": {
+      "name": "item_scripts",
       "schema": "",
       "columns": {
         "id": {
@@ -656,14 +845,14 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
@@ -744,10 +933,10 @@
         }
       },
       "foreignKeys": {
-        "item_script_id_script_id_fk": {
-          "name": "item_script_id_script_id_fk",
-          "tableFrom": "item_script",
-          "tableTo": "script",
+        "item_scripts_id_scripts_id_fk": {
+          "name": "item_scripts_id_scripts_id_fk",
+          "tableFrom": "item_scripts",
+          "tableTo": "scripts",
           "columnsFrom": [
             "id"
           ],
@@ -757,10 +946,10 @@
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "item_script_item_id_item_id_fk": {
-          "name": "item_script_item_id_item_id_fk",
-          "tableFrom": "item_script",
-          "tableTo": "item",
+        "item_scripts_item_id_items_id_fk": {
+          "name": "item_scripts_item_id_items_id_fk",
+          "tableFrom": "item_scripts",
+          "tableTo": "items",
           "columnsFrom": [
             "item_id"
           ],
@@ -772,8 +961,8 @@
         }
       },
       "compositePrimaryKeys": {
-        "item_script_item_id_id_pk": {
-          "name": "item_script_item_id_id_pk",
+        "item_scripts_item_id_id_pk": {
+          "name": "item_scripts_item_id_id_pk",
           "columns": [
             "item_id",
             "id"
@@ -785,8 +974,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.item_tag": {
-      "name": "item_tag",
+    "public.item_tags": {
+      "name": "item_tags",
       "schema": "",
       "columns": {
         "id": {
@@ -816,14 +1005,14 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
@@ -883,12 +1072,6 @@
               "isExpression": false,
               "asc": true,
               "nulls": "last"
-            },
-            {
-              "expression": "id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
             }
           ],
           "isUnique": true,
@@ -921,10 +1104,10 @@
         }
       },
       "foreignKeys": {
-        "item_tag_id_tag_id_fk": {
-          "name": "item_tag_id_tag_id_fk",
-          "tableFrom": "item_tag",
-          "tableTo": "tag",
+        "item_tags_id_tags_id_fk": {
+          "name": "item_tags_id_tags_id_fk",
+          "tableFrom": "item_tags",
+          "tableTo": "tags",
           "columnsFrom": [
             "id"
           ],
@@ -934,10 +1117,10 @@
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "item_tag_item_id_item_id_fk": {
-          "name": "item_tag_item_id_item_id_fk",
-          "tableFrom": "item_tag",
-          "tableTo": "item",
+        "item_tags_item_id_items_id_fk": {
+          "name": "item_tags_item_id_items_id_fk",
+          "tableFrom": "item_tags",
+          "tableTo": "items",
           "columnsFrom": [
             "item_id"
           ],
@@ -948,22 +1131,14 @@
           "onUpdate": "cascade"
         }
       },
-      "compositePrimaryKeys": {
-        "item_tag_item_id_id_pk": {
-          "name": "item_tag_item_id_id_pk",
-          "columns": [
-            "item_id",
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.script": {
-      "name": "script",
+    "public.scripts": {
+      "name": "scripts",
       "schema": "",
       "columns": {
         "id": {
@@ -1006,14 +1181,14 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
@@ -1059,8 +1234,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.tag": {
-      "name": "tag",
+    "public.tags": {
+      "name": "tags",
       "schema": "",
       "columns": {
         "id": {
@@ -1094,14 +1269,14 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
@@ -1147,8 +1322,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.user": {
-      "name": "user",
+    "public.users": {
+      "name": "users",
       "schema": "",
       "columns": {
         "uid": {
@@ -1205,14 +1380,14 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
@@ -1222,15 +1397,15 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "user_email_unique": {
-          "name": "user_email_unique",
+        "users_email_unique": {
+          "name": "users_email_unique",
           "nullsNotDistinct": false,
           "columns": [
             "email"
           ]
         },
-        "user_provider_id_unique": {
-          "name": "user_provider_id_unique",
+        "users_provider_id_unique": {
+          "name": "users_provider_id_unique",
           "nullsNotDistinct": false,
           "columns": [
             "provider_id"
@@ -1260,10 +1435,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "user_credentials_uid_user_uid_fk": {
-          "name": "user_credentials_uid_user_uid_fk",
+        "user_credentials_uid_users_uid_fk": {
+          "name": "user_credentials_uid_users_uid_fk",
           "tableFrom": "user_credentials",
-          "tableTo": "user",
+          "tableTo": "users",
           "columnsFrom": [
             "uid"
           ],
@@ -1286,18 +1461,16 @@
       "name": "coupon_application",
       "schema": "public",
       "values": [
-        "invoice",
-        "item"
+        "invoice_amount",
+        "each_specified_item"
       ]
     },
-    "public.coupon_constraint": {
-      "name": "coupon_constraint",
+    "public.coupon_discount": {
+      "name": "coupon_discount",
       "schema": "public",
       "values": [
-        "none",
-        "all",
-        "specific",
-        "criteria"
+        "percentage",
+        "fixed_amount"
       ]
     },
     "public.coupon_duration": {
@@ -1309,12 +1482,12 @@
         "limited_period"
       ]
     },
-    "public.coupon_type": {
-      "name": "coupon_type",
+    "public.item_price_model": {
+      "name": "item_price_model",
       "schema": "public",
       "values": [
-        "fixed",
-        "percentage"
+        "flat_fee",
+        "per_unit"
       ]
     },
     "public.item_type": {
@@ -1322,27 +1495,8 @@
       "schema": "public",
       "values": [
         "plan",
-        "coupon",
         "charge",
         "addon"
-      ]
-    },
-    "public.period_unit": {
-      "name": "period_unit",
-      "schema": "public",
-      "values": [
-        "day",
-        "week",
-        "month",
-        "year"
-      ]
-    },
-    "public.pricing_model": {
-      "name": "pricing_model",
-      "schema": "public",
-      "values": [
-        "flat_fee",
-        "per_unit"
       ]
     },
     "public.script_type": {
@@ -1353,6 +1507,16 @@
         "indicator",
         "screener",
         "strategy"
+      ]
+    },
+    "public.period_unit": {
+      "name": "period_unit",
+      "schema": "public",
+      "values": [
+        "day",
+        "week",
+        "month",
+        "year"
       ]
     },
     "public.status": {

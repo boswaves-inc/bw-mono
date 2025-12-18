@@ -1,10 +1,11 @@
 import HeroScreenshot from "~/sections/hero/screenshot";
 import TestemonialsGrid from "~/sections/testemonials/grid";
-import Heading from "~/components/core/heading";
 import ContentPanel from "~/sections/content/panel";
-import { Link, type LoaderFunctionArgs, type MetaArgs } from "react-router";
+import { Link, type MetaArgs } from "react-router";
 import type { Route } from "../+types/root";
-import { ButtonV2 } from "~/components/core/v2/button";
+
+import { Button } from "~/components/core/v2/button";
+import { Heading, Paragraph } from "~/components/core/v2/typography";
 
 export function meta({ }: MetaArgs) {
   return [
@@ -32,7 +33,7 @@ export default function renderer() {
     <div className="">
       <HeroScreenshot />
 
-      <div className="overflow-hidden bg-gray-900 py-24 sm:py-32">
+      <div className="overflow-hidden py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
             <div className="lg:pt-4 lg:pr-8">
@@ -40,12 +41,12 @@ export default function renderer() {
                 <Heading size="h4">
                   Industry Leading
                 </Heading>
-                <Heading size="h1" className="mt-2">
+                <Heading className="mt-2">
                   Supercharge your trades
                 </Heading>
-                <p className="mt-6 text-lg/8 text-gray-300">
+                <Paragraph variant="muted" className="mt-6">
                   We engineer advanced, data-driven algorithms and modular trading tools that adapt to your strategy - empowering you to trade smarter, faster, and with absolute precision.
-                </p>
+                </Paragraph>
                 {/* <dl className="mt-10 max-w-xl space-y-8 text-base/7 text-gray-400 lg:max-w-none">
                   {features.map((feature) => (
                     <div key={feature.name} className="relative pl-9">
@@ -58,16 +59,16 @@ export default function renderer() {
                     ))}
                     </dl> */}
                 <div className="mt-10 flex items-center  gap-x-6">
-                  <ButtonV2 size="lg" asChild>
+                  <Button size="lg" asChild>
                     <Link to={'#'}>
                       Get Started
                     </Link>
-                  </ButtonV2>
-                  <ButtonV2 size="lg" variant="link" className="text-foreground" asChild>
+                  </Button>
+                  <Button size="lg" variant="link" className="text-foreground" asChild>
                     <Link to={'#'}>
                       Learn more
                     </Link>
-                  </ButtonV2>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -82,7 +83,7 @@ export default function renderer() {
         </div>
       </div>
 
-      <div className="overflow-hidden bg-gray-900 py-24 sm:py-32">
+      <div className="overflow-hidden py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
             <div className=" lg:order-first justify-end items-start flex">
@@ -103,11 +104,11 @@ export default function renderer() {
                 <Heading size="h1" className="mt-2">
                   Pricing that grows with you
                 </Heading>
-                <p className="mt-6 text-lg/8 text-gray-300">
+                <Paragraph variant="muted" className="mt-6">
                   You choose the indicators, modules, and insights you need, and only pay for what delivers real value. No clutter. No overpricing. Just precision-built trading - tailored to you
-                </p>
+                </Paragraph>
                 <div className="mt-10 flex items-center  gap-x-6">
-                  <ButtonV2 >Get Started</ButtonV2>
+                  <Button >Get Started</Button>
                   <a href="#" className="text-sm/6 font-semibold text-gray-900 dark:text-white">Learn more <span aria-hidden="true">→</span></a>
                 </div>
               </div>

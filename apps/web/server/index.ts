@@ -87,14 +87,14 @@ app_router.use(createRequestHandler({
         const result = await pg_client.select({
           id: Cart.id,
           uid: Cart.uid,
-          items: json_agg_object({
+          cart_item: json_agg_object({
             quantity: CartItem.quantity,
             item_price: CartItem.item_price,
           }, isNotNull(CartItem.id)).as('items')
         }).from(Cart)
-          .innerJoin(CartItem, eq(Cart.id, CartItem.id))
-          .groupBy(Cart.id)
-          .where(eq(Cart.id, cookie))
+        .groupBy(Cart.id)
+        .innerJoin(CartItem, eq(Cart.id, CartItem.id))
+        .where(eq(Cart.id, cookie))
           .limit(1).then(x => x.at(0))
 
         if (result == undefined) {
@@ -105,13 +105,12 @@ app_router.use(createRequestHandler({
         else {
           return resolve(result)
         }
-
       }
 
       return resolve({
-        id: '0000-0000-0000-0000',
+        id: '00000000-0000-0000-0000-000000000000',
         uid: null,
-        items: []
+        cart_item: [],
       })
     })
 
@@ -130,8 +129,6 @@ app_router.use(createRequestHandler({
 
       return resolve({ country: 'US', currency: 'USD' })
     });
-
-    console.log(cart)
 
     return {
       geo,

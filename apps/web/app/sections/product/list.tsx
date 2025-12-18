@@ -1,10 +1,9 @@
 import { type ComponentProps } from "react";
 import { Link } from "react-router";
 import { twMerge } from "tailwind-merge";
-import Heading from "~/components/core/heading";
-import Paragraph from "~/components/core/paragraph";
-import { ButtonV2 } from "~/components/core/v2/button";
-import Section from "~/components/section";
+import { Button } from "~/components/core/v2/button";
+import { Heading, Paragraph } from "~/components/core/v2/typography";
+import Section from "~/components/page";
 
 
 const products = [
@@ -90,7 +89,7 @@ export default ({ heading, ...props }: ProductListProps) => (
                                 </Paragraph>
                             </div>
 
-                            <Paragraph size="lg" className="font-medium dark:text-white text-gray-900">
+                            <Paragraph size="lg">
                                 {product.price}
                             </Paragraph>
                         </div>
@@ -100,9 +99,9 @@ export default ({ heading, ...props }: ProductListProps) => (
                     </Link>
                     <div className="block p-4 w-fit">
                         <Link to={`/library/${product.id}`} className="w-fit">
-                            <ButtonV2 className="">
+                            <Button className="">
                                 Get Access
-                            </ButtonV2>
+                            </Button>
                         </Link>
                     </div>
                 </div>
