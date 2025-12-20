@@ -11,6 +11,7 @@ import { Button } from "~/components/core/v2/button";
 import { coalesce, json_agg_object } from "@bw/core/utils/drizzle.ts";
 import { CartCoupon } from "@bw/core/schema/cart.ts";
 import { Heading, Paragraph } from "~/components/core/v2/typography";
+import Section from "~/components/section";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -151,37 +152,39 @@ export default function renderer({ loaderData: { cart } }: Route.ComponentProps)
 
     return (
         <Page>
-            <Heading className=" text-left" >
-                Shopping Cart
-            </Heading>
-            <Form className="xl:gap-x-16 lg:gap-x-12 lg:items-start lg:grid-cols-12 lg:grid mt-12">
-                <section aria-labelledby="cart-heading" className=" lg:col-span-7">
-                    <h2 className="sr-only">Items in your shopping cart</h2>
-                    <ul role="list" className="list-none border-y">
-                        <li className=" sm:py-10 py-6 not-last:border-b flex">
-                            <div className="shrink-0">
-                                <img src="https://tailwindcss.com/plus-assets/img/ecommerce-images/shopping-cart-page-01-product-01.jpg" className="sm:size-48 size-24 max-w-full object-cover rounded-sm" />
-                            </div>
-                            <div className=" flex-col flex flex-1 ml-4 sm:ml-6 justify-between">
-                                <div className="sm:gap-x-6 sm:grid-cols-2 grid pr-9 sm:pr-0 relative">
-                                    <div >
-                                        <Paragraph variant="label">Quick Valuation Osscilator</Paragraph>
-                                        <Paragraph className="flex mt-1" variant="muted">
-                                            <span>
-                                                Indicator
-                                            </span>
-                                            <span className=" ml-4 border-l pl-4">
-                                                Volume
-                                            </span>
-                                        </Paragraph>
-                                        <Paragraph className="mt-1" variant="label">$30.00</Paragraph>
+            <Section>
+                <Heading className=" text-left" >
+                    Shopping Cart
+                </Heading>
+                <Form className="xl:gap-x-16 lg:gap-x-12 lg:items-start lg:grid-cols-12 lg:grid mt-12">
+                    <div aria-labelledby="cart-heading" className=" lg:col-span-7">
+                        <h2 className="sr-only">Items in your shopping cart</h2>
+                        <ul role="list" className="list-none border-y">
+                            <li className=" sm:py-10 py-6 not-last:border-b flex">
+                                <div className="shrink-0">
+                                    <img src="https://tailwindcss.com/plus-assets/img/ecommerce-images/shopping-cart-page-01-product-01.jpg" className="sm:size-48 size-24 max-w-full object-cover rounded-sm" />
+                                </div>
+                                <div className=" flex-col flex flex-1 ml-4 sm:ml-6 justify-between">
+                                    <div className="sm:gap-x-6 sm:grid-cols-2 grid pr-9 sm:pr-0 relative">
+                                        <div >
+                                            <Paragraph variant="label">Quick Valuation Osscilator</Paragraph>
+                                            <Paragraph className="flex mt-1" variant="muted">
+                                                <span>
+                                                    Indicator
+                                                </span>
+                                                <span className=" ml-4 border-l pl-4">
+                                                    Volume
+                                                </span>
+                                            </Paragraph>
+                                            <Paragraph className="mt-1" variant="label">$30.00</Paragraph>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
-                    </ul>
-                </section>
-            </Form>
+                            </li>
+                        </ul>
+                    </div>
+                </Form>
+            </Section>
         </Page>
     );
 }

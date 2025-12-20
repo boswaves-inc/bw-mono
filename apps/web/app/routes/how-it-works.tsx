@@ -3,6 +3,7 @@ import NewsletterPanel from "~/sections/newsletter/card";
 import ContentTiles from "~/sections/content/tiles";
 import FaqAccordion from "~/sections/faq/accordion";
 import type { Route } from "./+types/how-it-works";
+import Page from "~/components/page";
 
 
 export function meta({ }: Route.MetaArgs) {
@@ -14,12 +15,12 @@ export function meta({ }: Route.MetaArgs) {
 
 export default function renderer() {
     return (
-        <div>
+        <Page>
             <HeroCentered />
             {/* <FeatureScreenshot/> */}
             <ContentTiles />
             <NewsletterPanel />
             <FaqAccordion />
-        </div>
+        </Page>
     );
 }

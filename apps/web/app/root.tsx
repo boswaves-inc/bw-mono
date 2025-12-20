@@ -38,6 +38,10 @@ export const links: LinksFunction = () => [
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
   {
+    rel: "stylesheet",
+    href: "https://api.fontshare.com/css?f%5B%5D=switzer@400,500,600,700&amp;display=swap",
+  },
+  {
     rel: "preload",
     href: "https://js.chargebee.com/v2/chargebee.js",
     as: "script",
@@ -50,14 +54,14 @@ export async function loader({ request, context: { theme, cart, geo } }: Route.L
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={twMerge('dark', '')} style={{ "--scroll-y": 0 } as CSSProperties}>
+    <html lang="en" className={twMerge('', '')} style={{ "--scroll-y": 0 } as CSSProperties}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
       </head>
-      <body className="antialiased relative text-foreground bg-background">
+      <body className="antialiased relative text-foreground">
         {children}
         <ScrollProvider />
         <Scripts />
@@ -98,9 +102,9 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 export default function App({ loaderData: { cart } }: Route.ComponentProps) {
   return (
     <CartProvider cart={cart}>
-      <Header />
+      {/* <Header /> */}
       <Outlet />
-      <Footer />
+      {/* <Footer /> */}
     </CartProvider>
   );
 }
