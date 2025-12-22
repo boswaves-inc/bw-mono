@@ -16,12 +16,6 @@ import type { Route } from "./+types/root";
 import Footer from "./components/footer";
 import Header from "./components/header";
 import { CartProvider } from "./context/cart";
-import { ScrollProvider } from "./context/scroll";
-import type { CSSProperties } from "react";
-import { getSession } from "./utils/session";
-import { cartSession } from "./cookie";
-// import { CartData } from "@bw/core/schema/cart.ts";
-import { count, countDistinct, eq, sql } from "drizzle-orm";
 import countryToCurrency, { type Currencies, type Countries } from "country-to-currency";
 import { ISO3166 } from "./components/iso";
 import Page from "./components/page";
@@ -54,7 +48,7 @@ export async function loader({ request, context: { theme, cart, geo } }: Route.L
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={twMerge('', '')} style={{ "--scroll-y": 0 } as CSSProperties}>
+    <html lang="en" className={twMerge('', '')}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -63,7 +57,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body className="antialiased relative text-foreground">
         {children}
-        <ScrollProvider />
+        <ScrollRestoration />
         <Scripts />
         <script src="https://js.chargebee.com/v2/chargebee.js" defer />
       </body>

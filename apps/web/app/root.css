@@ -3,6 +3,9 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+.markdown>* {
+    all: revert;
+}
 
 @theme inline {
   --color-background: var(--background);
