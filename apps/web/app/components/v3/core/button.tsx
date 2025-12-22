@@ -4,7 +4,7 @@ import { tv, type VariantProps } from "tailwind-variants";
 import { cn } from "~/utils/class";
 
 const variants = tv({
-    base: "inline-flex items-center justify-center [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4  whitespace-nowrap border border-transparent",
+    base: "inline-flex justify-center gap-2 whitespace-nowrap  items-center justify-center [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4  whitespace-nowrap border border-transparent",
     variants: {
         variant: {
             primary: cn(

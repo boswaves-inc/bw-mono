@@ -104,7 +104,7 @@ export function Footer() {
                             <div>
                                 <WireframeItem className="py-3">
                                     <div className="text-sm/6 text-gray-950">
-                                        &copy; {new Date().getFullYear()} Radiant Inc.
+                                        &copy; {new Date().getFullYear()} BosWaves Inc.
                                     </div>
                                 </WireframeItem>
                             </div>

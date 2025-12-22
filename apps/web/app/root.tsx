@@ -19,6 +19,9 @@ import { CartProvider } from "./context/cart";
 import countryToCurrency, { type Currencies, type Countries } from "country-to-currency";
 import { ISO3166 } from "./components/iso";
 import Page from "./components/page";
+import { Container } from "./components/v3/container";
+import { GradientBackground } from "./components/v3/gradient";
+import { Navigation } from "./components/v3/navbar";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -79,8 +82,12 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <Page>
-      <main className="container mx-auto overflow-hidden antialiased relative  ">
+    <main className="overflow-hidden min-h-svh">
+      <GradientBackground />
+      <Container >
+        <Navigation />
+      </Container>
+      <Container className="mt-16">
         <h1>{message}</h1>
         <p>{details}</p>
         {stack && (
@@ -88,8 +95,8 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
             <code className="whitespace-break-spaces">{stack}</code>
           </pre>
         )}
-      </main>
-    </Page>
+      </Container>
+    </main>
   );
 }
 

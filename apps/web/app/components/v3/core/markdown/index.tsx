@@ -5,13 +5,13 @@ import rehypeHighlight from "rehype-highlight"
 import remarkGfm from "remark-gfm"
 import { cn } from "~/utils/class"
 
-interface MarkdownProps {
+interface MarkdownProps extends Omit<ComponentProps<'div'>, 'children'> {
     content: string
 }
 
-export const Markdown = ({ content }: MarkdownProps) => {
+export const Markdown = ({ className, content }: MarkdownProps) => {
     return (
-        <div className="markdown">
+        <div className={cn("markdown", className)}>
             <Primitive
                 remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeHighlight]}

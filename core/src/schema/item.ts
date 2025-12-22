@@ -22,6 +22,7 @@ export const Item = pgTable("items", (t) => ({
     slug: t.text("slug").notNull().generatedAlwaysAs(
         sql`lower(regexp_replace(name, '[^a-zA-Z0-9]+', '-', 'g'))`
     ),
+    excerpt: t.text().notNull(),
     description: t.text().notNull(),
     status: Status("status").notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),

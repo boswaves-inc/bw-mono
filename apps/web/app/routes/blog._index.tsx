@@ -102,12 +102,9 @@ export default ({ loaderData: { feed, featured } }: Route.ComponentProps) => {
                     <h2 className="text-2xl font-medium tracking-tight">Featured</h2>
                     <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-3">
                         {featured.map(({ slug, title, excerpt, image, author, published_at }) => (
-                            <div
-                                key={slug}
-                                className="relative flex flex-col rounded-3xl bg-white p-2 shadow-md ring-1 shadow-black/5 ring-black/5"
-                            >
+                            <div key={slug} className="relative flex flex-col rounded-3xl bg-white p-2 shadow-md ring-1 shadow-black/5 ring-black/5">
                                 {image && (
-                                    <img
+                                    <img 
                                         src={image}
                                         className="aspect-3/2 w-full rounded-2xl object-cover"
                                     />
