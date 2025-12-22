@@ -56,3 +56,8 @@ export const Lead = ({ children, className, ...props }: ComponentProps<'p'>) => 
     className: cn('text-2xl font-medium text-gray-500', className),
     ...props
 }, children)
+
+export const Paragraph = ({ children, className, ...props }: ComponentProps<'p'>) => createElement('p', {
+    className: cn('text-sm/6 text-gray-600 dark:text-gray-400', className),
+    ...props
+}, children)

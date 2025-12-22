@@ -9,7 +9,7 @@ const links = [
     { href: '/pricing', label: 'Pricing' },
     { href: '/company', label: 'Company' },
     { href: '/blog', label: 'Blog' },
-    { href: '/login', label: 'Login' },
+    { href: '/auth/login', label: 'Login' },
 ]
 
 
@@ -39,7 +39,7 @@ export function Navigation({ children }: { children?: React.ReactNode }) {
                         <nav className="relative hidden lg:flex">
                             {links.map(({ href, label }) => (
                                 <WireframeItem key={href} className="relative flex">
-                                    <Link to={href} className="flex items-center px-4 py-3 text-base font-medium text-gray-950 bg-blend-multiply data-hover:bg-black/2.5" >
+                                    <Link to={href} className="flex items-center px-4 py-3 text-base font-medium text-gray-950 bg-blend-multiply hover:bg-black/2.5" >
                                         {label}
                                     </Link>
                                 </WireframeItem>
@@ -48,7 +48,7 @@ export function Navigation({ children }: { children?: React.ReactNode }) {
 
                         {/* Mobile Button */}
                         <CollapsibleTrigger asChild>
-                            <button className="flex size-12 items-center justify-center self-center rounded-lg data-hover:bg-black/5 lg:hidden">
+                            <button className="flex size-12 items-center justify-center self-center rounded-lg hover:bg-black/5 lg:hidden">
                                 <Menu className="size-6" />
                             </button>
                         </CollapsibleTrigger>
