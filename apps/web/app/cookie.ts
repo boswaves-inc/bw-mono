@@ -1,9 +1,9 @@
-import { createCookieSessionStorage, createSessionStorage } from "react-router";
+import { createCookieSessionStorage } from "react-router";
 
-export const cartSession = createCookieSessionStorage<{ id: string }>({
+export const cookieSession = createCookieSessionStorage<{ token: string, cart: string }>({
     cookie: {
         secrets: ['session'],
         sameSite: 'lax',
-        name: 'cart',
+        name: 'bw_session',
     }
 })

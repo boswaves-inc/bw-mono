@@ -11,7 +11,6 @@ import _ from 'lodash'
 import type { Route } from "./+types/library._index";
 import { useCart } from "~/context/cart";
 import { and, eq, getTableColumns, isNotNull, sql } from "drizzle-orm";
-import { array_agg, coalesce, json_agg_object } from "@bw/core/utils/drizzle.ts";
 import { formatCurrency } from "@coingecko/cryptoformat";
 import { Button } from "~/components/core/v2/button";
 import { Heading } from "~/components/core/v2/typography";

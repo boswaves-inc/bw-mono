@@ -26,7 +26,7 @@ export const Item = pgTable("items", (t) => ({
     description: t.text().notNull(),
     status: Status("status").notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
-    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull()
+    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date())
 }), table => [
     uniqueIndex("item_info_slug_unq").on(table.slug).where(sql`status != 'deleted'`),
     uniqueIndex("item_info_name_unq").on(table.name).where(sql`status != 'deleted'`),
@@ -47,7 +47,7 @@ export const ItemPrice = pgTable('item_prices', (t) => ({
     pricing_model: ItemPriceModel("pricing_model").notNull(), // Price in smallest unit
     status: Status('status').notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
-    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
+    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
 }), (table) => [
     uniqueIndex("item_price_name_unq").on(table.name).where(sql`status != 'deleted'`),
     uniqueIndex('item_price_item_currency_idx').on(table.item_id, table.currency_code, table.period, table.period_unit).where(sql`status != 'deleted'`),
@@ -67,7 +67,7 @@ export const ItemScript = pgTable("item_scripts", (t) => ({
     uuid: citext().notNull(),
     status: Status('status').notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
-    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
+    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
 }), table => [
     index('item_script_uuid_idx').on(table.uuid),
     index('item_script_item_id_idx').on(table.item_id),
@@ -88,7 +88,7 @@ export const ItemTag = pgTable("item_tags", (t) => ({
     slug: citext().notNull(),
     status: Status('status').notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
-    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull()
+    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date())
 }), table => [
     index('item_tag_id_idx').on(table.id),
     index('item_tag_slug_idx').on(table.slug),

@@ -4,6 +4,8 @@ import type { Postgres } from "@bw/core/postgres";
 import { CityResponse } from "maxmind";
 import type { Countries, Currencies } from "country-to-currency";
 import type { CartItem } from "@bw/core";
+import type { Smtp } from "@bw/core/smtp";
+import type { Jwt } from "@bw/core/jwt";
 
 declare module "react-router" {
   interface AppLoadContext {
@@ -20,6 +22,8 @@ declare module "react-router" {
       }[];
     }
     theme: 'dark' | 'light'
+    jwt: Jwt,
+    smtp: Smtp,
     postgres: Postgres
     chargebee: InstanceType<typeof Chargebee>
   }

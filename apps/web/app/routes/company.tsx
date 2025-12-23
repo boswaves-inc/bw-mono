@@ -444,7 +444,6 @@ export default ({ loaderData: { listings } }: Route.ComponentProps) => (
     </main>
 )
 
-
 function Person({
     name,
     description,

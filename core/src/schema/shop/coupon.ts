@@ -43,7 +43,7 @@ export const Coupon = pgTable("coupons", (t) => ({
     status: Status('status').notNull(),
 
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
-    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull()
+    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date())
 }), table => [
     uniqueIndex("coupons_name_unq").on(table.name).where(sql`status != 'deleted'`),
     check("coupons_discount_check",
@@ -56,12 +56,12 @@ export const Coupon = pgTable("coupons", (t) => ({
 
 export const CouponSet = pgTable("coupon_sets", (t) => ({
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
-    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull()
+    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date())
 }))
 
 export const CouponCode = pgTable("coupon_codes", (t) => ({
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
-    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull()
+    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date())
 }))
 
 /** https://apidocs.chargebee.com/docs/api/coupons */

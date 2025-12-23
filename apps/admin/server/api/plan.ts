@@ -8,7 +8,7 @@ import { Item, ItemPrice, PeriodUnit, ItemPriceModel, ItemScript, Status, ItemTa
 import { createInsertSchema } from "drizzle-zod";
 import z, { array } from 'zod/v4';
 import { zfd } from 'zod-form-data';
-import { coalesce, json_agg_object } from '@bw/core/utils/drizzle.ts';
+import { coalesce, json_agg_object } from '@bw/core/utils/drizzle';
 
 export default ({ family, postgres, chargebee }: { family: string, postgres: Postgres, chargebee: Chargebee }) => {
     const router = express()

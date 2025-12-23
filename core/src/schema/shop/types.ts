@@ -22,5 +22,11 @@ export const PeriodUnit = pgEnum('period_unit', [
     'year'
 ])
 
+export const OtpType = pgEnum('otp_type', [
+    'verify_account',
+    'reset_password'
+])
+
 export type Status = InferEnum<typeof Status>
+export type OtpType = InferEnum<typeof OtpType>
 export type PeriodUnit = InferEnum<typeof PeriodUnit>

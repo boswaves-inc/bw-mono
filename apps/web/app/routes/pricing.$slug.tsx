@@ -1,60 +1,13 @@
 import { data, Link } from "react-router";
 import { Container } from "~/components/v3/container";
-import { Heading, Lead, Paragraph, Subheading } from "~/components/v3/core/typography";
-import { Footer } from "~/components/v3/footer";
-import { Gradient, GradientBackground } from "~/components/v3/gradient";
-import { Navigation } from "~/components/v3/navbar";
-import { LogoCloud } from "~/components/v3/sections/logo-cloud";
+import { Heading, Subheading } from "~/components/v3/core/typography";
 import type { Route } from "./+types/pricing.$slug";
 import dayjs from "dayjs";
-import { and, eq, getTableColumns } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { Item, ItemPrice, ItemScript, PeriodUnit, Script } from "@bw/core";
 import { Button } from "~/components/v3/core/button";
-import { Plus, PlusIcon, Star } from "lucide-react";
-import { Screenshot } from "~/components/v3/screenshot";
+import { Plus, PlusIcon } from "lucide-react";
 import { Markdown } from "~/components/v3/core/markdown";
-
-const content = `# HydroTrack Pro Smart Water Bottle
-
-## Stay Hydrated, Stay Healthy
-
-The HydroTrack Pro is more than just a water bottle—it's your personal hydration coach. Designed for busy professionals, fitness enthusiasts, and anyone who wants to optimize their health, this intelligent bottle tracks your water intake and reminds you to stay properly hydrated throughout the day.
-
-## Key Features
-
-**Smart Hydration Tracking**  
-Built-in sensors automatically monitor how much water you drink and sync with your smartphone app to provide real-time insights into your hydration habits.
-
-**Personalized Reminders**  
-LED light indicators and gentle vibrations remind you when it's time to take a sip, customized to your activity level, weather conditions, and personal goals.
-
-**Premium Insulation**  
-Double-wall vacuum insulation keeps cold drinks chilled for 24 hours and hot beverages warm for 12 hours, perfect for any season.
-
-**Sustainable Design**  
-Made from medical-grade stainless steel with a BPA-free lid. Rechargeable battery lasts up to 30 days on a single charge via USB-C.
-
-## Technical Specifications
-
-- Capacity: 24 oz (710ml)
-- Material: 18/8 Stainless Steel
-- Dimensions: 10.5" H x 3" diameter
-- Weight: 14 oz
-- Battery Life: Up to 30 days
-- App Compatibility: iOS 13+ and Android 9+
-- Available Colors: Midnight Black, Ocean Blue, Rose Gold, Arctic White
-
-## What's Included
-
-- HydroTrack Pro Smart Water Bottle
-- USB-C Charging Cable
-- Quick Start Guide
-- Free 1-Year Premium App Subscription
-
-## Perfect For
-
-Whether you're crushing your fitness goals, powering through long workdays, or simply trying to build healthier habits, the HydroTrack Pro makes staying hydrated effortless and automatic.`
-
 
 export const links: Route.LinksFunction = () => [
     { rel: "preconnect", href: "https://s.tradingview.com/embed/ItnS5Inz" },
@@ -133,7 +86,7 @@ export default ({ loaderData: { name, description, created_at } }: Route.Compone
         <Container className="mt-16 pb-24 ">
             <div className="grid grid-cols-1 gap-16 lg:grid-cols-3">
                 <div className=" lg:col-span-2  max-w-2xl text-gray-700 ">
-                    <Markdown content={content} className="*:first:mt-0!" />
+                    <Markdown content={description} className="*:first:mt-0!" />
                 </div>
                 <div className="-m-2 grid grid-cols-1 rounded-4xl shadow-[inset_0_0_2px_1px_#ffffff4d] ring-1 h-fit ring-black/5 ">
                     <div className="grid grid-cols-1 rounded-4xl p-2 shadow-md shadow-black/5">

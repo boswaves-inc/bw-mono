@@ -1,11 +1,5 @@
-# bw-website
+# Generate private key
+openssl genrsa -out private.pem 2048
 
-## Postgres Setup
-
-1. Install extensions
-   - citext
-   - pg_slugify
-
-## Setup
-
-1. You need to enable Monthly Recurring Revenue(MRR) setting.
+# Extract public key
+openssl rsa -in private.pem -pubout -out public.pem

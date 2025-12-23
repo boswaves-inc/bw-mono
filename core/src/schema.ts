@@ -1,10 +1,10 @@
-import { Tag } from './schema/tag'
-import { Script, ScriptType } from './schema/script'
-import { Cart, CartItem } from './schema/cart'
-import { CouponDuration, CouponDiscount, CouponApplication, Coupon } from './schema/coupon'
-import { Item, ItemScript, ItemType, ItemPrice, ItemTag, ItemPriceModel } from './schema/item'
-import { User, UserCredentials, UserProvider } from './schema/user'
-import {  Status, PeriodUnit } from './schema/types'
+import { Tag } from './schema/shop/tag'
+import { Script, ScriptType } from './schema/shop/script'
+import { Cart, CartItem } from './schema/shop/cart'
+import { CouponDuration, CouponDiscount, CouponApplication, Coupon } from './schema/shop/coupon'
+import { Item, ItemScript, ItemType, ItemPrice, ItemTag, ItemPriceModel } from './schema/shop/item'
+import { User, UserCredentials, UserProvider } from '@bw/core/schema/auth/user'
+import {  Status, PeriodUnit } from './schema/shop/types'
 import type { TvComment, TvIdeaMisc, TvImage, TvScript, TvScriptUpdate, TvSymbol, TvTag, TvUser } from './tradingview/types'
 
 export default {

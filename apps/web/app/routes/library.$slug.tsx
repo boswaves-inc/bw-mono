@@ -10,7 +10,6 @@ import { and, eq, getTableColumns, isNotNull } from "drizzle-orm";
 import { useCart } from "~/context/cart";
 import { includes } from "lodash";
 import { Fragment } from "react/jsx-runtime";
-import { array_agg, json_agg_object } from "@bw/core/utils/drizzle.ts";
 import { formatCurrency } from "@coingecko/cryptoformat";
 import { Button } from "~/components/core/v2/button";
 import { Heading } from "~/components/core/v2/typography";

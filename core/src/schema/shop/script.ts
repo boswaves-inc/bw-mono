@@ -19,7 +19,7 @@ export const Script = pgTable("scripts", (t) => ({
     image: t.text("image").notNull(),
     status: Status("status").notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
-    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
+    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
 }), table => [
     index("script_status_idx").on(table.status),
     uniqueIndex("script_uuid_unq").on(table.uuid).where(sql`status != 'deleted'`),

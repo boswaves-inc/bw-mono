@@ -10,7 +10,7 @@ export const Tag = pgTable("tags", (t) => ({
     ),
     status: Status("status").notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
-    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull()
+    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date())
 }), table => [
     index("tag_info_status_idx").on(table.status),
     uniqueIndex("tag_info_slug_unq").on(table.slug).where(sql`status != 'deleted'`),

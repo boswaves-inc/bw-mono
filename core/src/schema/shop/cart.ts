@@ -1,4 +1,4 @@
-import { User } from "./user";
+import { User } from "../auth/user";
 import { ItemPrice } from "./item";
 import { index, pgTable, uniqueIndex } from "drizzle-orm/pg-core";
 import { type InferSelectModel, } from "drizzle-orm";
@@ -10,7 +10,7 @@ export const Cart = pgTable("carts", t => ({
         onUpdate: 'cascade'
     }),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
-    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
+    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
 }), t => [
     index('cart_uid_idx').on(t.uid)
 ]);
@@ -26,7 +26,7 @@ export const CartItem = pgTable("cart_items", t => ({
         onUpdate: 'cascade'
     }).notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
-    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
+    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
 }), t => [
     index('cart_item_id_idx').on(t.id),
     index('cart_item_item_price_idx').on(t.item_price),
@@ -43,7 +43,7 @@ export const CartCoupon = pgTable("cart_coupons", t => ({
         onUpdate: 'cascade'
     }).notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
-    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
+    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
 }), t => [
     index('cart_coupon_id_idx').on(t.id),
     index('cart_coupon_item_price_idx').on(t.coupon),

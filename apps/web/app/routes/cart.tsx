@@ -2,14 +2,14 @@ import { data, Outlet } from "react-router";
 import type { Route } from "./+types/cart";
 import { Cart, CartItem, ItemPrice } from "@bw/core";
 import { and, eq, getTableColumns, isNotNull, notExists, sql, } from "drizzle-orm";
-import { coalesce, json_agg_object } from "@bw/core/utils/drizzle.ts";
-import { CartCoupon } from "@bw/core/schema/cart.ts";
+import { coalesce, json_agg_object } from "@bw/core/utils/drizzle";
+import { CartCoupon } from "@bw/core/schema/shop/cart";
 
 import { Container } from "~/components/v3/container";
 import { GradientBackground } from "~/components/v3/gradient";
 import { Navigation } from "~/components/v3/navbar";
 import { getSession } from "~/utils/session";
-import { cartSession } from "~/cookie";
+import {  cookieSession } from "~/cookie";
 import { formData } from "zod-form-data";
 import { createInsertSchema } from "drizzle-zod";
 
@@ -52,7 +52,7 @@ export async function loader({ context }: Route.LoaderArgs) {
 }
 
 export async function action({ request, context }: Route.ActionArgs) {
-    const session = await getSession(request, cartSession)
+    const session = await getSession(request, cookieSession)
     const schema = formData(createInsertSchema(CartItem).pick({
         item_price: true
     }))
@@ -65,14 +65,14 @@ export async function action({ request, context }: Route.ActionArgs) {
             await context.postgres.transaction(async tx => {
                 const [cart, item] = await Promise.all([
                     new Promise<string>(async resolve => {
-                        const current = session.get('id');
+                        const current = session.get('cart');
 
                         if (current != undefined) {
                             if (await tx.$count(Cart, eq(Cart.id, current)) > 0) {
                                 return resolve(current)
                             }
 
-                            session.unset('id')
+                            session.unset('cart')
                         }
 
                         // Create a new cart here
@@ -81,7 +81,7 @@ export async function action({ request, context }: Route.ActionArgs) {
                         }).returning().then(x => x[0])
 
                         // Set the cart to the session cookie for tracking
-                        session.set('id', cart.id)
+                        session.set('cart', cart.id)
 
                         return resolve(cart.id)
                     }),
@@ -109,12 +109,12 @@ export async function action({ request, context }: Route.ActionArgs) {
 
             return data({ success: true }, {
                 headers: [
-                    ["Set-Cookie", await cartSession.commitSession(session)]
+                    ["Set-Cookie", await cookieSession.commitSession(session)]
                 ]
             })
         };
         case 'DELETE': {
-            const cart_id = session.get('id')
+            const cart_id = session.get('cart')
 
             if (cart_id == undefined) {
                 return data(null, 400)

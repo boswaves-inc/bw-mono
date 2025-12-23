@@ -13,8 +13,8 @@ import { AppleLogo, GoogleLogo, StripeLogo } from "~/components/icons/logo";
 import { Cart, CartItem } from "@bw/core";
 import { and, eq, getTableColumns, isNotNull, sql } from "drizzle-orm";
 import { Button } from "~/components/core/v2/button";
-import { coalesce, json_agg_object } from "@bw/core/utils/drizzle.ts";
-import { CartCoupon } from "@bw/core/schema/cart.ts";
+import { coalesce, json_agg_object } from "@bw/core/utils/drizzle";
+import { CartCoupon } from "@bw/core/schema/shop/cart";
 import _ from "lodash";
 import { Heading } from "~/components/core/v2/typography";
 

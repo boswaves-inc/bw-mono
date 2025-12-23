@@ -12,11 +12,13 @@ import {
     Column,
     View,
     Subquery,
-    type NotNull
+    type NotNull,
+    Placeholder
 } from "drizzle-orm";
 import {
     type PgTable,
     type TableConfig,
+    PgText,
     PgTimestampString
 } from "drizzle-orm/pg-core";
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
@@ -90,6 +92,14 @@ export type InferData<T extends SQLWrapper> = T extends Table
 //     );
 // }
 
+export function crypt(value: SQLWrapper | string, defaultValue: SQLWrapper | string): SQL<any> {
+    return sql`crypt(${value}, ${defaultValue})`;
+}
+
+export function gen_salt<T>(algo: 'bf' | 'xdes' | 'sha256crypt' | 'sha512crypt') {
+    return sql<T>`gen_salt(${algo})`;
+}
+
 export function coalesce<T>(value: SQL.Aliased<T> | SQL<T>, defaultValue: SQL) {
     return sql<T>`coalesce(${value}, ${defaultValue})`;
 }
@@ -111,7 +121,7 @@ export function json_agg_object<T extends Record<string, AnyColumn | SQL>>(obj: 
         value
     ]);
 
-    if(condition != undefined){
+    if (condition != undefined) {
         return filter(
             sql`json_agg(json_build_object(${sql.join(entries, sql`, `)}))`,
             condition
