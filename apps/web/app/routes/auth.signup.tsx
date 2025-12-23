@@ -5,13 +5,27 @@ import { Button } from "~/components/v3/core/button";
 import { useForm } from "react-hook-form";
 import { Form, FormField, FormItem, FormLabel } from "~/components/v3/core/form";
 import { CheckboxControl, InputControl } from "~/components/v3/core/form/control";
+import { formData, zfd } from "zod-form-data";
+import z from "zod/v4";
 
 export const meta = ({ }: Route.MetaArgs) => [
     { title: "Signup" },
     { name: "description", content: "Sign in to your account to conitnue." },
 ] satisfies MetaDescriptor[];
 
-export const action = async ({ context }: Route.ActionArgs) => {
+export const action = async ({ request, context }: Route.ActionArgs) => {
+    const form = await request.formData()
+    const result = await formData({
+        first_name: z.string("first name is required"),
+        last_name: z.string("last name is required"),
+        email: z.email("email is required"),
+        password: z.string("password is required"),
+        terms_of_aggreement: zfd.checkbox({ trueValue: 'true' }).refine(value => value, 'terms of agreement are required')
+    }).parseAsync(form)
+
+    console.log(result)
+
+    return data({})
 }
 
 export default () => {
@@ -20,7 +34,7 @@ export default () => {
     return (
         <div className="isolate flex min-h-dvh items-center justify-center p-6 lg:p-8">
             <div className="w-full max-w-md rounded-xl bg-white shadow-md ring-1 ring-black/5">
-                <Form control={form} className="p-7 sm:p-11 space-y-8">
+                <Form  control={form} method="post" action="./" className="p-7 sm:p-11 space-y-8">
                     <div>
                         <div className="flex items-start">
                             <Link to="/" title="Home">
@@ -78,11 +92,11 @@ export default () => {
                     />
                     <div className="flex items-center justify-between text-sm/5">
                         <FormField
-                            name="terms_of_use"
+                            name="terms_of_aggreement"
                             control={form.control}
                             render={({ field }) => (
                                 <FormItem className="flex items-center gap-3">
-                                    <CheckboxControl {...field} />
+                                    <CheckboxControl required {...field} />
                                     <FormLabel>I accept the terms of aggreement</FormLabel>
                                 </FormItem>
                             )}

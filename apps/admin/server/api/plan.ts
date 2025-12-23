@@ -21,7 +21,6 @@ export default ({ family, postgres, chargebee }: { family: string, postgres: Pos
         const end = Number(_end) ?? 10;
 
         try {
-
             const data = await postgres.select({
                 ...getTableColumns(Item),
                 item_tag: coalesce(

@@ -6,6 +6,7 @@ import type { FormContext, FormFieldContext, FormItemContext, FormProps } from '
 import { flattenObject } from '~/utils/object';
 import { cn } from '~/utils/class';
 import { Label } from '../label';
+import _ from 'lodash';
 
 const FORM_CONTEXT = createContext({} as FormContext)
 const FIELD_CONTEXT = createContext({} as FormFieldContext)
@@ -47,7 +48,7 @@ export const Form = <TFieldValues extends FieldValues = FieldValues, TContext = 
         onValid?.(data, e)
 
         try {
-            await fetcher.submit(flattenObject(data), {
+            await fetcher.submit(_.omitBy(flattenObject(data), _.isUndefined), {
                 method,
                 action,
                 encType

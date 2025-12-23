@@ -1,10 +1,12 @@
 import type { Route } from "./+types/auth.login";
-import { Link } from "react-router";
+import { data, Link } from "react-router";
 import { Mark } from "~/components/v3/logo";
 import { Button } from "~/components/v3/core/button";
 import { useForm } from "react-hook-form";
 import { Form, FormField, FormItem, FormLabel } from "~/components/v3/core/form";
 import { CheckboxControl, InputControl } from "~/components/v3/core/form/control";
+import { formData, zfd } from "zod-form-data";
+import { z } from "zod/v4";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -13,13 +15,26 @@ export function meta({ }: Route.MetaArgs) {
     ];
 }
 
+export const action = async ({ request, context }: Route.ActionArgs) => {
+    const form = await request.formData()
+    const result = await formData({
+        email: z.email("email is required"),
+        password: z.string("password is required"),
+        remember_me: zfd.checkbox({ trueValue: 'true' })
+    }).parseAsync(form)
+
+    console.log(result)
+
+    return data({})
+}
+
 export default () => {
     const form = useForm()
 
     return (
         <div className="isolate flex min-h-dvh items-center justify-center p-6 lg:p-8">
             <div className="w-full max-w-md rounded-xl bg-white shadow-md ring-1 ring-black/5">
-                <Form control={form} className="p-7 sm:p-11 space-y-8">
+                <Form control={form} method="post" action="./" className="p-7 sm:p-11 space-y-8">
                     <div>
                         <div className="flex items-start">
                             <Link to="/" title="Home">
@@ -49,14 +64,14 @@ export default () => {
                         render={({ field }) => (
                             <FormItem >
                                 <FormLabel>Password</FormLabel>
-                                <InputControl required autoFocus type="password" {...field} />
+                                <InputControl required type="password" {...field} />
                             </FormItem>
                         )}
                     />
 
                     <div className="flex items-center justify-between text-sm/5">
                         <FormField
-                            name="remember-me"
+                            name="remember_me"
                             control={form.control}
                             render={({ field }) => (
                                 <FormItem className="flex items-center gap-3">
@@ -65,7 +80,7 @@ export default () => {
                                 </FormItem>
                             )}
                         />
-                        <Link to="../recover" className="font-medium hover:text-gray-600">
+                        <Link to="/auth/recover" className="font-medium hover:text-gray-600">
                             Forgot password?
                         </Link>
 
