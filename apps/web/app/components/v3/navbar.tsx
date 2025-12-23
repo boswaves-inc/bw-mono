@@ -1,14 +1,15 @@
 import { motion } from 'framer-motion'
-import { Menu } from 'lucide-react'
+import { Menu, ShoppingCart } from 'lucide-react'
 import { Link } from 'react-router'
 import { Wireframe, WireframeItem, WireframeRow } from './wireframe'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './core/collapsible'
 import { Mark } from './logo'
 
 const links = [
-    { href: '/pricing', label: 'Pricing' },
-    { href: '/company', label: 'Company' },
+    { href: '/pricing', label: 'Library' },
+    // { href: '/company', label: 'Company' },
     { href: '/blog', label: 'Blog' },
+    { href: '/cart', label: 'Cart' },
     { href: '/auth/login', label: 'Login' },
 ]
 
@@ -39,7 +40,8 @@ export function Navigation({ children }: { children?: React.ReactNode }) {
                         <nav className="relative hidden lg:flex">
                             {links.map(({ href, label }) => (
                                 <WireframeItem key={href} className="relative flex">
-                                    <Link to={href} className="flex items-center px-4 py-3 text-base font-medium text-gray-950 bg-blend-multiply hover:bg-black/2.5" >
+                                    <Link to={href} className="flex items-center px-4 py-3 gap-2 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 text-base font-medium text-gray-950 bg-blend-multiply hover:bg-black/2.5" >
+                                        {/* <ShoppingCart /> */}
                                         {label}
                                     </Link>
                                 </WireframeItem>

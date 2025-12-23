@@ -55,6 +55,11 @@ Made from medical-grade stainless steel with a BPA-free lid. Rechargeable batter
 
 Whether you're crushing your fitness goals, powering through long workdays, or simply trying to build healthier habits, the HydroTrack Pro makes staying hydrated effortless and automatic.`
 
+
+export const links: Route.LinksFunction = () => [
+    { rel: "preconnect", href: "https://s.tradingview.com/embed/ItnS5Inz" },
+];
+
 export async function loader({ params, context: { postgres, geo } }: Route.LoaderArgs) {
     const period_unit: PeriodUnit = 'month'
     const item = await postgres.select({
@@ -106,7 +111,10 @@ export default ({ loaderData: { name, description, created_at } }: Route.Compone
             <Heading size="h1" className="mt-2">
                 {name}
             </Heading>
-            <div className="mt-4 flex gap-4">
+            <div className="flex mt-4 flex-wrap gap-2">
+                <Link to={`/blog?category=`} className="rounded-full border border-dotted border-gray-300 bg-gray-50 px-2 text-sm/6 font-medium text-gray-500">
+                    Indicator
+                </Link>
                 <Link to={`/blog?category=`} className="rounded-full border border-dotted border-gray-300 bg-gray-50 px-2 text-sm/6 font-medium text-gray-500">
                     Volume Based
                 </Link>
@@ -114,8 +122,14 @@ export default ({ loaderData: { name, description, created_at } }: Route.Compone
                     Trend Following
                 </Link>
             </div>
-            <Screenshot src="/screenshots/app.png" className="mt-16 h-auto sm:h-auto aspect-video sm:w-full" />
+            <div className={'mt-16 h-auto sm:h-auto aspect-video sm:w-full relative [--radius:var(--radius-xl)]'}>
+                <div className="absolute -inset-(--padding) rounded-[calc(var(--radius)+var(--padding))] shadow-xs ring-1 ring-black/5 [--padding:--spacing(2)]" />
+                <div className="rounded-lg relative object-cover object-left h-full w-full shadow-2xl overflow-hidden ring-1 ring-black/10">
+                    <iframe loading="eager" src="https://s.tradingview.com/embed/ItnS5Inz" className="absolute w-[calc(100%+6px)] h-[calc(100%+24px)] -top-px -inset-x-1" />
+                </div>
+            </div>
         </Container>
+
         <Container className="mt-16 pb-24 ">
             <div className="grid grid-cols-1 gap-16 lg:grid-cols-3">
                 <div className=" lg:col-span-2  max-w-2xl text-gray-700 ">
@@ -231,7 +245,7 @@ export default ({ loaderData: { name, description, created_at } }: Route.Compone
             </Container>
         </div>
 
- {/* FAQ */}
+        {/* FAQ */}
         <Container >
             <section id="faqs" className="scroll-mt-8">
                 <Subheading className="text-center">
@@ -309,7 +323,5 @@ export default ({ loaderData: { name, description, created_at } }: Route.Compone
                 </div>
             </section>
         </Container>
-
     </div>
-
 )
