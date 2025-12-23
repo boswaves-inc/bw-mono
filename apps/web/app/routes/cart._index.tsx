@@ -74,7 +74,7 @@ export default function renderer({ matches }: Route.ComponentProps) {
             </Container>
 
             {/* Content */}
-            <div className="mt-16 bg-linear-to-t from-gray-100 pb-20">
+            <div className="mt-16 pb-24">
                 <Container>
                     <div className="grid grid-cols-1 gap-16 lg:grid-cols-3">
 
@@ -232,7 +232,7 @@ export default function renderer({ matches }: Route.ComponentProps) {
                 </Container>
             </div>
 
-            <Footer />
+            {/* <Footer /> */}
         </main >
     );
 }
