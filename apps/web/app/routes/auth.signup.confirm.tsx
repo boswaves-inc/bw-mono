@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem } from "~/components/v3/core/form";
 import { formData } from "zod-form-data";
 import z from "zod/v4";
-import { User } from "@bw/core";
+import { EmailQueue, User } from "@bw/core";
 import { crypt, gen_salt, increment } from "@bw/core/utils/drizzle";
 import { UserOtp } from "@bw/core/schema/auth/user";
 import { cookieSession } from "~/cookie";
@@ -21,18 +21,23 @@ export const meta = ({ }: Route.MetaArgs) => [
 ] satisfies MetaDescriptor[];
 
 export const action = async ({ request, context: { postgres, jwt } }: Route.ActionArgs) => {
+    const session = await getSession(request, cookieSession)
+    const form = await request.formData()
+
+    const token = session.get('token')
+
+    if (token == undefined) {
+        throw new Error('not authenticated')
+    }
+
+    const { sub, exp } = jwt.decode<JWTPayload>(token) as Required<JWTPayload>
+
+    if (exp <= Date.now()) {
+        redirect('../')
+    }
+
     switch (request.method.toLowerCase()) {
         case 'post': {
-            const session = await getSession(request, cookieSession)
-            const form = await request.formData()
-
-            const token = session.get('token')!
-            const { sub, exp } = jwt.decode<JWTPayload>(token) as Required<JWTPayload>
-
-            if (exp <= Date.now()) {
-                redirect('../')
-            }
-
             const { code } = await formData({
                 code: z.string("otp is required"),
             }).parseAsync(form)
@@ -68,6 +73,35 @@ export const action = async ({ request, context: { postgres, jwt } }: Route.Acti
             })
 
             return redirect('/')
+        };
+        case 'put': {
+            const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+            await postgres.transaction(async tx => {
+                await tx.update(UserOtp).set({
+                    revoked_at: new Date()
+                }).where(and(
+                    eq(UserOtp.uid, sub),
+                    isNull(UserOtp.consumed_at),
+                    isNull(UserOtp.revoked_at),
+                    eq(UserOtp.scope, 'verify_account'),
+                )).returning()
+
+                await tx.insert(UserOtp).values({
+                    uid: sub,
+                    hash: crypt(code, gen_salt('bf')),
+                    scope: 'verify_account',
+                    expires_at: new Date(Date.now() + 10 * 60 * 1e3),
+                }).returning()
+
+                await tx.insert(EmailQueue).values({
+                    recipient: "seaszn.libertas@gmail.com",
+                    sender: '"Maddison Foo Koch" <maddison53@ethereal.email>',
+                    subject: "Hello ✔",
+                })
+            });
+
+            return data({})
         }
     }
 

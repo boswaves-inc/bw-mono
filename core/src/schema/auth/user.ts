@@ -72,6 +72,7 @@ export const UserOtp = pgTable('user_otps', t => ({
     attempts: t.integer('attempts').default(0).notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
     expires_at: t.timestamp({ withTimezone: true }).notNull(),
+    revoked_at: t.timestamp({ withTimezone: true }),
     consumed_at: t.timestamp({ withTimezone: true }),
 }), table => [
     index('user_otps_uid_type_idx').on(table.uid, table.scope),

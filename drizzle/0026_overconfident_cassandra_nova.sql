@@ -1,0 +1,1 @@
+ALTER TABLE "user_otps" ADD COLUMN "revoked_at" timestamp with time zone;
