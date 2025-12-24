@@ -13,12 +13,12 @@ import { cookieSession } from "~/cookie";
 import { getSession } from "~/utils/session";
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/v3/core/input-otp";
 import type { JWTPayload } from "jose";
-import { and, eq, gt, isNull, lt, } from "drizzle-orm";
+import { and, eq, isNull, } from "drizzle-orm";
 
-export const meta = ({ }: Route.MetaArgs) => [
+export const meta = (): MetaDescriptor[] => [
     { title: "Signup" },
     { name: "description", content: "Sign in to your account to conitnue." },
-] satisfies MetaDescriptor[];
+];
 
 export const action = async ({ request, context: { postgres, jwt } }: Route.ActionArgs) => {
     const session = await getSession(request, cookieSession)
@@ -102,7 +102,7 @@ export const action = async ({ request, context: { postgres, jwt } }: Route.Acti
             });
 
             return data({})
-        }
+        };
     }
 
     return data({ error: 'method not allowed' }, 415)

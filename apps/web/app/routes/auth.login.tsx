@@ -7,6 +7,12 @@ import { Form, FormField, FormItem, FormLabel } from "~/components/v3/core/form"
 import { CheckboxControl, InputControl } from "~/components/v3/core/form/control";
 import { formData, zfd } from "zod-form-data";
 import { z } from "zod/v4";
+import { User, UserCredentials } from "@bw/core";
+import { and, eq, getTableColumns } from "drizzle-orm";
+import { crypt } from "@bw/core/utils/drizzle";
+import { Session } from "@bw/core/schema/auth/session";
+import { getSession } from "~/utils/session";
+import { cookieSession } from "~/cookie";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -15,17 +21,50 @@ export function meta({ }: Route.MetaArgs) {
     ];
 }
 
-export const action = async ({ request, context }: Route.ActionArgs) => {
+export const action = async ({ request, context: { postgres, jwt } }: Route.ActionArgs) => {
     const form = await request.formData()
+    const session = await getSession(request, cookieSession)
+
     const result = await formData({
         email: z.email("email is required"),
         password: z.string("password is required"),
         remember_me: zfd.checkbox({ trueValue: 'true' })
     }).parseAsync(form)
 
-    console.log(result)
+    const token = await postgres.transaction(async tx => {
+        const user = await tx.select({
+            ...getTableColumns(User)
+        })
+            .from(User)
+            .innerJoin(UserCredentials, eq(User.uid, UserCredentials.uid))
+            .where(and(
+                eq(User.email, result.email),
+                eq(UserCredentials.password, crypt(result.password, UserCredentials.password)),
+            )).then(x => x.at(0))
 
-    return data({})
+        if (user == undefined) {
+            throw new Error('invalid credentials')
+        }
+
+        const [{ id, nonce, expired_at }] = await tx.insert(Session).values({
+            uid: user.uid,
+            expired_at: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        }).returning()
+
+        return await jwt.sign({ nonce }, {
+            exp: expired_at.valueOf(),
+            sub: user.uid,
+            jti: id
+        })
+    })
+
+    session.set('token', token)
+
+    return data({}, {
+        headers: [
+            ['Set-Cookie', await cookieSession.commitSession(session)]
+        ]
+    })
 }
 
 export default () => {
