@@ -2,7 +2,7 @@ import type { Route } from "./+types/auth.login";
 import { Outlet, redirect, type MetaDescriptor } from "react-router";
 import { formData, zfd } from "zod-form-data";
 import z from "zod/v4";
-import { User, UserCredentials } from "@bw/core";
+import { Email, EmailQueue, User, UserCredentials } from "@bw/core";
 import { crypt, gen_salt } from "@bw/core/utils/drizzle";
 import { UserOtp } from "@bw/core/schema/auth/user";
 import { Session } from "@bw/core/schema/auth/session";
@@ -29,17 +29,10 @@ export const action = async ({ request, context: { postgres, chargebee, jwt } }:
     const token = await postgres.transaction(async tx => {
         const code = Math.floor(100000 + Math.random() * 900000).toString();
 
-        const { customer } = await chargebee.customer.create({
-            email: result.email,
-            last_name: result.last_name,
-            first_name: result.first_name,
-        });
-
         const [{ uid }] = await tx.insert(User).values({
             first_name: result.first_name,
             last_name: result.last_name,
             email: result.email,
-            cbid: customer.id,
         }).returning()
 
         const [{ id, nonce, expired_at }] = await tx.insert(Session).values({
@@ -55,17 +48,22 @@ export const action = async ({ request, context: { postgres, chargebee, jwt } }:
         await tx.insert(UserOtp).values({
             uid,
             hash: crypt(code, gen_salt('bf')),
-            type: 'verify_account',
+            scope: 'verify_account',
             expires_at: new Date(Date.now() + 10 * 60 * 1e3),
         }).returning()
 
-        // await smtp.send({
-        //     from: '"Maddison Foo Koch" <maddison53@ethereal.email>',
-        //     to: "seaszn.libertas@gmail.com",
-        //     subject: "Hello ✔",
-        //     text: `Hello world?: ${code}`, // Plain-text version of the message
-        //     html: `<b>Hello world? ${code}</b>`, // HTML version of the message
-        // });
+        await tx.insert(EmailQueue).values({
+            recipient: "seaszn.libertas@gmail.com",
+            sender: '"Maddison Foo Koch" <maddison53@ethereal.email>',
+            subject: "Hello ✔",
+        })
+
+        await chargebee.customer.create({
+            id: uid,
+            email: result.email,
+            last_name: result.last_name,
+            first_name: result.first_name,
+        });
 
         console.log(`'${code}'`)
 

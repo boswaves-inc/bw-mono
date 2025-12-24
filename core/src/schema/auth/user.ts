@@ -26,10 +26,7 @@ export const UserRole = pgEnum('user_role', [
 ])
 
 export const User = pgTable("users", (t) => ({
-    // Unique id
     uid: t.uuid().primaryKey().notNull().$defaultFn(() => crypto.randomUUID()),
-    cbid: t.text().notNull(),
-
     role: UserRole('role').default('user').notNull(),
     status: UserStatus('status').default('pending').notNull(),
 

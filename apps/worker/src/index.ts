@@ -35,6 +35,7 @@ const main = async () => {
     const pg_client = drizzle(query_client, { schema });
 
     await event_client.listen('email_queued', async (payload) => {
+        
         console.log('test')
     })
 

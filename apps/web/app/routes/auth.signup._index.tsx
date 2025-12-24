@@ -15,7 +15,7 @@ export default () => {
     const form = useForm()
 
     return (
-        <div className="isolate flex min-h-dvh items-center justify-center p-6 lg:p-8">
+        <div className="isolate flex items-center justify-center p-6 lg:p-8">
             <div className="w-full max-w-md rounded-xl bg-white shadow-md ring-1 ring-black/5">
                 <Form control={form} method="post" action="./" className="p-7 sm:p-11 space-y-8">
                     <div>

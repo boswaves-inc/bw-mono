@@ -1,5 +1,5 @@
-import { sql } from "drizzle-orm";
-import { pgEnum, pgTable } from "drizzle-orm/pg-core";
+import { sql, type InferEnum, type InferSelectModel } from "drizzle-orm";
+import { index, pgEnum, pgTable } from "drizzle-orm/pg-core";
 
 export const EmailStatus = pgEnum('email_status', [
     'failed',
@@ -16,7 +16,9 @@ export const Email = pgTable("emails", t => ({
     subject: t.text('subject').notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
     updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
-}));
+}), table => [
+    index('emails_slug_idx').on(table.slug),
+]);
 
 export const EmailQueue = pgTable("email_queue", t => ({
     id: t.uuid().primaryKey().notNull().$defaultFn(() => crypto.randomUUID()),
@@ -24,9 +26,16 @@ export const EmailQueue = pgTable("email_queue", t => ({
         onDelete: 'set null',
         onUpdate: 'cascade'
     }),
+    sender: t.text('sender').notNull(),
+    subject: t.text('subject').notNull(),
+    recipient: t.text('recipient').notNull(),
+    status: EmailStatus('status').default('pending').notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
-    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
-}));
+    processed_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
+}), table => [
+    index('email_queue_status_idx').on(table.status),
+    index('email_queue_created_at_idx').on(table.created_at),
+]);
 
 export const EmailEvent = pgTable("email_events", t => ({
     id: t.uuid().primaryKey().notNull().references(() => EmailQueue.id, {
@@ -35,3 +44,10 @@ export const EmailEvent = pgTable("email_events", t => ({
     }),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
 }));
+
+
+export type Email = InferSelectModel<typeof Email>
+export type EmailQueue = InferSelectModel<typeof EmailQueue>
+export type EmailEvent = InferSelectModel<typeof EmailEvent>
+
+export type EmailStatus = InferEnum<typeof EmailStatus>

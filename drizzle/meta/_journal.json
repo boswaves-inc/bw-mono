@@ -155,6 +155,34 @@
       "when": 1766536977803,
       "tag": "0021_complete_otto_octavius",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1766537891766,
+      "tag": "0022_warm_mephisto",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1766537967608,
+      "tag": "0023_talented_lionheart",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1766538766412,
+      "tag": "0024_hot_magma",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1766538867159,
+      "tag": "0025_volatile_ender_wiggin",
+      "breakpoints": true
     }
   ]
 }

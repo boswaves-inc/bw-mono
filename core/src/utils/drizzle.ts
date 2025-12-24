@@ -13,7 +13,9 @@ import {
     View,
     Subquery,
     type NotNull,
-    Placeholder
+    Placeholder,
+    type ColumnBaseConfig,
+    type ColumnDataType
 } from "drizzle-orm";
 import {
     type PgTable,
@@ -182,3 +184,11 @@ export function array_agg<T extends SQLWrapper>(expression: T, condition?: SQL):
 
     return sql<InferData<T>[] | null>`array_agg(${expression})`;
 }
+
+export const increment = <T extends Partial<ColumnBaseConfig<ColumnDataType, string>> = {}>(column: AnyColumn<T>, value = 1) => {
+  return sql<T>`${column} + ${value}`;
+};
+
+export const decrement = <T extends Partial<ColumnBaseConfig<ColumnDataType, string>> = {}>(column: AnyColumn<T>, value = 1) => {
+  return sql<T>`${column} - ${value}`;
+};

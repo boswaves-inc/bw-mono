@@ -3,34 +3,75 @@ import { data, Link, redirect, useFetcher, type MetaDescriptor } from "react-rou
 import { Mark } from "~/components/v3/logo";
 import { Button } from "~/components/v3/core/button";
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "~/components/v3/core/form";
-import { CheckboxControl, InputControl } from "~/components/v3/core/form/control";
-import { formData, zfd } from "zod-form-data";
+import { Form, FormControl, FormField, FormItem } from "~/components/v3/core/form";
+import { formData } from "zod-form-data";
 import z from "zod/v4";
-import { User, UserCredentials } from "@bw/core";
-import { crypt, gen_salt } from "@bw/core/utils/drizzle";
+import { User } from "@bw/core";
+import { crypt, gen_salt, increment } from "@bw/core/utils/drizzle";
 import { UserOtp } from "@bw/core/schema/auth/user";
-import { Session } from "@bw/core/schema/auth/session";
 import { cookieSession } from "~/cookie";
 import { getSession } from "~/utils/session";
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/v3/core/input-otp";
+import type { JWTPayload } from "jose";
+import { and, eq, gt, isNull, lt, } from "drizzle-orm";
 
 export const meta = ({ }: Route.MetaArgs) => [
     { title: "Signup" },
     { name: "description", content: "Sign in to your account to conitnue." },
 ] satisfies MetaDescriptor[];
 
-export const action = async ({ request, context: { postgres, chargebee, smtp, jwt } }: Route.ActionArgs) => {
-    const session = await getSession(request, cookieSession)
-    const form = await request.formData()
+export const action = async ({ request, context: { postgres, jwt } }: Route.ActionArgs) => {
+    switch (request.method.toLowerCase()) {
+        case 'post': {
+            const session = await getSession(request, cookieSession)
+            const form = await request.formData()
 
-    const result = await formData({
-        code: z.string("otp is required"),
-    }).parseAsync(form)
+            const token = session.get('token')!
+            const { sub, exp } = jwt.decode<JWTPayload>(token) as Required<JWTPayload>
 
-    console.log(result)
+            if (exp <= Date.now()) {
+                redirect('../')
+            }
 
-    return data({})
+            const { code } = await formData({
+                code: z.string("otp is required"),
+            }).parseAsync(form)
+
+            await postgres.transaction(async tx => {
+                await tx.update(User).set({
+                    status: 'active'
+                }).where(and(
+                    eq(User.uid, sub),
+                    eq(User.status, 'pending')
+                ))
+
+                const otp = await tx.update(UserOtp).set({
+                    attempts: increment(UserOtp.attempts),
+                    consumed_at: new Date(),
+                }).where(and(
+                    eq(UserOtp.uid, sub),
+                    eq(UserOtp.scope, 'verify_account'),
+                    eq(UserOtp.hash, crypt(code, UserOtp.hash)),
+                    isNull(UserOtp.consumed_at),
+                )).returning().then(x => x.at(0))
+
+                if (otp !== undefined && otp.expires_at <= new Date()) {
+                    return data({ error: 'code expired' }, {
+                        status: 400
+                    })
+                }
+                else if (otp == undefined) {
+                    return data({ error: 'code invalid' }, {
+                        status: 400
+                    })
+                }
+            })
+
+            return redirect('/')
+        }
+    }
+
+    return data({ error: 'method not allowed' }, 415)
 }
 
 export default () => {
@@ -92,21 +133,11 @@ export default () => {
                             Submit
                         </Button>
                     </div>
-                    {/* <div className="flex gap-2 h-0 overflow-visible items-center ">
-                        <span className=" border-t w-full" />
-                        <Paragraph className="text-nowrap">
-                            Or continue with
-                        </Paragraph>
-                        <span className=" border-t w-full" />
-                    </div>
-                    <Button type="button" variant="secondary" className="w-full flex gap-3">
-                        <img src="/partners/google.svg" className="size-4" />
-                        Google
-                    </Button> */}
+
                 </Form>
                 <div className="m-1.5 rounded-lg bg-gray-50 py-4 text-center text-sm/5 ring-1 ring-black/5">
                     Already a member?
-                    <Link to="../login" className="font-medium ml-2 hover:text-gray-600">
+                    <Link to="/auth/login" className="font-medium ml-2 hover:text-gray-600">
                         Login here
                     </Link>
                 </div>
