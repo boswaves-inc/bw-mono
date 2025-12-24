@@ -1,5 +1,5 @@
 import { index, pgEnum, pgTable, uniqueIndex } from "drizzle-orm/pg-core";
-import { Status } from "./types";
+import { ItemStatus } from "./types";
 import { sql, type InferEnum, type InferSelectModel } from "drizzle-orm";
 
 
@@ -17,7 +17,7 @@ export const Script = pgTable("scripts", (t) => ({
     name: t.text("name").notNull(),
     uuid: t.text("uuid").notNull(),
     image: t.text("image").notNull(),
-    status: Status("status").notNull(),
+    status: ItemStatus("status").notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
     updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
 }), table => [

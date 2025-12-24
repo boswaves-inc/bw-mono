@@ -4,7 +4,8 @@
 // import { ItemType } from "./item";
 import { sql, type InferEnum, type InferSelectModel } from "drizzle-orm"
 import { check, pgEnum, pgTable, uniqueIndex } from "drizzle-orm/pg-core"
-import { PeriodUnit, Status } from "./types"
+import { PeriodUnit } from "../types"
+import { ItemStatus } from "./types"
 
 export const CouponDiscount = pgEnum('coupon_discount', [
     "percentage",
@@ -40,7 +41,7 @@ export const Coupon = pgTable("coupons", (t) => ({
     valid_till: t.timestamp({ withTimezone: true }),
 
     max_redemptions: t.integer(),
-    status: Status('status').notNull(),
+    status: ItemStatus('status').notNull(),
 
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
     updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date())

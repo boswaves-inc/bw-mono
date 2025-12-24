@@ -1,6 +1,7 @@
 import { sql, type InferEnum, type InferSelectModel } from "drizzle-orm";
 import { index, pgEnum, pgTable, primaryKey, unique, uniqueIndex } from "drizzle-orm/pg-core";
-import { citext, PeriodUnit, Status } from "./types";
+import { citext, PeriodUnit } from "../types";
+import { ItemStatus } from "./types";
 import { Tag } from "./tag";
 import { Script } from "./script";
 
@@ -24,7 +25,7 @@ export const Item = pgTable("items", (t) => ({
     ),
     excerpt: t.text().notNull(),
     description: t.text().notNull(),
-    status: Status("status").notNull(),
+    status: ItemStatus("status").notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
     updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date())
 }), table => [
@@ -45,7 +46,7 @@ export const ItemPrice = pgTable('item_prices', (t) => ({
     period_unit: PeriodUnit('period_unit').notNull(),
     currency_code: t.text("currency_code").notNull(), // ISO 4217: 'USD', 'EUR', 'GBP', etc.
     pricing_model: ItemPriceModel("pricing_model").notNull(), // Price in smallest unit
-    status: Status('status').notNull(),
+    status: ItemStatus('status').notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
     updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
 }), (table) => [
@@ -65,7 +66,7 @@ export const ItemScript = pgTable("item_scripts", (t) => ({
         onUpdate: 'cascade'
     }),
     uuid: citext().notNull(),
-    status: Status('status').notNull(),
+    status: ItemStatus('status').notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
     updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
 }), table => [
@@ -86,7 +87,7 @@ export const ItemTag = pgTable("item_tags", (t) => ({
         onUpdate: 'cascade'
     }).notNull(),
     slug: citext().notNull(),
-    status: Status('status').notNull(),
+    status: ItemStatus('status').notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
     updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date())
 }), table => [

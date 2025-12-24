@@ -6,9 +6,9 @@
     ".": "./src/index.ts",
     "./*": "./src/*/index.ts",
     "./jwt/*": "./src/jwt/*.ts",
-    "./smtp/*": "./src/smtp/*.ts",
     "./utils/*": "./src/utils/*.ts",
     "./schema/*": "./src/schema/*.ts",
+    "./postgres/*": "./src/postgres/*.ts",
     "./tradingview/*": "./src/tradingview/*.ts"
   },
   "dependencies": {

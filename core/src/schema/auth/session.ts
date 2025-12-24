@@ -1,8 +1,5 @@
-import { sql, type InferEnum } from "drizzle-orm";
-import { check, index, pgEnum, pgSchema, pgTable, uniqueIndex } from "drizzle-orm/pg-core";
-import { citext, OtpType } from "../shop/types";
+import { index, pgTable } from "drizzle-orm/pg-core";
 import { User, UserProvider } from "./user";
-
 
 export const Session = pgTable('sessions', t => ({
     id: t.uuid().primaryKey().notNull().$defaultFn(() => crypto.randomUUID()),

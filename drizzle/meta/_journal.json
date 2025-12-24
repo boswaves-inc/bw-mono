@@ -127,6 +127,34 @@
       "when": 1766530889171,
       "tag": "0017_spotty_tana_nile",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1766536124635,
+      "tag": "0018_sour_ogun",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1766536417535,
+      "tag": "0019_safe_kang",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1766536448229,
+      "tag": "0020_ambitious_king_cobra",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1766536977803,
+      "tag": "0021_complete_otto_octavius",
+      "breakpoints": true
     }
   ]
 }

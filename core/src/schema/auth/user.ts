@@ -1,6 +1,6 @@
 import { sql, type InferEnum } from "drizzle-orm";
-import { check, index, pgEnum, pgSchema, pgTable, uniqueIndex } from "drizzle-orm/pg-core";
-import { citext, OtpType } from "../shop/types";
+import { check, index, pgEnum, pgTable, uniqueIndex } from "drizzle-orm/pg-core";
+import { citext } from "../types";
 
 
 export const UserProvider = pgEnum('user_provider', [
@@ -12,6 +12,12 @@ export const UserStatus = pgEnum('user_status', [
     'deleted',
     'pending',
     'active'
+])
+
+
+export const UserOtpScope = pgEnum('user_otp_scope', [
+    'verify_account',
+    'reset_password'
 ])
 
 export const UserRole = pgEnum('user_role', [
@@ -64,22 +70,23 @@ export const UserOtp = pgTable('user_otps', t => ({
         onDelete: 'cascade',
         onUpdate: 'cascade'
     }),
-    type: OtpType('type').notNull(),
+    scope: UserOtpScope('scope').notNull(),
     hash: t.text('hash').notNull(),
     attempts: t.integer('attempts').default(0).notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
     expires_at: t.timestamp({ withTimezone: true }).notNull(),
     consumed_at: t.timestamp({ withTimezone: true }),
 }), table => [
-    index('user_otps_uid_type_idx').on(table.uid, table.type),
+    index('user_otps_uid_type_idx').on(table.uid, table.scope),
     index('user_otps_expires_at_idx').on(table.expires_at),
     uniqueIndex('user_otps_active_unique_idx')
-        .on(table.uid, table.type)
+        .on(table.uid, table.scope)
         .where(sql`${table.consumed_at} IS NULL`),
 ])
 
 export type UserRole = InferEnum<typeof UserRole>
 export type UserStatus = InferEnum<typeof UserStatus>
+export type UserOtpScope = InferEnum<typeof UserOtpScope>
 export type UserProvider = InferEnum<typeof UserProvider>
 
 export type User = typeof User.$inferSelect;

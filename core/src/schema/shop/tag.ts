@@ -1,5 +1,5 @@
 import { index, pgTable, uniqueIndex } from "drizzle-orm/pg-core";
-import { citext, Status } from "./types";
+import { ItemStatus } from "./types";
 import { sql, type InferSelectModel } from "drizzle-orm";
 
 export const Tag = pgTable("tags", (t) => ({
@@ -8,7 +8,7 @@ export const Tag = pgTable("tags", (t) => ({
     slug: t.text("slug").notNull().generatedAlwaysAs(
         sql`lower(regexp_replace(name, '[^a-zA-Z0-9]+', '-', 'g'))`
     ),
-    status: Status("status").notNull(),
+    status: ItemStatus("status").notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
     updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date())
 }), table => [

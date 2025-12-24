@@ -23,7 +23,6 @@ declare module "react-router" {
     }
     theme: 'dark' | 'light'
     jwt: Jwt,
-    smtp: Smtp,
     postgres: Postgres
     chargebee: InstanceType<typeof Chargebee>
   }

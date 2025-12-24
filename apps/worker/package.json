@@ -1,0 +1,26 @@
+{
+  "name": "@bw/cron",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "dotenv -- tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@bw/core": "workspace:*",
+    "drizzle-orm": "^0.44.6",
+    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
+    "nodemailer": "^7.0.12",
+    "postgres": "^3.4.7"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.20",
+    "@types/node": "^22.18.10",
+    "dotenv-cli": "^10.0.0",
+    "@types/nodemailer": "^7.0.4",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.2"
+  }
+}

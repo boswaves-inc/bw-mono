@@ -14,7 +14,7 @@ export const meta = ({ }: Route.MetaArgs) => [
     { name: "description", content: "Sign in to your account to conitnue." },
 ] satisfies MetaDescriptor[];
 
-export const action = async ({ request, context: { postgres, chargebee, smtp, jwt } }: Route.ActionArgs) => {
+export const action = async ({ request, context: { postgres, chargebee, jwt } }: Route.ActionArgs) => {
     const form = await request.formData()
     const session = await getSession(request, cookieSession)
 
@@ -59,13 +59,13 @@ export const action = async ({ request, context: { postgres, chargebee, smtp, jw
             expires_at: new Date(Date.now() + 10 * 60 * 1e3),
         }).returning()
 
-        await smtp.send({
-            from: '"Maddison Foo Koch" <maddison53@ethereal.email>',
-            to: "seaszn.libertas@gmail.com",
-            subject: "Hello ✔",
-            text: `Hello world?: ${code}`, // Plain-text version of the message
-            html: `<b>Hello world? ${code}</b>`, // HTML version of the message
-        });
+        // await smtp.send({
+        //     from: '"Maddison Foo Koch" <maddison53@ethereal.email>',
+        //     to: "seaszn.libertas@gmail.com",
+        //     subject: "Hello ✔",
+        //     text: `Hello world?: ${code}`, // Plain-text version of the message
+        //     html: `<b>Hello world? ${code}</b>`, // HTML version of the message
+        // });
 
         console.log(`'${code}'`)
 

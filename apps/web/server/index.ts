@@ -4,7 +4,6 @@ import Chargebee from 'chargebee';
 import theme, { getTheme } from "./theme";
 import postgres, { Postgres } from "@bw/core/postgres";
 import maxmind, { type CountryResponse } from 'maxmind';
-import { Smtp } from '@bw/core/smtp'
 // import ss from './geolite/country.mmdb'
 import { SignJWT, jwtVerify, importPKCS8, importSPKI } from 'jose';
 
@@ -53,14 +52,6 @@ const jwt_client = new Jwt({
   }
 })
 
-const smtp_client = new Smtp({
-  host: 'smtp.ethereal.email',
-  port: 587,
-  auth: {
-    user: 'francesca.bailey@ethereal.email',
-    pass: 'eahGbsXKCBct3GEW5S'
-  }
-})
 
 const cb_client = new Chargebee({
   site: process.env.CB_SITE!,
@@ -143,7 +134,6 @@ app_router.use(createRequestHandler({
       cart,
       theme,
       jwt: jwt_client,
-      smtp: smtp_client,
       postgres: pg_client,
       chargebee: cb_client
     }
