@@ -6,6 +6,7 @@ import type { Countries, Currencies } from "country-to-currency";
 import type { CartItem } from "@bw/core";
 import type { Smtp } from "@bw/core/smtp";
 import type { Jwt } from "@bw/core/jwt";
+import { Auth } from "./auth";
 
 declare module "react-router" {
   interface AppLoadContext {

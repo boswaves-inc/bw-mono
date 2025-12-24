@@ -2,12 +2,13 @@ import type { Route } from "./+types/auth.login";
 import { Outlet, redirect, type MetaDescriptor } from "react-router";
 import { formData, zfd } from "zod-form-data";
 import z from "zod/v4";
-import { Email, EmailQueue, User, UserCredentials } from "@bw/core";
+import { EmailQueue, User, UserCredentials } from "@bw/core";
 import { crypt, gen_salt } from "@bw/core/utils/drizzle";
 import { UserOtp } from "@bw/core/schema/auth/user";
 import { Session } from "@bw/core/schema/auth/session";
 import { cookieSession } from "~/cookie";
 import { getSession } from "~/utils/session";
+import { GradientBackground } from "~/components/v3/gradient";
 
 export const meta = ({ }: Route.MetaArgs) => [
     { title: "Signup" },
@@ -29,22 +30,26 @@ export const action = async ({ request, context: { postgres, chargebee, jwt } }:
     const token = await postgres.transaction(async tx => {
         const code = Math.floor(100000 + Math.random() * 900000).toString();
 
+        // Insert the base user profile
         const [{ uid }] = await tx.insert(User).values({
             first_name: result.first_name,
             last_name: result.last_name,
             email: result.email,
         }).returning()
 
+        // Insert the initial user session
         const [{ id, nonce, expired_at }] = await tx.insert(Session).values({
             uid,
             expired_at: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
         }).returning()
 
+        // Insert the user credentials
         await tx.insert(UserCredentials).values({
             uid,
             password: crypt(result.password, gen_salt('bf'))
         })
 
+        // Create a new OTP to verify the account
         await tx.insert(UserOtp).values({
             uid,
             hash: crypt(code, gen_salt('bf')),
@@ -52,12 +57,14 @@ export const action = async ({ request, context: { postgres, chargebee, jwt } }:
             expires_at: new Date(Date.now() + 10 * 60 * 1e3),
         }).returning()
 
+        // Queue the OTP email to be sent
         await tx.insert(EmailQueue).values({
             recipient: "seaszn.libertas@gmail.com",
             sender: '"Maddison Foo Koch" <maddison53@ethereal.email>',
             subject: "Hello ✔",
         })
 
+        // Create the user in the chargebee backend
         await chargebee.customer.create({
             id: uid,
             email: result.email,
@@ -65,8 +72,10 @@ export const action = async ({ request, context: { postgres, chargebee, jwt } }:
             first_name: result.first_name,
         });
 
+        // TODO remove this line
         console.log(`'${code}'`)
 
+        // Sign the session as a JWT token and return the result
         return await jwt.sign({ nonce }, {
             exp: expired_at.valueOf(),
             sub: uid,
@@ -84,7 +93,10 @@ export const action = async ({ request, context: { postgres, chargebee, jwt } }:
 }
 
 export default () => (
-    <div className="isolate flex min-h-dvh items-center justify-center p-6 lg:p-8">
-        <Outlet />
-    </div>
+    <main className="overflow-hidden bg-gray-50">
+        <GradientBackground />
+        <div className="isolate flex min-h-dvh items-center justify-center p-6 lg:p-8">
+            <Outlet />
+        </div>
+    </main>
 )

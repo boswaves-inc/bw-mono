@@ -103,7 +103,7 @@ export default () => {
                 </Form>
                 <div className="m-1.5 rounded-lg bg-gray-50 py-4 text-center text-sm/5 ring-1 ring-black/5">
                     Already a member?
-                    <Link to="../login" className="font-medium ml-2 hover:text-gray-600">
+                    <Link to="/auth/login" className="font-medium ml-2 hover:text-gray-600">
                         Login here
                     </Link>
                 </div>

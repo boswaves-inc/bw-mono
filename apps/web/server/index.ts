@@ -8,7 +8,7 @@ import maxmind, { type CountryResponse } from 'maxmind';
 import { SignJWT, jwtVerify, importPKCS8, importSPKI } from 'jose';
 
 import "react-router";
-import {  cookieSession } from "~/cookie";
+import { cookieSession } from "~/cookie";
 import { Maxmind } from "./maxmind";
 import type { Countries, Currencies } from "country-to-currency";
 import countryToCurrency from "country-to-currency";
@@ -44,18 +44,17 @@ if (!process.env.JWT_PUB_KEY) {
 const geo_client = await Maxmind.open()
 const pg_client = new Postgres()
 
+const cb_client = new Chargebee({
+  site: process.env.CB_SITE!,
+  apiKey: process.env.CB_API_KEY!
+})
+
 const jwt_client = new Jwt({
   algorithm: 'RS256',
   keys: {
     private_key: process.env.JWT_PRIV_KEY,
     public_key: process.env.JWT_PUB_KEY
   }
-})
-
-
-const cb_client = new Chargebee({
-  site: process.env.CB_SITE!,
-  apiKey: process.env.CB_API_KEY!
 })
 
 const app_router = express();
