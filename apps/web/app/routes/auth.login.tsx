@@ -28,7 +28,6 @@ export const action = async ({ request, context: { postgres, jwt } }: Route.Acti
     const result = await formData({
         email: z.email("email is required"),
         password: z.string("password is required"),
-        remember_me: zfd.checkbox({ trueValue: 'true' })
     }).parseAsync(form)
 
     const token = await postgres.transaction(async tx => {
@@ -56,6 +55,7 @@ export const action = async ({ request, context: { postgres, jwt } }: Route.Acti
             sub: user.uid,
             jti: id
         })
+
     })
 
     session.set('token', token)
@@ -108,8 +108,8 @@ export default () => {
                         )}
                     />
 
-                    <div className="flex items-center justify-between text-sm/5">
-                        <FormField
+                    <div className="flex items-center text-sm/5">
+                        {/* <FormField
                             name="remember_me"
                             control={form.control}
                             render={({ field }) => (
@@ -118,7 +118,7 @@ export default () => {
                                     <FormLabel>Remember me</FormLabel>
                                 </FormItem>
                             )}
-                        />
+                        /> */}
                         <Link to="/auth/recover" className="font-medium hover:text-gray-600">
                             Forgot password?
                         </Link>
