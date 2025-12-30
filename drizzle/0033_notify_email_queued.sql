@@ -2,12 +2,7 @@
 -- Function to notify on new email
 CREATE OR REPLACE FUNCTION notify_email_queued() RETURNS TRIGGER AS $$ BEGIN PERFORM pg_notify(
         'email_queued',
-        json_build_object(
-            'id',
-            NEW.id,
-            'recipient',
-            NEW.recipient
-        )::text
+        NEW.id::text
     );
 RETURN NEW;
 END;

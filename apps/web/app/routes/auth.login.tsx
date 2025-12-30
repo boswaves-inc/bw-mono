@@ -3,7 +3,7 @@ import { data, Link } from "react-router";
 import { Mark } from "~/components/v3/logo";
 import { Button } from "~/components/v3/core/button";
 import { useForm } from "react-hook-form";
-import { Form, FormField, FormItem, FormLabel } from "~/components/v3/core/form";
+import { Form, FormdMessage, FormField, FormItem, FormLabel } from "~/components/v3/core/form";
 import { InputControl } from "~/components/v3/core/form/control";
 import { formData } from "zod-form-data";
 import { z } from "zod/v4";
@@ -26,21 +26,26 @@ export const loader = async ({ request, context: { auth } }: Route.LoaderArgs) =
 }
 
 export const action = async ({ request, context: { auth } }: Route.ActionArgs) => {
-    const form = await request.formData()
-
     switch (request.method.toLowerCase()) {
         case 'post': {
-            // Validate the form data
-            const result = await formData({
-                email: z.email("email is required"),
-                password: z.string("password is required"),
-            }).parseAsync(form)
+            try {
+                const form = await request.formData()
 
-            // authenticate the user
-            return auth.login(request, result.email, result.password, {
-                onSuccess: '/',
-                onVerify: '/auth/verify'
-            })
+                // Validate the form data
+                const result = await formData({
+                    email: z.email("email is required"),
+                    password: z.string("password is required"),
+                }).parseAsync(form)
+
+                // authenticate the user
+                return await auth.login(request, result.email, result.password, {
+                    onSuccess: '/',
+                    onVerify: '/auth/verify'
+                })
+            }
+            catch ({ message }: any) {
+                return data<{ error: string }>({ error: message }, { status: 400 })
+            }
         }
     }
 
@@ -107,6 +112,7 @@ export default () => {
                             </Link>
 
                         </div>
+                        <FormdMessage />
                         <Button type="submit" className="w-full">
                             Sign in
                         </Button>

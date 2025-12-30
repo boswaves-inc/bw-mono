@@ -4,7 +4,7 @@ import cors from "cors";
 import { and, eq, exists, getTableColumns, inArray, isNotNull, ne, not, sql } from 'drizzle-orm';
 import type Chargebee from 'chargebee'
 import type { Postgres } from '@bw/core/postgres'
-import { Item, ItemPrice, PeriodUnit, ItemPriceModel, ItemScript, Status, ItemTag, Tag, Script } from '@bw/core'
+import { Item, ItemPrice, PeriodUnit, ItemPriceModel, ItemScript, ItemTag, Tag, Script } from '@bw/core'
 import { createInsertSchema } from "drizzle-zod";
 import z, { array } from 'zod/v4';
 import { zfd } from 'zod-form-data';
@@ -126,7 +126,7 @@ export default ({ family, postgres, chargebee }: { family: string, postgres: Pos
                 const prices = data.item_price.length > 0 ? await tx.insert(ItemPrice).values(data.item_price.map(price => ({
                     ...price,
                     item_id: item.id,
-                    status: 'active' as Status,
+                    status: 'active' as any,
                     name: _.snakeCase(`${data.name}_${price.currency_code}_${price.period_unit}`),
                 }))).returning() : []
 

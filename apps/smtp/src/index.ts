@@ -7,7 +7,7 @@ import { Smtp } from "./smtp";
 import config from './config'
 
 const main = async () => {
-    console.log('worker starting...');
+    console.log('smtp starting...');
 
     const query_client = postgres({
         port: process.env.PG_HOST ? Number(process.env.PG_HOST) : 5432,
@@ -28,14 +28,11 @@ const main = async () => {
     const smtp_client = new Smtp(config.smtp)
     const pg_client = drizzle(query_client, { schema });
 
-    await event_client.listen('email_queued', async (payload) => {
-        console.log(JSON.parse(payload))
-        
-        console.log(payload)
-        console.log('test')
+    await event_client.listen('email_queued', async (id) => {
+        console.log(id)
     })
 
-    console.log('worker ready...\n');
+    console.log('smtp ready...\n');
 
 }
 

@@ -1,4 +1,4 @@
-import { createContext, useContext, type ComponentProps, useId, type BaseSyntheticEvent } from 'react';
+import { createContext, useContext, type ComponentProps, useId, type BaseSyntheticEvent, useEffect, useState } from 'react';
 import { Controller, type ControllerProps, type FieldErrors, type FieldPath, type FieldValues, FormProvider, useFormContext, useFormState } from 'react-hook-form'
 import { Slot } from '@radix-ui/react-slot';
 import { useFetcher } from 'react-router';
@@ -7,6 +7,8 @@ import { flattenObject } from '~/utils/object';
 import { cn } from '~/utils/class';
 import { Label } from '../label';
 import _ from 'lodash';
+import { formData } from 'zod-form-data';
+import z from 'zod/v4';
 
 const FORM_CONTEXT = createContext({} as FormContext)
 const FIELD_CONTEXT = createContext({} as FormFieldContext)
@@ -39,6 +41,7 @@ const useFormField = () => {
 export const Form = <TFieldValues extends FieldValues = FieldValues, TContext = any>({ onSuccess, onError, onValid, onInvalid, method, encType = "application/x-www-form-urlencoded", action, control, children, ...props }: FormProps<TFieldValues, TContext, TFieldValues>) => {
     const fetcher = useFetcher()
 
+
     const reset = () => control.reset()
     const submit = () => control.handleSubmit(onValidInt, onInvalidInt)()
 
@@ -47,6 +50,9 @@ export const Form = <TFieldValues extends FieldValues = FieldValues, TContext = 
     const onValidInt = async (data: TFieldValues, e?: BaseSyntheticEvent<object, any, any> | undefined) => {
         onValid?.(data, e)
 
+        control.setError('root', {
+            message: control.formState.errors.root?.message
+        })
         try {
             await fetcher.submit(_.omitBy(flattenObject(data), _.isUndefined), {
                 method,
@@ -56,20 +62,49 @@ export const Form = <TFieldValues extends FieldValues = FieldValues, TContext = 
 
             e?.preventDefault()
             e?.stopPropagation()
-
-            onSuccess?.()
         }
-        catch (error) {
+        catch ({ message }: any) {
             e?.preventDefault()
             e?.stopPropagation()
-
+            
             onError?.();
         }
+        
     }
 
     const onInvalidInt = (errors: FieldErrors<TFieldValues>, event?: React.BaseSyntheticEvent) => {
         onInvalid?.(errors, event)
     }
+
+    useEffect(() => {
+        if (fetcher.state === 'idle' && fetcher.data != null) {
+            formData(z.union([
+                z.object({
+                    error: z.string(),
+                }),
+                z.object({
+                    success: z.literal(true),
+                }),
+            ])).parseAsync(fetcher.data).then((response) => {
+                if ('error' in response) {
+                    control.setError('root', {
+                        message: response.error
+                    })
+
+                    onError?.()
+                }
+                else {
+                    onSuccess?.()
+                }
+            }).catch(({ message }: Error) => {
+                control.setError('root', {
+                    message
+                })
+
+                onError?.()
+            })
+        }
+    }, [fetcher.state])
 
     return (
         <FormProvider {...control}>
@@ -147,7 +182,7 @@ export const FormDescripion = ({ className, ...props }: ComponentProps<'p'>) => 
     )
 }
 
-export const FromMessage = ({ className, ...props }: ComponentProps<'p'>) => {
+export const FormFieldMessage = ({ className, ...props }: ComponentProps<'p'>) => {
     const { error, formMessageId } = useFormField()
     const body = error ? String(error?.message ?? '') : props.children
 
@@ -156,8 +191,19 @@ export const FromMessage = ({ className, ...props }: ComponentProps<'p'>) => {
     }
 
     return (
-        <p data-slot='form-message' id={formMessageId} className={cn('text-destructive text-sm', className)} {...props}>
+        <p data-slot='form-field-message' id={formMessageId} className={cn('text-destructive text-sm', className)} {...props}>
             {body}
+        </p>
+    )
+}
+
+export const FormdMessage = ({ className, ...props }: ComponentProps<'p'>) => {
+    const { errors } = useFormState()
+
+
+    return (
+        <p  data-slot='form-message' aria-hidden={errors.root == undefined} className={cn('text-destructive text-sm/6 h-6 transition-all aria-hidden:h-0 aria-hidden:mb-0!', className)} {...props}>
+            {errors.root?.message ?? ''}
         </p>
     )
 }

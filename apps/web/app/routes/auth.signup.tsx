@@ -6,7 +6,7 @@ import z from "zod/v4";
 import { GradientBackground } from "~/components/v3/gradient";
 import { Mark } from "~/components/v3/logo";
 import { Button } from "~/components/v3/core/button";
-import { Form, FormField, FormItem, FormLabel } from "~/components/v3/core/form";
+import { Form, FormdMessage, FormField, FormItem, FormLabel } from "~/components/v3/core/form";
 import { CheckboxControl, InputControl } from "~/components/v3/core/form/control";
 
 export const meta = ({ }: Route.MetaArgs) => [
@@ -26,29 +26,39 @@ export const loader = async ({ request, context: { auth } }: Route.LoaderArgs) =
 export const action = async ({ request, context: { auth } }: Route.ActionArgs) => {
     switch (request.method.toLowerCase()) {
         case "post": {
-            const form = await request.formData()
+            try {
+                const form = await request.formData()
 
-            // Validate the form data
-            const result = await formData({
-                first_name: z.string("first name is required"),
-                last_name: z.string("last name is required"),
-                email: z.email("email is required"),
-                password: z.string("password is required"),
-                terms_of_aggreement: zfd.checkbox({ trueValue: 'true' }).refine(value => value, 'terms of agreement are required')
-            }).parseAsync(form)
+                // Validate the form data
+                const result = await formData({
+                    first_name: z.string("first name is required"),
+                    last_name: z.string("last name is required"),
+                    email: z.email("email is required"),
+                    password: z.string("password is required"),
+                    terms_of_aggreement: zfd.checkbox({ trueValue: 'true' }).refine(value => value, 'terms of agreement are required')
+                }).parseAsync(form)
 
-            // authenticate the user
-            return await auth.signup(request, result.email, result.first_name, result.last_name, result.password, {
-                onSuccess: '/auth/verify'
-            })
+                // authenticate the user
+                return await auth.signup(request, result.email, result.first_name, result.last_name, result.password, {
+                    onSuccess: '/auth/verify'
+                })
+            }
+            catch ({ message }: any) {
+                return data<{ error: string }>({ error: message }, { status: 409 })
+            }
         }
     }
 
-    return data({ error: 'method not allowed' }, { status: 415 })
+    return data<{ error: string }>({ error: 'method not allowed' }, { status: 415 })
 }
 
 export default () => {
-    const form = useForm()
+    const form = useForm({
+        mode: 'onSubmit',
+        reValidateMode: 'onChange', // Only revalidate after first submit
+
+        shouldFocusError: false
+    })
 
     return (
         <main className="overflow-hidden bg-gray-50">
@@ -125,6 +135,7 @@ export default () => {
                                 />
 
                             </div>
+                            <FormdMessage />
                             <Button type="submit" className="w-full">
                                 Sign up
                             </Button>

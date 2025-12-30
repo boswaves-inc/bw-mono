@@ -117,6 +117,25 @@ export default ({ loaderData }: Route.ComponentProps) => {
 
                     <FormField
                         control={form.control}
+                        name="excerpt"
+                        rules={{ required: "Excerpt is required" }}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Excerpt</FormLabel>
+                                <FormControl>
+                                    <Textarea
+                                        {...field}
+                                        value={field.value || ""}
+                                        placeholder="Enter excerpt"
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
                         name="description"
                         rules={{ required: "Description is required" }}
                         render={({ field }) => (

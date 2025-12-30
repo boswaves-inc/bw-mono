@@ -1,5 +1,5 @@
 {
-  "name": "@bw/cron",
+  "name": "@bw/smtp",
   "private": true,
   "type": "module",
   "scripts": {

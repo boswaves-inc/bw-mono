@@ -2,6 +2,7 @@
 import type { ComponentProps } from "react"
 import type { FieldPath, FieldValues, SubmitErrorHandler, SubmitHandler, UseFormReturn } from "react-hook-form"
 import type { HTMLFormMethod } from "react-router"
+import { z } from "zod/v4"
 
 export type FormContext = {
     submit: (e: HTMLElement | null) => void
@@ -28,3 +29,14 @@ export interface FormProps<TFieldValues extends FieldValues, TContext, TTransfor
     onSuccess?: () => void
     onError?: () => void
 }
+
+export const FormResult = z.union([
+    z.object({
+        error: z.string(),
+    }),
+    z.object({
+        success: z.literal(true),
+    }),
+])
+
+export type FormResult = z.output<typeof FormResult>
