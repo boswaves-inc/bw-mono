@@ -6,7 +6,7 @@ import type { Countries, Currencies } from "country-to-currency";
 import type { CartItem } from "@bw/core";
 import type { Smtp } from "@bw/core/smtp";
 import type { Jwt } from "@bw/core/jwt";
-import { Auth } from "./auth";
+import type { Auth } from "./auth";
 
 declare module "react-router" {
   interface AppLoadContext {
@@ -24,6 +24,7 @@ declare module "react-router" {
     }
     theme: 'dark' | 'light'
     jwt: Jwt,
+    auth: Auth,
     postgres: Postgres
     chargebee: InstanceType<typeof Chargebee>
   }

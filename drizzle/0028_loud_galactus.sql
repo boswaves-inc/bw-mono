@@ -1,0 +1,2 @@
+DROP INDEX "user_otps_active_unique_idx";--> statement-breakpoint
+CREATE UNIQUE INDEX "user_otps_active_unique_idx" ON "user_otps" USING btree ("uid","scope") WHERE "user_otps"."consumed_at" IS NULL AND "user_otps"."revoked_at" IS NULL;

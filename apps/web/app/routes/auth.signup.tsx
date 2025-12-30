@@ -1,102 +1,154 @@
+import { useForm } from "react-hook-form";
 import type { Route } from "./+types/auth.login";
-import { Outlet, redirect, type MetaDescriptor } from "react-router";
+import { data, Link, Outlet, type MetaDescriptor } from "react-router";
 import { formData, zfd } from "zod-form-data";
 import z from "zod/v4";
-import { EmailQueue, User, UserCredentials } from "@bw/core";
-import { crypt, gen_salt } from "@bw/core/utils/drizzle";
-import { UserOtp } from "@bw/core/schema/auth/user";
-import { Session } from "@bw/core/schema/auth/session";
-import { cookieSession } from "~/cookie";
-import { getSession } from "~/utils/session";
 import { GradientBackground } from "~/components/v3/gradient";
+import { Mark } from "~/components/v3/logo";
+import { Button } from "~/components/v3/core/button";
+import { Form, FormField, FormItem, FormLabel } from "~/components/v3/core/form";
+import { CheckboxControl, InputControl } from "~/components/v3/core/form/control";
 
 export const meta = ({ }: Route.MetaArgs) => [
     { title: "Signup" },
     { name: "description", content: "Sign in to your account to conitnue." },
 ] satisfies MetaDescriptor[];
 
-export const action = async ({ request, context: { postgres, chargebee, jwt } }: Route.ActionArgs) => {
-    const form = await request.formData()
-    const session = await getSession(request, cookieSession)
-
-    const result = await formData({
-        first_name: z.string("first name is required"),
-        last_name: z.string("last name is required"),
-        email: z.email("email is required"),
-        password: z.string("password is required"),
-        terms_of_aggreement: zfd.checkbox({ trueValue: 'true' }).refine(value => value, 'terms of agreement are required')
-    }).parseAsync(form)
-
-    const token = await postgres.transaction(async tx => {
-        const code = Math.floor(100000 + Math.random() * 900000).toString();
-
-        // Insert the base user profile
-        const [{ uid }] = await tx.insert(User).values({
-            first_name: result.first_name,
-            last_name: result.last_name,
-            email: result.email,
-        }).returning()
-
-        // Insert the initial user session
-        const [{ id, nonce, expired_at }] = await tx.insert(Session).values({
-            uid,
-            expired_at: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        }).returning()
-
-        // Insert the user credentials
-        await tx.insert(UserCredentials).values({
-            uid,
-            password: crypt(result.password, gen_salt('bf'))
-        })
-
-        // Create a new OTP to verify the account
-        await tx.insert(UserOtp).values({
-            uid,
-            hash: crypt(code, gen_salt('bf')),
-            scope: 'verify_account',
-            expires_at: new Date(Date.now() + 10 * 60 * 1e3),
-        }).returning()
-
-        // Queue the OTP email to be sent
-        await tx.insert(EmailQueue).values({
-            recipient: "seaszn.libertas@gmail.com",
-            sender: '"Maddison Foo Koch" <maddison53@ethereal.email>',
-            subject: "Hello ✔",
-        })
-
-        // Create the user in the chargebee backend
-        await chargebee.customer.create({
-            id: uid,
-            email: result.email,
-            last_name: result.last_name,
-            first_name: result.first_name,
-        });
-
-        // TODO remove this line
-        console.log(`'${code}'`)
-
-        // Sign the session as a JWT token and return the result
-        return await jwt.sign({ nonce }, {
-            exp: expired_at.valueOf(),
-            sub: uid,
-            jti: id
-        })
-    });
-
-    session.set('token', token)
-
-    return redirect('./confirm', {
-        headers: [
-            ['Set-Cookie', await cookieSession.commitSession(session)]
-        ]
+export const loader = async ({ request, context: { auth } }: Route.LoaderArgs) => {
+    await auth.authenticate(request, {
+        onSuccess: '/',
+        onVerify: '/auth/verify'
     })
+
+    return data(null)
 }
 
-export default () => (
-    <main className="overflow-hidden bg-gray-50">
-        <GradientBackground />
-        <div className="isolate flex min-h-dvh items-center justify-center p-6 lg:p-8">
-            <Outlet />
-        </div>
-    </main>
-)
+export const action = async ({ request, context: { auth } }: Route.ActionArgs) => {
+    switch (request.method.toLowerCase()) {
+        case "post": {
+            const form = await request.formData()
+
+            // Validate the form data
+            const result = await formData({
+                first_name: z.string("first name is required"),
+                last_name: z.string("last name is required"),
+                email: z.email("email is required"),
+                password: z.string("password is required"),
+                terms_of_aggreement: zfd.checkbox({ trueValue: 'true' }).refine(value => value, 'terms of agreement are required')
+            }).parseAsync(form)
+
+            // authenticate the user
+            return await auth.signup(request, result.email, result.first_name, result.last_name, result.password, {
+                onSuccess: '/auth/verify'
+            })
+        }
+    }
+
+    return data({ error: 'method not allowed' }, { status: 415 })
+}
+
+export default () => {
+    const form = useForm()
+
+    return (
+        <main className="overflow-hidden bg-gray-50">
+            <GradientBackground />
+            <div className="isolate flex min-h-dvh items-center justify-center p-6 lg:p-8">
+                <div className="isolate flex items-center justify-center p-6 lg:p-8">
+                    <div className="w-full max-w-md rounded-xl bg-white shadow-md ring-1 ring-black/5">
+                        <Form control={form} method="post" action="./" className="p-7 sm:p-11 space-y-8">
+                            <div>
+                                <div className="flex items-start">
+                                    <Link to="/" title="Home">
+                                        <Mark className="h-9 fill-black" />
+                                    </Link>
+                                </div>
+                                <h1 className="mt-8 text-base/6 font-medium">Become a member!</h1>
+                                <p className="mt-1 text-sm/5 text-gray-600">
+                                    Sign up to your account to continue.
+                                </p>
+                            </div>
+                            <div className="flex gap-6">
+                                <FormField
+                                    name="first_name"
+                                    control={form.control}
+                                    render={({ field }) => (
+                                        <FormItem >
+                                            <FormLabel>First name</FormLabel>
+                                            <InputControl autoFocus required  {...field} />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    name="last_name"
+                                    control={form.control}
+                                    render={({ field }) => (
+                                        <FormItem >
+                                            <FormLabel>Last name</FormLabel>
+                                            <InputControl required {...field} />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+
+                            <FormField
+                                name="email"
+                                control={form.control}
+                                render={({ field }) => (
+                                    <FormItem >
+                                        <FormLabel>Email</FormLabel>
+                                        <InputControl required type="email" {...field} />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                name="password"
+                                control={form.control}
+                                render={({ field }) => (
+                                    <FormItem >
+                                        <FormLabel>Password</FormLabel>
+                                        <InputControl required type="password" {...field} />
+                                    </FormItem>
+                                )}
+                            />
+                            <div className="flex items-center justify-between text-sm/5">
+                                <FormField
+                                    name="terms_of_aggreement"
+                                    control={form.control}
+                                    render={({ field }) => (
+                                        <FormItem className="flex items-center gap-3">
+                                            <CheckboxControl required {...field} />
+                                            <FormLabel>I accept the terms of aggreement</FormLabel>
+                                        </FormItem>
+                                    )}
+                                />
+
+                            </div>
+                            <Button type="submit" className="w-full">
+                                Sign up
+                            </Button>
+                            {/* <div className="flex gap-2 h-0 overflow-visible items-center ">
+                        <span className=" border-t w-full" />
+                        <Paragraph className="text-nowrap">
+                            Or continue with
+                        </Paragraph>
+                        <span className=" border-t w-full" />
+                    </div>
+                    <Button type="button" variant="secondary" className="w-full flex gap-3">
+                        <img src="/partners/google.svg" className="size-4" />
+                        Google
+                    </Button> */}
+                        </Form>
+                        <div className="m-1.5 rounded-lg bg-gray-50 py-4 text-center text-sm/5 ring-1 ring-black/5">
+                            Already a member?
+                            <Link to="/auth/login" className="font-medium ml-2 hover:text-gray-600">
+                                Login here
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    )
+}

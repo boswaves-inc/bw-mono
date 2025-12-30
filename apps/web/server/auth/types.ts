@@ -1,0 +1,25 @@
+import type { Jwt } from "@bw/core/jwt";
+import type { JWTClaims } from "@bw/core/jwt/types";
+import type { Postgres } from "@bw/core/postgres";
+import type Chargebee from "chargebee";
+
+export interface ResetToken extends JWTClaims {
+    // verified: bool
+    cc: boolean
+}
+
+export interface AuthToken extends JWTClaims {
+    nonce: number
+}
+
+export interface AuthOptions {
+    chargebee: Chargebee,
+    postgres: Postgres,
+    jwt: Jwt
+}
+
+export type AuthRedirect = {
+    onSuccess: string,
+    onFailure: string,
+    onVerify: string
+}

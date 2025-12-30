@@ -9,6 +9,7 @@ export const Session = pgTable('sessions', t => ({
     }),
     nonce: t.integer('nonce').default(0).notNull(),
     created_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
+    updated_at: t.timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
     expired_at: t.timestamp({ withTimezone: true }).notNull(),
     revoked_at: t.timestamp({ withTimezone: true }),
 }), table => [
@@ -32,18 +33,18 @@ export const SessionOAuth = pgTable('session_oauth', t => ({
     index('session_oauth_uid_idx').on(table.id),
 ])
 
-export const SessionEvent = pgTable('session_events', t => ({
-    id: t.uuid().primaryKey().notNull().$defaultFn(() => crypto.randomUUID()),
-    sid: t.uuid().notNull().references(() => Session.id, {
-        onDelete: 'cascade',
-        onUpdate: 'cascade'
-    }),
-    emitted_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
-}), table => [
-    index('session_events_sid_idx').on(table.sid),
-    index('session_events_emitted_at_idx').on(table.emitted_at),
-])
+// export const SessionEvent = pgTable('session_events', t => ({
+//     id: t.uuid().primaryKey().notNull().$defaultFn(() => crypto.randomUUID()),
+//     sid: t.uuid().notNull().references(() => Session.id, {
+//         onDelete: 'cascade',
+//         onUpdate: 'cascade'
+//     }),
+//     emitted_at: t.timestamp({ withTimezone: true }).defaultNow().notNull(),
+// }), table => [
+//     index('session_events_sid_idx').on(table.sid),
+//     index('session_events_emitted_at_idx').on(table.emitted_at),
+// ])
 
-export type SessionEvent = typeof SessionEvent.$inferSelect;
+// export type SessionEvent = typeof SessionEvent.$inferSelect;
 export type SessionOAuth = typeof SessionOAuth.$inferSelect;
 export type Session = typeof Session.$inferSelect;

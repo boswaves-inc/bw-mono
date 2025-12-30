@@ -1,4 +1,4 @@
-import { importPKCS8, importSPKI, jwtVerify, SignJWT, type JWTPayload } from "jose";
+import { importPKCS8, importSPKI, jwtVerify, SignJWT, type JWTPayload, type JWTVerifyResult } from "jose";
 import type { JWTConfig, JWTClaims, VerifyOptions, Algorithm } from "./types";
 import { join } from "path";
 import { readFile } from "fs";
@@ -62,21 +62,24 @@ export class Jwt {
                 privateKey: await importPKCS8(privateKey, algorithm),
                 publicKey: await importSPKI(publicKey, algorithm)
             }
-        } 
+        }
         else {
             throw new Error('Must provide either secret (HMAC) or privateKey + publicKey (RSA/EC)');
         }
     }
 
     /**
-       * Sign a JWT with the provided payload
-       */
-    async sign(payload: JWTPayload, options?: JWTClaims): Promise<string> {
+     * Sign a JWT with the provided payload
+     */
+    async sign<T extends { [key: string]: unknown }>(payload: T, claims: JWTClaims): Promise<string> {
         await this._init;
 
-        let signer = new SignJWT(payload)
+        let signer = new SignJWT({ ...payload, ...claims })
             .setProtectedHeader({ alg: this._algorithm })
-            .setIssuedAt();
+            .setExpirationTime(claims.exp)
+            .setIssuedAt(claims.iat)
+            .setSubject(claims.sub)
+            .setJti(claims.jti);
 
         // Set defaults from config
         if (this._issuer) {
@@ -87,34 +90,18 @@ export class Jwt {
             signer = signer.setAudience(this._audience);
         }
 
-        // Override with options
-        if (options?.exp) {
-            signer = signer.setExpirationTime(options.exp);
+        if (claims?.nbf) {
+            signer = signer.setNotBefore(claims.nbf);
         }
 
-        if (options?.nbf) {
-            signer = signer.setNotBefore(options.nbf);
-        }
-
-        if (options?.jti) {
-            signer = signer.setJti(options.jti);
-        }
-
-        if (options?.sub) {
-            signer = signer.setSubject(options.sub);
-        }
-
-        // Sign with appropriate key
-        const signingKey = this._keys?.privateKey ?? this._secret!;
-
-        return await signer.sign(signingKey);
+        return await signer.sign(this._keys?.privateKey ?? this._secret!);
     }
 
 
     /**
      * Verify and decode a JWT
      */
-    async verify<T extends JWTPayload = JWTPayload>(token: string, options?: VerifyOptions): Promise<T> {
+    async verify<T extends JWTPayload = JWTPayload>(token: string, options?: VerifyOptions): Promise<JWTVerifyResult<T>> {
         await this._init;
 
         const verifyOptions: Parameters<typeof jwtVerify>[2] = {};
@@ -134,17 +121,13 @@ export class Jwt {
             verifyOptions.maxTokenAge = options.maxTokenAge;
         }
 
-        // Verify with appropriate key
-        const verifyingKey = this._keys?.publicKey ?? this._secret!;
-        const { payload } = await jwtVerify<T>(token, verifyingKey, verifyOptions);
-
-        return payload as T
+        return await jwtVerify<T>(token, this._keys?.publicKey ?? this._secret!, verifyOptions);
     }
 
     /**
-       * Decode a JWT without verifying (use with caution!)
-       */
-    public decode<T extends JWTPayload = JWTPayload>(token: string): T {
+     * Decode a JWT without verifying (use with caution!)
+     */
+    public decode<T extends JWTPayload = JWTPayload>(token: string): T & JWTPayload {
         const parts = token.split('.');
         if (parts.length !== 3) {
             throw new Error('Invalid JWT format');
@@ -154,6 +137,6 @@ export class Jwt {
             Buffer.from(parts[1], 'base64url').toString('utf-8')
         );
 
-        return payload as T;
+        return payload as T & JWTPayload;
     }
 }

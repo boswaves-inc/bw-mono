@@ -4,6 +4,8 @@ import * as schema from '@bw/core/schema'
 import { drizzle } from "drizzle-orm/postgres-js";
 import { Smtp } from "./smtp";
 
+import config from './config'
+
 const main = async () => {
     console.log('worker starting...');
 
@@ -23,19 +25,13 @@ const main = async () => {
         password: process.env.PG_PASSWORD
     })
 
-    const smtp_client = new Smtp({
-        host: 'smtp.ethereal.email',
-        port: 587,
-        auth: {
-            user: 'francesca.bailey@ethereal.email',
-            pass: 'eahGbsXKCBct3GEW5S'
-        }
-    })
-
+    const smtp_client = new Smtp(config.smtp)
     const pg_client = drizzle(query_client, { schema });
 
     await event_client.listen('email_queued', async (payload) => {
+        console.log(JSON.parse(payload))
         
+        console.log(payload)
         console.log('test')
     })
 

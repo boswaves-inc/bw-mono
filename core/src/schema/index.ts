@@ -6,7 +6,7 @@ import { Item, ItemScript, ItemType, ItemPrice, ItemTag, ItemPriceModel } from '
 import { PeriodUnit } from './types'
 import { ItemStatus, } from './shop/types'
 import { User, UserCredentials, UserProvider } from './auth/user'
-import { Email, EmailEvent, EmailQueue, EmailStatus } from './system/email'
+import { Email, EmailTemplate, EmailStatus } from './system/email'
 
 export default {
     Tag,
@@ -15,8 +15,8 @@ export default {
     PeriodUnit, ItemType,
     User, UserCredentials, UserProvider,
     Item, ItemScript, ItemPrice, ItemTag,
-    ScriptType, ItemStatus , ItemPriceModel,
-    Email, EmailEvent, EmailQueue, EmailStatus,
+    ScriptType, ItemStatus, ItemPriceModel,
+    Email, EmailTemplate, EmailStatus,
     CouponDuration, CouponDiscount, CouponApplication, Coupon
 }
 
@@ -27,7 +27,7 @@ export {
     PeriodUnit, ItemType,
     User, UserCredentials, UserProvider,
     Item, ItemScript, ItemPrice, ItemTag,
-    ScriptType, ItemStatus , ItemPriceModel,
-    Email, EmailEvent, EmailQueue, EmailStatus,
+    ScriptType, ItemStatus, ItemPriceModel,
+    Email, EmailTemplate, EmailStatus,
     CouponDuration, CouponDiscount, CouponApplication, Coupon
 }

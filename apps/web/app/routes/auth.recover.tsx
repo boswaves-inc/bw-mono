@@ -1,13 +1,8 @@
-import { useForm } from "react-hook-form";
-import type { Route } from "./+types/auth.recover";
-import { Form, FormField, FormItem, FormLabel } from "~/components/v3/core/form";
-import { data, Link, Outlet, redirect } from "react-router";
-import { Mark } from "~/components/v3/logo";
-import { InputControl } from "~/components/v3/core/form/control";
-import { Button } from "~/components/v3/core/button";
-import { formData, zfd } from "zod-form-data";
-import z from "zod/v4";
 import { GradientBackground } from "~/components/v3/gradient";
+import type { Route } from "./+types/auth.recover";
+import { data, Outlet } from "react-router";
+import { formData } from "zod-form-data";
+import z from "zod/v4";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -16,15 +11,42 @@ export function meta({ }: Route.MetaArgs) {
     ];
 }
 
-export const action = async ({ request }: Route.ActionArgs) => {
-    const form = await request.formData()
-    const result = await formData({
-        email: z.email("email is required"),
-    }).parseAsync(form)
+export const loader = async ({ request, context: { auth } }: Route.LoaderArgs) => {
+    await auth.authenticate(request, {
+        onSuccess: '/',
+        onVerify: '/auth/verify'
+    })
 
-    console.log(result)
+    return data(null)
+}
 
-    return redirect('./code')
+export const action = async ({ request, context: { auth } }: Route.ActionArgs) => {
+    switch (request.method.toLowerCase()) {
+        case 'post': {
+            const form = await request.formData()
+
+            // Validate the form data
+            const result = await formData({
+                email: z.email("email is required"),
+            }).parseAsync(form)
+
+            try {
+                // Request the recovery OTP
+                return await auth.recover(request, result.email, {
+                    onSuccess: './code'
+                })
+            }
+            catch ({ message }: any) {
+                console.log(message)
+
+                return data({ error: message }, {
+                    status: 400
+                })
+            }
+        }
+    }
+
+    return data({ error: 'method not allowed' }, { status: 415 })
 }
 
 export default () => (

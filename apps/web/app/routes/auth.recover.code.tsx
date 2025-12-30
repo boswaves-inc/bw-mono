@@ -8,7 +8,7 @@ import type { Route } from "./+types/auth.recover.code";
 import { formData } from "zod-form-data";
 import z from "zod/v4";
 
-export const action = async ({ request }: Route.ActionArgs) => {
+export const action = async ({ request, context: { auth } }: Route.ActionArgs) => {
     switch (request.method.toLowerCase()) {
         case 'post': {
             const form = await request.formData()
@@ -16,18 +16,34 @@ export const action = async ({ request }: Route.ActionArgs) => {
                 code: z.string("otp is required"),
             }).parseAsync(form)
 
-            console.log(result)
-
-            return redirect('../reset')
+            try {
+                return auth.recover_confirm(request, result.code, {
+                    onSuccess: '/auth/recover/reset',
+                    onFailure: '/auth/recover'
+                })
+            }
+            catch ({ message }: any) {
+                return data({ error: message }, {
+                    status: 400
+                })
+            }
         };
         case 'put': {
-            return redirect('.')
+            try {
+                return auth.recover_resend(request, {
+                    onFailure: '/auth/recover'
+                })
+            }
+            catch ({ message }: any) {
+                return data({ error: message }, {
+                    status: 400
+                })
+            }
         };
     }
 
     return data('method not allowed', 405)
 }
-
 
 export default () => {
     const form = useForm()

@@ -1,9 +1,42 @@
 import { useForm } from "react-hook-form";
 import { Form, FormField, FormItem, FormLabel } from "~/components/v3/core/form";
-import { Link } from "react-router";
+import { data, Link } from "react-router";
 import { Mark } from "~/components/v3/logo";
 import { InputControl } from "~/components/v3/core/form/control";
 import { Button } from "~/components/v3/core/button";
+import { formData } from "zod-form-data";
+import z from "zod/v4";
+import type { Route } from "./+types/auth.recover.reset";
+
+export const action = async ({ request, context: { auth } }: Route.ActionArgs) => {
+    switch (request.method.toLowerCase()) {
+        case 'post': {
+            const form = await request.formData()
+            const result = await formData({
+                password: z.string("password is required"),
+                confirm_password: z.string("confirm_password is required"),
+            }).refine(({password, confirm_password}) => {
+                return password === confirm_password
+            }, 'passwords do not match').parseAsync(form)
+
+            try {
+                return auth.recover_reset(request, result.password, {
+                    onSuccess: '/',
+                    onFailure: '/auth/recover',
+                    onVerify: '/auth/verify',
+                })
+            }
+            catch ({ message }: any) {
+                return data({ error: message }, {
+                    status: 400
+                })
+            }
+        };
+    }
+
+    return data('method not allowed', 405)
+}
+
 
 export default () => {
     const form = useForm()
@@ -34,7 +67,7 @@ export default () => {
                         )}
                     />
                     <FormField
-                        name="confirm_passord"
+                        name="confirm_password"
                         control={form.control}
                         render={({ field }) => (
                             <FormItem >

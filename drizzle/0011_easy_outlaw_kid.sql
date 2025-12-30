@@ -1,5 +1,5 @@
 -- Custom SQL migration file, put your code below! --
-CREATE OR REPLACE FUNCTION user_credentials_provider_check() RETURNS TRIGGER AS $$ BEGIN IF NOT EXISTS (
+CREATE OR REPLACE FUNCTION check_user_credentials_provider() RETURNS TRIGGER AS $$ BEGIN IF NOT EXISTS (
         SELECT 1
         FROM users
         WHERE uid = NEW.uid
@@ -13,7 +13,7 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER user_credentials_provider_check_trigger BEFORE
 INSERT
     OR
-UPDATE ON user_credentials FOR EACH ROW EXECUTE FUNCTION user_credentials_provider_check();
+UPDATE ON user_credentials FOR EACH ROW EXECUTE FUNCTION check_user_credentials_provider();
 
 -- Add comment for documentation
 COMMENT ON TRIGGER user_credentials_provider_check_trigger ON user_credentials IS 'Ensures credentials can only be created for users with provider = internal';

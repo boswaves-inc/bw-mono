@@ -4,38 +4,27 @@ import { Mark } from "~/components/v3/logo";
 import { Button } from "~/components/v3/core/button";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem } from "~/components/v3/core/form";
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/v3/core/input-otp";
+import { GradientBackground } from "~/components/v3/gradient";
 import { formData } from "zod-form-data";
 import z from "zod/v4";
-import { EmailQueue, User } from "@bw/core";
-import { crypt, gen_salt, increment } from "@bw/core/utils/drizzle";
-import { UserOtp } from "@bw/core/schema/auth/user";
-import { cookieSession } from "~/cookie";
-import { getSession } from "~/utils/session";
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/v3/core/input-otp";
-import type { JWTPayload } from "jose";
-import { and, eq, isNull, } from "drizzle-orm";
-import { GradientBackground } from "~/components/v3/gradient";
 
 export const meta = (): MetaDescriptor[] => [
     { title: "Signup" },
     { name: "description", content: "Sign in to your account to conitnue." },
 ];
 
-export const action = async ({ request, context: { postgres, jwt } }: Route.ActionArgs) => {
-    const session = await getSession(request, cookieSession)
+export const loader = async ({ request, context: { auth } }: Route.LoaderArgs) => {
+    await auth.authenticate(request, {
+        onSuccess: '/',
+        onFailure: '/auth/login'
+    })
+
+    return data(null)
+}
+
+export const action = async ({ request, context: { auth } }: Route.ActionArgs) => {
     const form = await request.formData()
-
-    const token = session.get('token')
-
-    if (token == undefined) {
-        throw new Error('not authenticated')
-    }
-
-    const { sub, exp } = jwt.decode<JWTPayload>(token) as Required<JWTPayload>
-
-    if (exp <= Date.now()) {
-        redirect('../')
-    }
 
     switch (request.method.toLowerCase()) {
         case 'post': {
@@ -43,66 +32,29 @@ export const action = async ({ request, context: { postgres, jwt } }: Route.Acti
                 code: z.string("otp is required"),
             }).parseAsync(form)
 
-            await postgres.transaction(async tx => {
-                await tx.update(User).set({
-                    status: 'active'
-                }).where(and(
-                    eq(User.uid, sub),
-                    eq(User.status, 'pending')
-                ))
-
-                const otp = await tx.update(UserOtp).set({
-                    attempts: increment(UserOtp.attempts),
-                    consumed_at: new Date(),
-                }).where(and(
-                    eq(UserOtp.uid, sub),
-                    eq(UserOtp.scope, 'verify_account'),
-                    eq(UserOtp.hash, crypt(code, UserOtp.hash)),
-                    isNull(UserOtp.consumed_at),
-                )).returning().then(x => x.at(0))
-
-                if (otp !== undefined && otp.expires_at <= new Date()) {
-                    return data({ error: 'code expired' }, {
-                        status: 400
-                    })
-                }
-                else if (otp == undefined) {
-                    return data({ error: 'code invalid' }, {
-                        status: 400
-                    })
-                }
-            })
-
-            return redirect('/')
+            try {
+                return await auth.verify_confirm(request, code, {
+                    onSuccess: '/',
+                    onFailure: '/auth/login'
+                })
+            }
+            catch (err: any) {
+                return data({ error: err.message }, {
+                    status: 400
+                })
+            }
         };
         case 'put': {
-            const code = Math.floor(100000 + Math.random() * 900000).toString();
-
-            await postgres.transaction(async tx => {
-                await tx.update(UserOtp).set({
-                    revoked_at: new Date()
-                }).where(and(
-                    eq(UserOtp.uid, sub),
-                    isNull(UserOtp.consumed_at),
-                    isNull(UserOtp.revoked_at),
-                    eq(UserOtp.scope, 'verify_account'),
-                )).returning()
-
-                await tx.insert(UserOtp).values({
-                    uid: sub,
-                    hash: crypt(code, gen_salt('bf')),
-                    scope: 'verify_account',
-                    expires_at: new Date(Date.now() + 10 * 60 * 1e3),
-                }).returning()
-
-                await tx.insert(EmailQueue).values({
-                    recipient: "seaszn.libertas@gmail.com",
-                    sender: '"Maddison Foo Koch" <maddison53@ethereal.email>',
-                    subject: "Hello ✔",
+            try {
+                return await auth.verify_resend(request, {
+                    onFailure: '/auth/login'
                 })
-            });
-
-            return data({})
+            }
+            catch (err: any) {
+                return data({ error: err.message }, {
+                    status: 400
+                })
+            }
         };
     }
 

@@ -79,7 +79,7 @@ export const UserOtp = pgTable('user_otps', t => ({
     index('user_otps_expires_at_idx').on(table.expires_at),
     uniqueIndex('user_otps_active_unique_idx')
         .on(table.uid, table.scope)
-        .where(sql`${table.consumed_at} IS NULL`),
+        .where(sql`${table.consumed_at} IS NULL AND ${table.revoked_at} IS NULL`),
 ])
 
 export type UserRole = InferEnum<typeof UserRole>

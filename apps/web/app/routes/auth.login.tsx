@@ -7,12 +7,6 @@ import { Form, FormField, FormItem, FormLabel } from "~/components/v3/core/form"
 import { InputControl } from "~/components/v3/core/form/control";
 import { formData } from "zod-form-data";
 import { z } from "zod/v4";
-import { User, UserCredentials } from "@bw/core";
-import { and, eq, getTableColumns, ne } from "drizzle-orm";
-import { crypt } from "@bw/core/utils/drizzle";
-import { Session } from "@bw/core/schema/auth/session";
-import { getSession } from "~/utils/session";
-import { cookieSession } from "~/cookie";
 import { GradientBackground } from "~/components/v3/gradient";
 
 export function meta({ }: Route.MetaArgs) {
@@ -22,57 +16,36 @@ export function meta({ }: Route.MetaArgs) {
     ];
 }
 
-export const action = async ({ request, context: { postgres, jwt } }: Route.ActionArgs) => {
-    const form = await request.formData()
-    const session = await getSession(request, cookieSession)
-
-    const result = await formData({
-        email: z.email("email is required"),
-        password: z.string("password is required"),
-    }).parseAsync(form)
-
-    const { user, token } = await postgres.transaction(async tx => {
-        const user = await tx.select({
-            ...getTableColumns(User)
-        })
-            .from(User)
-            .innerJoin(UserCredentials, eq(User.uid, UserCredentials.uid))
-            .where(and(
-                ne(User.status, 'deleted'),
-                eq(User.email, result.email),
-                eq(UserCredentials.password, crypt(result.password, UserCredentials.password)),
-            )).then(x => x.at(0))
-
-        if (user == undefined) {
-            throw new Error('invalid credentials')
-        }
-
-        const [{ id, nonce, expired_at }] = await tx.insert(Session).values({
-            uid: user.uid,
-            expired_at: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        }).returning()
-
-        const token = await jwt.sign({ nonce }, {
-            exp: expired_at.valueOf(),
-            sub: user.uid,
-            jti: id
-        })
-
-        return { token, user }
-
+export const loader = async ({ request, context: { auth } }: Route.LoaderArgs) => {
+    await auth.authenticate(request, {
+        onSuccess: '/',
+        onVerify: '/auth/verify'
     })
 
-    session.set('token', token)
+    return data(null)
+}
 
-    if (user.status != 'active') {
-        // redirect to confirm account
+export const action = async ({ request, context: { auth } }: Route.ActionArgs) => {
+    const form = await request.formData()
+
+    switch (request.method.toLowerCase()) {
+        case 'post': {
+            // Validate the form data
+            const result = await formData({
+                email: z.email("email is required"),
+                password: z.string("password is required"),
+            }).parseAsync(form)
+
+            // authenticate the user
+            return auth.login(request, result.email, result.password, {
+                onSuccess: '/',
+                onVerify: '/auth/verify'
+            })
+        }
     }
 
-    return data({}, {
-        headers: [
-            ['Set-Cookie', await cookieSession.commitSession(session)]
-        ]
-    })
+    return data({ error: 'method not allowed' }, { status: 415 })
+
 }
 
 export default () => {
