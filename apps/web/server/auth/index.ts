@@ -299,13 +299,13 @@ export class Auth {
                 eq(UserOtp.uid, user.uid),
                 isNull(UserOtp.revoked_at),
                 isNull(UserOtp.consumed_at),
-                eq(UserOtp.scope, 'reset_password'),
+                eq(UserOtp.scope, 'recover_account'),
             ))
             // Create a new OTP to reset the account
             const [otp] = await tx.insert(UserOtp).values({
                 uid: user.uid,
                 hash: crypt(code, gen_salt('bf')),
-                scope: 'reset_password',
+                scope: 'recover_account',
                 expires_at: addMinutes(Date.now(), 10)
             }).returning()
 
@@ -343,14 +343,14 @@ export class Auth {
 
         await this._postgres.transaction(async tx => {
 
-            // Revoke all reset_password OTP's for this user
+            // Revoke all recover_account OTP's for this user
             await tx.update(UserOtp).set({
                 revoked_at: new Date()
             }).where(and(
                 eq(UserOtp.uid, token.sub),
                 isNull(UserOtp.revoked_at),
                 isNull(UserOtp.consumed_at),
-                eq(UserOtp.scope, 'reset_password'),
+                eq(UserOtp.scope, 'recover_account'),
             ))
 
             // Check if the user has not been deleted in the mean time
@@ -374,7 +374,7 @@ export class Auth {
             const [otp] = await tx.insert(UserOtp).values({
                 uid: user.uid,
                 hash: crypt(code, gen_salt('bf')),
-                scope: 'reset_password',
+                scope: 'recover_account',
                 expires_at: addMinutes(Date.now(), 10)
             }).returning()
 
@@ -413,7 +413,7 @@ export class Auth {
             // check otp and then generate a short lived reset token
             const otp = await tx.select().from(UserOtp).where(and(
                 eq(UserOtp.uid, token.sub),
-                eq(UserOtp.scope, 'reset_password'),
+                eq(UserOtp.scope, 'recover_account'),
                 eq(UserOtp.hash, crypt(code, UserOtp.hash)),
                 isNull(UserOtp.consumed_at)
             )).then(x => x.at(0))
@@ -482,7 +482,7 @@ export class Auth {
             }).where(and(
                 eq(UserOtp.id, token.jti),
                 eq(UserOtp.uid, token.sub),
-                eq(UserOtp.scope, 'reset_password'),
+                eq(UserOtp.scope, 'recover_account'),
                 isNull(UserOtp.consumed_at),
             )).returning().then(x => x.at(0))
 

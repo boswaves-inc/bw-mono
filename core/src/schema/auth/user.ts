@@ -17,7 +17,7 @@ export const UserStatus = pgEnum('user_status', [
 
 export const UserOtpScope = pgEnum('user_otp_scope', [
     'verify_account',
-    'reset_password'
+    'recover_account'
 ])
 
 export const UserRole = pgEnum('user_role', [
