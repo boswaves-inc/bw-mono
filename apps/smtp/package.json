@@ -1,5 +1,5 @@
 {
-  "name": "@bw/smtp",
+  "name": "@boswaves/smtp",
   "private": true,
   "scripts": {
     "dev": "dotenv -- tsup --watch",
