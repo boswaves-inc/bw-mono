@@ -1,7 +1,7 @@
 import type { NextFunction, Response } from 'express';
 import express from 'express'
 import { EventType, type WebhookPlanEvent, type WebhookRequest } from './types';
-import type { Postgres } from '@bw/core/postgres';
+import type { Postgres } from '@boswaves/core/postgres';
 
 export default ({ postgres }: { postgres: Postgres }) => {
     const router = express.Router()

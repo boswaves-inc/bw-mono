@@ -1,4 +1,4 @@
-import { PeriodUnit, Script, Tag } from "@bw/core";
+import { PeriodUnit, Script, Tag } from "@boswaves/core";
 import { useForm } from "@refinedev/react-hook-form";
 import { data, useNavigate } from "react-router";
 import { Button } from "~/components/core/button";

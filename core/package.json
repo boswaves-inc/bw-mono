@@ -1,5 +1,5 @@
 {
-  "name": "@bw/core",
+  "name": "@boswaves/core",
   "private": true,
   "type": "module",
   "exports": {

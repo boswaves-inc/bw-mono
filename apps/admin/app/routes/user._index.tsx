@@ -5,7 +5,7 @@ import { ListView, ListViewHeader } from "~/components/refine/views/list";
 import { createColumnHelper } from "@tanstack/react-table";
 import Table from "~/components/refine/table";
 
-import { User } from "@bw/core";
+import { User } from "@boswaves/core";
 import type { Route } from "./+types/user._index";
 import { TableActionCell } from "~/components/refine/table/cell";
 

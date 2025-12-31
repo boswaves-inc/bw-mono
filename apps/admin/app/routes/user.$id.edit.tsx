@@ -1,4 +1,4 @@
-import {  User } from "@bw/core";
+import {  User } from "@boswaves/core";
 import { useForm } from "@refinedev/react-hook-form";
 import _ from "lodash";
 import { useNavigate } from "react-router";

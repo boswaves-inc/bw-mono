@@ -1,6 +1,6 @@
-import type { Jwt } from "@bw/core/jwt";
-import type { JWTClaims } from "@bw/core/jwt/types";
-import type { Postgres } from "@bw/core/postgres";
+import type { Jwt } from "@boswaves/core/jwt";
+import type { JWTClaims } from "@boswaves/core/jwt/types";
+import type { Postgres } from "@boswaves/core/postgres";
 import type Chargebee from "chargebee";
 
 export interface ResetToken extends JWTClaims {

@@ -1,4 +1,4 @@
-import {  Tag } from "@bw/core";
+import {  Tag } from "@boswaves/core";
 import { useOne } from "@refinedev/core";
 import _ from "lodash";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/core/card";

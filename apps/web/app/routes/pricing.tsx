@@ -8,7 +8,7 @@ import { LogoCloud } from "~/components/v3/sections/logo-cloud";
 import type { Route } from "./+types/pricing";
 import dayjs from "dayjs";
 import { and, eq, getTableColumns } from "drizzle-orm";
-import { Item, ItemPrice, ItemScript, PeriodUnit, Script } from "@bw/core";
+import { Item, ItemPrice, ItemScript, PeriodUnit, Script } from "@boswaves/core";
 import { Button } from "~/components/v3/core/button";
 import { Plus } from "lucide-react";
 

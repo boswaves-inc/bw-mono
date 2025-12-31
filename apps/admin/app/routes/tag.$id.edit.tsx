@@ -1,4 +1,4 @@
-import { Item, Tag } from "@bw/core";
+import { Item, Tag } from "@boswaves/core";
 import { useForm } from "@refinedev/react-hook-form";
 import { useShow } from "@refinedev/core";
 import { useNavigate } from "react-router";

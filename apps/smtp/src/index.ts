@@ -1,10 +1,11 @@
 import postgres from "postgres";
-import { Postgres } from '@bw/core/postgres'
-import * as schema from '@bw/core/schema'
+import { Postgres } from '@boswaves/core/postgres'
+import * as schema from '@boswaves/core/schema'
 import { drizzle } from "drizzle-orm/postgres-js";
 import { Smtp } from "./smtp";
 
 import config from './config'
+import { render } from "@react-email/render";
 
 const main = async () => {
     console.log('smtp starting...');
@@ -30,6 +31,7 @@ const main = async () => {
 
     await event_client.listen('email_queued', async (id) => {
         console.log(id)
+
     })
 
     console.log('smtp ready...\n');

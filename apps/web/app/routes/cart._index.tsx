@@ -3,7 +3,7 @@ import { data, Form, Link, Outlet, useFetcher } from "react-router";
 import type { Route } from "./+types/cart._index";
 import { formData } from "zod-form-data";
 import { getSession } from "~/utils/session";
-import { Cart, CartItem, Item, ItemPrice } from "@bw/core";
+import { Cart, CartItem, Item, ItemPrice } from "@boswaves/core";
 import { and, eq, getTableColumns, isNotNull, notExists, sql, } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import Section from "~/components/section";

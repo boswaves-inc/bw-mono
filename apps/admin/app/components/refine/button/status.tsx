@@ -2,7 +2,7 @@ import type { StatusButtonProps } from "./types";
 import { Button } from "~/components/core/button";
 import { useForm } from "@refinedev/react-hook-form";
 import { useOne } from "@refinedev/core";
-import type { Status } from "@bw/core";
+import type { Status } from "@boswaves/core";
 import { useEffect } from "react";
 
 export const StatusButton = ({ children, resource, recordItemId, ref, ...rest }: StatusButtonProps) => {

@@ -2,8 +2,8 @@ import _ from 'lodash';
 import express from 'express'
 import cors from "cors";
 import { and, eq, exists, ne } from 'drizzle-orm';
-import type { Postgres } from '@bw/core/postgres'
-import { Tag, ItemTag } from '@bw/core'
+import type { Postgres } from '@boswaves/core/postgres'
+import { Tag, ItemTag } from '@boswaves/core'
 import { createInsertSchema } from "drizzle-zod";
 import z, { union } from 'zod/v4';
 

@@ -2,10 +2,10 @@ import { createRequestHandler } from "@react-router/express";
 import express from "express";
 import Chargebee from 'chargebee';
 import theme, { getTheme } from "./theme";
-import postgres, { Postgres } from "@bw/core/postgres";
+import postgres, { Postgres } from "@boswaves/core/postgres";
 import "react-router";
 import { Maxmind } from "./maxmind";
-import { Jwt } from "@bw/core/jwt";
+import { Jwt } from "@boswaves/core/jwt";
 import { Auth } from "./auth";
 
 if (!process.env.CB_SITE) {

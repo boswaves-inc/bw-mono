@@ -1,9 +1,9 @@
 import { data, Outlet } from "react-router";
 import type { Route } from "./+types/cart";
-import { Cart, CartItem, ItemPrice } from "@bw/core";
+import { Cart, CartItem, ItemPrice } from "@boswaves/core";
 import { and, eq, getTableColumns, isNotNull, notExists, sql, } from "drizzle-orm";
-import { coalesce, json_agg_object } from "@bw/core/utils/drizzle";
-import { CartCoupon } from "@bw/core/schema/shop/cart";
+import { coalesce, json_agg_object } from "@boswaves/core/utils/drizzle";
+import { CartCoupon } from "@boswaves/core/schema/shop/cart";
 
 import { Container } from "~/components/v3/container";
 import { GradientBackground } from "~/components/v3/gradient";

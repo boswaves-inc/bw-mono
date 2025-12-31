@@ -8,7 +8,7 @@
         "db:sync": "dotenv -- tsx scripts/sync.ts"
     },
     "dependencies": {
-        "@bw/core": "workspace:*",
+        "@boswaves/core": "workspace:*",
         "chargebee": "^3.14.0",
         "drizzle-orm": "^0.44.6",
         "lodash": "^4.17.21",

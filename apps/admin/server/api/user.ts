@@ -1,5 +1,5 @@
-import { User } from '@bw/core'
-import type { Postgres } from '@bw/core/postgres'
+import { User } from '@boswaves/core'
+import type { Postgres } from '@boswaves/core/postgres'
 import type Chargebee from 'chargebee'
 import express from 'express'
 import { createInsertSchema, createSelectSchema, createUpdateSchema } from "drizzle-zod";
@@ -23,20 +23,22 @@ export default ({ postgres, chargebee }: { postgres: Postgres, chargebee: Charge
 
     // Create
     router.post('/', async (req, res) => {
-        const schema = createInsertSchema(User).omit({ cbid: true })
+        const schema = createInsertSchema(User).omit({})
 
         try {
             const data = await schema.parseAsync(req.body)
-            const cb = await chargebee.customer.create({
+            const [result] = await postgres.insert(User).values({
                 email: data.email,
                 first_name: data.first_name,
                 last_name: data.last_name,
-            });
+            }).returning()
 
-            const result = await postgres.insert(User).values({
-                cbid: cb.customer.id,
-                ...data,
-            })
+            await chargebee.customer.create({
+                id: result.uid,
+                email: result.email,
+                first_name: result.first_name,
+                last_name: result.last_name,
+            });
 
             return res.json(result).sendStatus(200)
         }
@@ -70,7 +72,7 @@ export default ({ postgres, chargebee }: { postgres: Postgres, chargebee: Charge
             const [current] = await postgres.select().from(User).where(eq(User.uid, req.params.id))
 
             const pg_result = await postgres.update(User).set({ ...data, updated_at: new Date() }).where(eq(User.uid, req.params.id))
-            const cb_result = await chargebee.customer.update(current.cbid, {
+            const cb_result = await chargebee.customer.update(current.uid, {
                 first_name: data.first_name,
                 last_name: data.last_name,
                 email: data.email
@@ -91,7 +93,7 @@ export default ({ postgres, chargebee }: { postgres: Postgres, chargebee: Charge
             if (current) {
                 await Promise.all([
                     postgres.delete(User).where(eq(User.uid, req.params.id)),
-                    chargebee.customer.delete(current.cbid, { delete_payment_method: true })
+                    chargebee.customer.delete(current.uid, { delete_payment_method: true })
                 ])
                 return res.json(current).sendStatus(200)
             }

@@ -5,7 +5,7 @@ import { Check, ChevronLeft, Flame, Star } from "lucide-react";
 import FaqAccordion from "~/sections/faq/accordion";
 import { data, Link, useFetcher } from "react-router";
 import Panel from "~/components/core/panel";
-import { Item, ItemPrice, ItemScript, PeriodUnit, Script } from "@bw/core";
+import { Item, ItemPrice, ItemScript, PeriodUnit, Script } from "@boswaves/core";
 import { and, eq, getTableColumns, isNotNull } from "drizzle-orm";
 import { useCart } from "~/context/cart";
 import { includes } from "lodash";

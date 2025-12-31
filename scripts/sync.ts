@@ -1,11 +1,11 @@
 import { sql } from 'drizzle-orm';
-import { Item, ItemScript, ScriptType, TvScript } from '@bw/core'
+import { Item, ItemScript, ScriptType, TvScript } from '@boswaves/core'
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';
 import Chargebee, { Customer, type Item as CBItem } from 'chargebee'
 import _ from 'lodash'
-import { TradingView } from '@bw/core/tradingview';
+import { TradingView } from '@boswaves/core/tradingview';
 
 const main = async () => {
     if (!process.env.CB_SITE) {

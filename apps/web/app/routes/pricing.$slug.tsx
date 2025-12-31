@@ -4,7 +4,7 @@ import { Heading, Subheading } from "~/components/v3/core/typography";
 import type { Route } from "./+types/pricing.$slug";
 import dayjs from "dayjs";
 import { and, eq } from "drizzle-orm";
-import { Item, ItemPrice, ItemScript, PeriodUnit, Script } from "@bw/core";
+import { Item, ItemPrice, ItemScript, PeriodUnit, Script } from "@boswaves/core";
 import { Button } from "~/components/v3/core/button";
 import { Plus, PlusIcon } from "lucide-react";
 import { Markdown } from "~/components/v3/core/markdown";
@@ -55,7 +55,7 @@ export async function loader({ params, context: { postgres, geo } }: Route.Loade
     return data(item)
 }
 
-export default ({ loaderData: { name, description, created_at } }: Route.ComponentProps) => (
+export default ({ loaderData: { name, description, script, created_at } }: Route.ComponentProps) => (
     <div className="overflow-hidden">
         <Container className="mt-16 lg:pb-24">
             <Subheading >
@@ -75,10 +75,17 @@ export default ({ loaderData: { name, description, created_at } }: Route.Compone
                     Trend Following
                 </Link>
             </div>
-            <div className={'mt-16 h-auto sm:h-auto aspect-video sm:w-full relative [--radius:var(--radius-xl)]'}>
+            {/* <div className={'mt-16 h-auto sm:h-auto aspect-video sm:w-full relative [--radius:var(--radius-xl)]'}>
                 <div className="absolute -inset-(--padding) rounded-[calc(var(--radius)+var(--padding))] shadow-xs ring-1 ring-black/5 [--padding:--spacing(2)]" />
                 <div className="rounded-lg relative object-cover object-left h-full w-full shadow-2xl overflow-hidden ring-1 ring-black/10">
                     <iframe loading="eager" src="https://s.tradingview.com/embed/ItnS5Inz" className="absolute w-[calc(100%+6px)] h-[calc(100%+24px)] -top-px -inset-x-1" />
+                </div>
+            </div> */}
+            <div className={'mt-16 h-auto sm:h-auto sm:w-full relative [--radius:var(--radius-xl)]'}>
+                <div className="absolute -inset-(--padding) rounded-[calc(var(--radius)+var(--padding))] shadow-xs ring-1 ring-black/5 [--padding:--spacing(2)]" />
+                <div className="relative overflow-hidden rounded-2xl ring-1 shadow-xl ring-gray-900/5 dark:ring-white/5 h-[500px]">
+                    <img src={script.image} className="absolute ring-1 w-[calc(100%+6px)] h-[500px] overflow-hidden" />
+                    {/* <iframe src="https://s.tradingview.com/embed/ItnS5Inz" className="absolute -inset-x-1 outline-0 -top-px -bottom-6 ring w-[calc(100%+6px)] h-[524px] overflow-hidden" /> */}
                 </div>
             </div>
         </Container>

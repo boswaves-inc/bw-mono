@@ -1,7 +1,7 @@
 import { data } from "react-router"
 import type { Route } from "./+types/checkout.intent"
 import { eq } from 'drizzle-orm';
-import type { User } from "@bw/core";
+import type { User } from "@boswaves/core";
 
 export async function action({ request, context }: Route.ActionArgs) {
     const form = await request.formData()

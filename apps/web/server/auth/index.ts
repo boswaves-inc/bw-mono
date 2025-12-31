@@ -1,16 +1,16 @@
 import { addDays, addMinutes, isPast, milliseconds, millisecondsToSeconds as seconds } from "date-fns"
-import { crypt, gen_salt, increment } from "@bw/core/utils/drizzle"
-import { Email, User, UserCredentials } from "@bw/core"
-import { Session } from "@bw/core/schema/auth/session"
+import { crypt, gen_salt, increment } from "@boswaves/core/utils/drizzle"
+import { Email, User, UserCredentials } from "@boswaves/core"
+import { Session } from "@boswaves/core/schema/auth/session"
 import { and, eq, gt, isNull, ne } from "drizzle-orm"
 import { recoverSession, authSession } from "./cookies"
 import { getSession } from "~/utils/session"
 import { data, redirect } from "react-router"
-import { UserOtp } from "@bw/core/schema/auth/user"
+import { UserOtp } from "@boswaves/core/schema/auth/user"
 
 import type Chargebee from "chargebee"
-import type { Jwt } from "@bw/core/jwt"
-import type { Postgres } from "@bw/core/postgres"
+import type { Jwt } from "@boswaves/core/jwt"
+import type { Postgres } from "@boswaves/core/postgres"
 import type { AuthOptions, AuthRedirect, AuthToken, ResetToken } from "./types"
 
 export class Auth {
