@@ -1,10 +1,13 @@
 import { defineConfig } from 'tsup'
 
+const env = process.env.NODE_ENV;
+
 export default defineConfig({
-    entry: ['src/index.ts'],
-    format: ['esm'],
-    target: 'node18',
     clean: true,
+    format: ['cjs', 'esm'], // generate cjs and esm files
+    target: 'es2020',
+    entry: ['src/index.ts'],
+    minify: env === 'production',
     outExtension() {
         return { js: '.js' }
     },

@@ -6,32 +6,31 @@ import { Smtp } from "./smtp";
 
 import config from './config'
 import { render } from "@react-email/render";
+import { Kafka } from "kafkajs";
 
 const main = async () => {
     console.log('smtp starting...');
 
-    const query_client = postgres({
-        port: process.env.PG_HOST ? Number(process.env.PG_HOST) : 5432,
-        host: process.env.PG_HOST ?? 'localhost',
-        username: process.env.PG_USERNAME,
-        database: process.env.PG_DATABASE,
-        password: process.env.PG_PASSWORD
-    })
-
-    const event_client = postgres({
-        port: process.env.PG_HOST ? Number(process.env.PG_HOST) : 5432,
-        host: process.env.PG_HOST ?? 'localhost',
-        username: process.env.PG_USERNAME,
-        database: process.env.PG_DATABASE,
-        password: process.env.PG_PASSWORD
-    })
-
     const smtp_client = new Smtp(config.smtp)
-    const pg_client = drizzle(query_client, { schema });
+    const pg_client = drizzle(postgres(config.postgres), { schema });
 
-    await event_client.listen('email_queued', async (id) => {
-        console.log(id)
+    const kafka_client = new Kafka(config.kafka)
+    const kafka_consumer = kafka_client.consumer({
+        groupId: 'boswaves/smtp'
+    })
 
+    await kafka_consumer.connect()
+    await kafka_consumer.subscribe({
+        topic: 'email_queued',
+        fromBeginning: false
+    })
+
+    await kafka_consumer.run({
+        eachMessage: async ({ topic, partition, message }) => {
+            console.log({
+                value: message.value?.toString(),
+            })
+        }
     })
 
     console.log('smtp ready...\n');

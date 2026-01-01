@@ -13,6 +13,7 @@ import storage from './storage'
 import postgres from 'postgres';
 import type { NextFunction, Request, Response } from "express";
 
+
 export class Postgres {
     private get _store() {
         const store = storage.getStore()

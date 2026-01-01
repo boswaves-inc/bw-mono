@@ -1,4 +1,6 @@
 import type { SmtpOptions } from "./smtp"
+import { KafkaConfig } from "kafkajs"
+import { Options as PgOptions } from "postgres"
 
 if (!process.env.SMTP_HOST) {
     throw new Error('SMTP_HOST variable not set')
@@ -20,5 +22,16 @@ export default {
             user: process.env.SMTP_EMAIL,
             pass: process.env.SMTP_PASSWORD
         }
-    } satisfies SmtpOptions
+    } satisfies SmtpOptions,
+    postgres: {
+        port: process.env.PG_HOST ? Number(process.env.PG_HOST) : 5432,
+        host: process.env.PG_HOST ?? 'localhost',
+        username: process.env.PG_USERNAME,
+        database: process.env.PG_DATABASE,
+        password: process.env.PG_PASSWORD
+    } satisfies PgOptions<{}>,
+    kafka: {
+        clientId: '',
+        brokers: ['']
+    } satisfies KafkaConfig
 }
