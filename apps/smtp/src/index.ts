@@ -16,7 +16,7 @@ const main = async () => {
 
     const kafka_client = new Kafka(config.kafka)
     const kafka_consumer = kafka_client.consumer({
-        groupId: 'boswaves/smtp'
+        groupId: 'boswaves/smtp',
     })
 
     await kafka_consumer.connect()

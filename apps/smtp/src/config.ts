@@ -31,7 +31,7 @@ export default {
         password: process.env.PG_PASSWORD
     } satisfies PgOptions<{}>,
     kafka: {
-        clientId: '',
-        brokers: ['']
+        clientId: 'boswaves/smtp',
+        brokers: ['host.docker.internal:9092']
     } satisfies KafkaConfig
 }
