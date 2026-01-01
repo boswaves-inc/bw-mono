@@ -25,6 +25,9 @@ export default defineConfig(({ isSsrBuild }) => ({
       '~': path.resolve(__dirname, './app')
     }
   },
+  ssr: {
+    noExternal: ['@boswaves-inc/smtp-sdk']
+  }, 
   plugins: [
     tailwindcss(),
     reactRouter(),

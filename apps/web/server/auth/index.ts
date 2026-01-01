@@ -12,15 +12,18 @@ import type Chargebee from "chargebee"
 import type { Jwt } from "@boswaves/core/jwt"
 import type { Postgres } from "@boswaves/core/postgres"
 import type { AuthOptions, AuthRedirect, AuthToken, ResetToken } from "./types"
+import type { Smtp } from "@boswaves-inc/smtp-sdk"
 
 export class Auth {
     private _chargebee: Chargebee;
     private _postgres: Postgres;
+    private _smtp: Smtp;
     private _jwt: Jwt;
 
-    constructor({ chargebee, postgres, jwt }: AuthOptions) {
+    constructor({ chargebee, postgres, smtp, jwt }: AuthOptions) {
         this._chargebee = chargebee;
         this._postgres = postgres;
+        this._smtp = smtp;
         this._jwt = jwt;
     }
 
@@ -241,7 +244,11 @@ export class Auth {
                 expires_at: addMinutes(Date.now(), 10)
             }).returning()
 
+
+
             // Queue the OTP email to be sent
+            await this._smtp.send()
+
             await tx.insert(Email).values({
                 recipient: email,
                 sender: '"Maddison Foo Koch" <maddison53@ethereal.email>',
@@ -318,6 +325,8 @@ export class Auth {
 
             session.set('token', token)
 
+            await this._smtp.send()
+
             // Queue the OTP email to be sent
             await tx.insert(Email).values({
                 recipient: email,
@@ -388,6 +397,8 @@ export class Auth {
 
             // Apply the newly signed token to the session cookie
             session.set('token', updated)
+
+            await this._smtp.send()
 
             // Queue the OTP email to be sent
             await tx.insert(Email).values({
@@ -566,6 +577,9 @@ export class Auth {
                 expires_at: new Date(Date.now() + 10 * 60 * 1e3),
             }).returning()
 
+            await this._smtp.send()
+
+            // Queue OTP to be sent
             await tx.insert(Email).values({
                 recipient: "seaszn.libertas@gmail.com",
                 sender: '"Maddison Foo Koch" <maddison53@ethereal.email>',

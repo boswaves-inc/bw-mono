@@ -2,11 +2,16 @@ import { createRequestHandler } from "@react-router/express";
 import express from "express";
 import Chargebee from 'chargebee';
 import theme, { getTheme } from "./theme";
-import postgres, { Postgres } from "@boswaves/core/postgres";
 import "react-router";
 import { Maxmind } from "./maxmind";
-import { Jwt } from "@boswaves/core/jwt";
 import { Auth } from "./auth";
+import { Jwt } from "@boswaves/core/jwt";
+import { Smtp } from "@boswaves-inc/smtp-sdk";
+import postgres, { Postgres } from "@boswaves/core/postgres";
+
+if (!process.env.SMTP_BROKERS) {
+  throw new Error('SMTP_BROKERS variable not set')
+}
 
 if (!process.env.CB_SITE) {
   throw new Error('CB_SITE variable not set')
@@ -28,8 +33,12 @@ if (!process.env.JWT_PUB_KEY) {
   throw new Error('JWT_PUB_KEY variable not set')
 }
 
-const geo_client = await Maxmind.init()
 const pg_client = new Postgres()
+const geo_client = await Maxmind.open()
+
+const smtp_client = await Smtp.connect({
+  brokers: process.env.SMTP_BROKERS.split(',')
+})
 
 const cb_client = new Chargebee({
   site: process.env.CB_SITE!,
@@ -47,13 +56,13 @@ const jwt_client = new Jwt({
 const auth_client = new Auth({
   chargebee: cb_client,
   postgres: pg_client,
+  smtp: smtp_client,
   jwt: jwt_client,
 })
 
 const app_router = express();
 
 app_router.set('trust proxy', 1)
-
 app_router.use(theme());
 
 app_router.use(postgres({
@@ -81,6 +90,7 @@ app_router.use(createRequestHandler({
       },
       theme,
       jwt: jwt_client,
+      smtp: smtp_client,
       auth: auth_client,
       postgres: pg_client,
       chargebee: cb_client

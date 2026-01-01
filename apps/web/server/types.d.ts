@@ -7,6 +7,7 @@ import type { CartItem } from "@boswaves/core";
 import type { Smtp } from "@boswaves/core/smtp";
 import type { Jwt } from "@boswaves/core/jwt";
 import type { Auth } from "./auth";
+import { SmtpClient } from "@boswaves-inc/smtp-sdk";
 
 declare module "react-router" {
   interface AppLoadContext {
@@ -25,6 +26,7 @@ declare module "react-router" {
     theme: 'dark' | 'light'
     jwt: Jwt,
     auth: Auth,
+    smtp: SmtpClient,
     postgres: Postgres
     chargebee: InstanceType<typeof Chargebee>
   }

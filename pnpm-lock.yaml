@@ -461,6 +461,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@boswaves-inc/smtp-sdk':
+        specifier: ^0.2.5
+        version: 0.2.5(tailwindcss@4.1.18)
       '@boswaves/core':
         specifier: workspace:*
         version: link:../../core
@@ -1065,6 +1068,9 @@ packages:
   '@babel/types@7.28.5':
     resolution: {integrity: sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA==}
     engines: {node: '>=6.9.0'}
+
+  '@boswaves-inc/smtp-sdk@0.2.5':
+    resolution: {integrity: sha512-f7B3DJX/SdGs1hhBNOmjLz5UtRPYuyR9OhNWb3C58sIhAs/3LiN/V+5N2aBuMdLX6D05IuDSjJsbDreMWmye6w==, tarball: https://npm.pkg.github.com/download/@boswaves-inc/smtp-sdk/0.2.5/f858cd84023d0192ff944d47e568f23ea7be42ce}
 
   '@coingecko/cryptoformat@0.8.2':
     resolution: {integrity: sha512-DW7KlphL88zbuHYloIv2jhU67kfnRpfkZZzUJjAijeyUiUkrQUu24QeGDkKEoEI/rt1cBZMyZxwh9Btpg/Wgrw==}
@@ -7979,6 +7985,22 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
+
+  '@boswaves-inc/smtp-sdk@0.2.5(tailwindcss@4.1.18)':
+    dependencies:
+      compression: 1.8.1
+      express: 5.2.1
+      jose: 6.1.3
+      kafkajs: 2.2.4
+      morgan: 1.10.1
+      nodemailer: 7.0.12
+      postgres: 3.4.7
+      tailwind-merge: 3.4.0
+      tailwind-variants: 3.2.2(tailwind-merge@3.4.0)(tailwindcss@4.1.18)
+      zod: 4.3.2
+    transitivePeerDependencies:
+      - supports-color
+      - tailwindcss
 
   '@coingecko/cryptoformat@0.8.2': {}
 

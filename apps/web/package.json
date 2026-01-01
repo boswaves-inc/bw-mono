@@ -8,6 +8,7 @@
     "dev": "dotenv -- node server.js"
   },
   "dependencies": {
+    "@boswaves-inc/smtp-sdk": "^0.2.5",
     "@boswaves/core": "workspace:*",
     "@coingecko/cryptoformat": "^0.8.2",
     "@headlessui/react": "^2.2.9",

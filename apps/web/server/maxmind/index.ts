@@ -34,7 +34,7 @@ export class Maxmind {
         }
     }
 
-    public static async init() {
+    public static async open() {
         const [asn, city, country] = await Promise.all([
             maxmind.open<AsnResponse>(join(process.cwd(), './geo', 'asn.mmdb'), { watchForUpdates: true }),
             maxmind.open<CityResponse>(join(process.cwd(), './geo', 'city.mmdb'), { watchForUpdates: true }),
