@@ -1,4 +1,4 @@
-import { Item, ItemScript, PeriodUnit, ItemPrice, ItemPriceModel, Tag, ScriptType, Script, ItemTag, Status } from "@boswaves/core";
+import { Item, ItemScript, PeriodUnit, ItemPrice, ItemPriceModel, Tag, ScriptType, Script, ItemTag, Status } from "@boswaves-inc/webstore-core";
 import { useForm } from "@refinedev/react-hook-form";
 import _ from "lodash";
 import { data, useNavigate } from "react-router";

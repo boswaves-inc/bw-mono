@@ -1,4 +1,4 @@
-import { CouponApplication, CouponDiscount, CouponDuration, PeriodUnit } from "@boswaves/core";
+import { CouponApplication, CouponDiscount, CouponDuration, PeriodUnit } from "@boswaves-inc/webstore-core";
 import { useForm } from "@refinedev/react-hook-form";
 import { data, useNavigate } from "react-router";
 import { Button } from "~/components/core/button";

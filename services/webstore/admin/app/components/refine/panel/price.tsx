@@ -1,4 +1,4 @@
-import { ItemPrice, ItemPriceModel, type PeriodUnit } from "@boswaves/core";
+import { ItemPrice, ItemPriceModel, type PeriodUnit } from "@boswaves-inc/webstore-core";
 import { formatCurrency } from "@coingecko/cryptoformat";
 import type { Currency } from "chargebee";
 import _ from "lodash";

@@ -1,4 +1,4 @@
-import type { Status } from "@boswaves/core";
+import type { Status } from "@boswaves-inc/webstore-core";
 import { useDeleteButton, useEditButton, useOne, useRefineContext, useResourceParams, useShowButton, type BaseRecord } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
 import type { Cell, RowData } from "@tanstack/react-table";

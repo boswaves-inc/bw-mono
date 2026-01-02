@@ -11,6 +11,7 @@ export default defineConfig(({ isSsrBuild }) => ({
     ]
   },
   build: {
+    outDir: 'dist',
     rollupOptions: isSsrBuild ? {
       external: ['async_hooks'],
       input: "./server/index.ts"

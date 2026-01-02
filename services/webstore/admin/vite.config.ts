@@ -11,7 +11,10 @@ export default defineConfig(({ isSsrBuild }) => ({
     ]
   },
   build: {
-    rollupOptions: isSsrBuild ? { input: "./server/index.ts" } : undefined,
+    rollupOptions: isSsrBuild ? {
+      external: ['async_hooks'],
+      input: "./server/index.ts"
+    } : undefined,
   },
   optimizeDeps: {
     exclude: ["virtual:react-router/server-build"],

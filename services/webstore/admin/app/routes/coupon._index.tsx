@@ -4,7 +4,7 @@ import { useTable } from "@refinedev/react-table";
 import { ListView, ListViewHeader } from "~/components/refine/views/list";
 import { createColumnHelper } from "@tanstack/react-table";
 import Table from "~/components/refine/table";
-import { Item, ItemScript, ItemPrice, Coupon } from "@boswaves/core";
+import { Item, ItemScript, ItemPrice, Coupon } from "@boswaves-inc/webstore-core";
 import { TableActionCell, TableShowCell } from "~/components/refine/table/cell";
 import { Badge } from "~/components/core/badge";
 

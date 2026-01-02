@@ -1,4 +1,5 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
     "target": "ES2022",
     "strict": true,
@@ -7,9 +8,8 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-
     "module": "ESNext",
-    "outDir": "build",
+    "outDir": "dist",
     "rootDir": "./src",
     "paths": {
       "~/*": [

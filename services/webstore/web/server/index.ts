@@ -5,9 +5,9 @@ import theme, { getTheme } from "./theme";
 import "react-router";
 import { Maxmind } from "./maxmind";
 import { Auth } from "./auth";
-import { Jwt } from "@boswaves/core/jwt";
+import { Jwt } from "@boswaves-inc/webstore-core/jwt";
 import { Smtp } from "@boswaves-inc/smtp-sdk";
-import postgres, { Postgres } from "@boswaves/core/postgres";
+import postgres, { Postgres } from "@boswaves-inc/webstore-core/postgres";
 
 if (!process.env.SMTP_BROKERS) {
   throw new Error('SMTP_BROKERS variable not set')
@@ -75,6 +75,7 @@ app_router.use(postgres({
 
 app_router.use(createRequestHandler({
   build: () => {
+    // @ts-ignore
     return import("virtual:react-router/server-build")
   },
   getLoadContext: async (req, res) => {

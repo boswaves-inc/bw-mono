@@ -1,5 +1,5 @@
 {
-  "name": "@bw/web",
+  "name": "@boswaves-inc/webstore-web",
   "private": true,
   "type": "module",
   "scripts": {

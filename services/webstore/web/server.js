@@ -39,16 +39,16 @@ else {
     router.use(compression());
     router.disable("x-powered-by");
 
-    router.use("/assets", express.static("build/client/assets", {
+    router.use("/assets", express.static("dist/client/assets", {
         immutable: true,
         maxAge: "1y"
     }));
 
     router.use(morgan("tiny"));
-    router.use(express.static("build/client", { maxAge: "1h" }));
+    router.use(express.static("dist/client", { maxAge: "1h" }));
 
     // @ts-ignore
-    router.use(await import('./build/server/index.js').then((mod) => mod.default));
+    router.use(await import('./dist/server/index.js').then((mod) => mod.default));
 }
 
 router.listen(PORT, "0.0.0.0", () => {

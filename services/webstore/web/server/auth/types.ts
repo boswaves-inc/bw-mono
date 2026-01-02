@@ -1,7 +1,7 @@
 import type { SmtpClient } from "@boswaves-inc/smtp-sdk";
-import type { Jwt } from "@boswaves/core/jwt";
-import type { JWTClaims } from "@boswaves/core/jwt/types";
-import type { Postgres } from "@boswaves/core/postgres";
+import type { Jwt } from "@boswaves-inc/webstore-core/jwt";
+import type { JWTClaims } from "@boswaves-inc/webstore-core/jwt/types";
+import type { Postgres } from "@boswaves-inc/webstore-core/postgres";
 import type Chargebee from "chargebee";
 
 export interface ResetToken extends JWTClaims {

@@ -4,7 +4,7 @@ import { Heading, Subheading } from "~/components/v3/core/typography";
 import type { Route } from "./+types/pricing.$slug";
 import dayjs from "dayjs";
 import { and, eq } from "drizzle-orm";
-import { Item, ItemPrice, ItemScript, PeriodUnit, Script } from "@boswaves/core";
+import { Item, ItemPrice, ItemScript, PeriodUnit, Script } from "@boswaves-inc/webstore-core";
 import { Button } from "~/components/v3/core/button";
 import { Plus, PlusIcon } from "lucide-react";
 import { Markdown } from "~/components/v3/core/markdown";

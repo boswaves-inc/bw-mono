@@ -6,7 +6,7 @@ import { CheckIcon, ChevronDown, PlusIcon } from 'lucide-react'
 import Paragraph from "~/components/core/paragraph";
 import Label from "~/components/core/label";
 
-import { Item, ItemScript, ItemPrice, ScriptType, Status, PeriodUnit, Script } from "@boswaves/core";
+import { Item, ItemScript, ItemPrice, ScriptType, Status, PeriodUnit, Script } from "@boswaves-inc/webstore-core";
 import _ from 'lodash'
 import type { Route } from "./+types/library._index";
 import { useCart } from "~/context/cart";

@@ -1,4 +1,5 @@
 {
+    "extends": "../tsconfig.json",
     "include": [
         "src/**/*"
     ],
@@ -11,13 +12,11 @@
         "esModuleInterop": true,
         "skipLibCheck": true,
         "resolveJsonModule": true,
-        
-        "outDir": "build",
+        "outDir": "dist",
         "rootDir": "./src",
         "declarationMap": true,
         "declaration": true,
         "noEmit": false,
-
         "lib": [
             "DOM",
             "DOM.Iterable",

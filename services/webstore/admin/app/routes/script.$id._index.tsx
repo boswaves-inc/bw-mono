@@ -1,4 +1,4 @@
-import { Script } from "@boswaves/core";
+import { Script } from "@boswaves-inc/webstore-core";
 import { Link, useOne } from "@refinedev/core";
 import _ from "lodash";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/core/card";

@@ -2,9 +2,9 @@ import _ from 'lodash';
 import express from 'express'
 import cors from "cors";
 import { and, eq, exists, ne } from 'drizzle-orm';
-import type { Postgres } from '@boswaves/core/postgres'
-import { Script, ItemScript, ScriptType } from '@boswaves/core'
-import type { TradingView } from '@boswaves/core/tradingview';
+import type { Postgres } from '@boswaves-inc/webstore-core/postgres'
+import { Script, ItemScript, ScriptType } from '@boswaves-inc/webstore-core'
+import type { TradingView } from '@boswaves-inc/webstore-core/tradingview';
 import { createInsertSchema } from "drizzle-zod";
 import z from 'zod/v4';
 

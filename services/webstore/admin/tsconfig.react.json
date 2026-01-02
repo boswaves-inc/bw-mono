@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.react.json",
+  "extends": "../tsconfig.react.json",
   "include": [
     ".react-router/types/**/*",
     "app/**/*",
@@ -9,7 +9,7 @@
   ],
   "references": [
     {
-      "path": "../../core"
+      "path": "../core"
     }
   ],
   "compilerOptions": {

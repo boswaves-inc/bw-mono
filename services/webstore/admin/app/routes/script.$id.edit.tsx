@@ -1,4 +1,4 @@
-import {  Script } from "@boswaves/core";
+import {  Script } from "@boswaves-inc/webstore-core";
 import { useForm } from "@refinedev/react-hook-form";
 import { useNavigate } from "react-router";
 import { Button } from "~/components/core/button";

@@ -1,4 +1,4 @@
-import { ItemScript, PeriodUnit, ItemPrice, type Item, Script } from "@boswaves/core";
+import { ItemScript, PeriodUnit, ItemPrice, type Item, Script } from "@boswaves-inc/webstore-core";
 import { useOne } from "@refinedev/core";
 import _ from "lodash";
 import { data } from "react-router";

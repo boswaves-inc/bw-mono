@@ -3,12 +3,12 @@ import express from 'express'
 import cors from "cors";
 import { and, eq, exists, getTableColumns, inArray, isNotNull, ne, not, sql } from 'drizzle-orm';
 import type Chargebee from 'chargebee'
-import type { Postgres } from '@boswaves/core/postgres'
-import { Item, ItemPrice, PeriodUnit, ItemPriceModel, ItemScript, ItemTag, Tag, Script } from '@boswaves/core'
+import type { Postgres } from '@boswaves-inc/webstore-core/postgres'
+import { Item, ItemPrice, PeriodUnit, ItemPriceModel, ItemScript, ItemTag, Tag, Script } from '@boswaves-inc/webstore-core'
 import { createInsertSchema } from "drizzle-zod";
 import z, { array } from 'zod/v4';
 import { zfd } from 'zod-form-data';
-import { coalesce, json_agg_object } from '@boswaves/core/utils/drizzle';
+import { coalesce, json_agg_object } from '@boswaves-inc/webstore-core/utils/drizzle';
 
 export default ({ family, postgres, chargebee }: { family: string, postgres: Postgres, chargebee: Chargebee }) => {
     const router = express()

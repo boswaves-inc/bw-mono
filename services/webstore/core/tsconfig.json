@@ -4,9 +4,10 @@
         "src/**/*"
     ],
     "compilerOptions": {
-        "outDir": "build",
+        "outDir": "dist",
         "rootDir": "./src",
-        "noEmit": false,
+        "noEmit": false,    "declarationMap": true,
+
         "composite": true
     }
 }

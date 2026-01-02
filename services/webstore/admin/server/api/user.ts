@@ -1,5 +1,5 @@
-import { User } from '@boswaves/core'
-import type { Postgres } from '@boswaves/core/postgres'
+import { User } from '@boswaves-inc/webstore-core'
+import type { Postgres } from '@boswaves-inc/webstore-core/postgres'
 import type Chargebee from 'chargebee'
 import express from 'express'
 import { createInsertSchema, createSelectSchema, createUpdateSchema } from "drizzle-zod";

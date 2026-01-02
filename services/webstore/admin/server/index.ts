@@ -1,8 +1,8 @@
 import { createRequestHandler } from "@react-router/express";
 import express from "express";
 import Chargebee from 'chargebee';
-import postgres, { Postgres } from "@boswaves/core/postgres";
-import { TradingView } from "@boswaves/core/tradingview";
+import postgres, { Postgres } from "@boswaves-inc/webstore-core/postgres";
+import { TradingView } from "@boswaves-inc/webstore-core/tradingview";
 
 import "react-router";
 import theme, { getTheme } from "./theme";

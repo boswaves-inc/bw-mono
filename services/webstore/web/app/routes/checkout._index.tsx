@@ -10,11 +10,11 @@ import { Radio, RadioGroup } from "~/components/core/radio";
 import { Field, } from "@headlessui/react";
 import { formatCurrency } from "@coingecko/cryptoformat";
 import { AppleLogo, GoogleLogo, StripeLogo } from "~/components/icons/logo";
-import { Cart, CartItem } from "@boswaves/core";
+import { Cart, CartItem } from "@boswaves-inc/webstore-core";
 import { and, eq, getTableColumns, isNotNull, sql } from "drizzle-orm";
 import { Button } from "~/components/core/v2/button";
-import { coalesce, json_agg_object } from "@boswaves/core/utils/drizzle";
-import { CartCoupon } from "@boswaves/core/schema/shop/cart";
+import { coalesce, json_agg_object } from "@boswaves-inc/webstore-core/utils/drizzle";
+import { CartCoupon } from "@boswaves-inc/webstore-core/schema/shop/cart";
 import _ from "lodash";
 import { Heading } from "~/components/core/v2/typography";
 
