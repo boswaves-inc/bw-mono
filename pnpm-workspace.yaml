@@ -1,4 +1,3 @@
 packages:
-- apps/*
-- apps/**/*
-- core
+- services/smtp/*
+- services/webstore/*

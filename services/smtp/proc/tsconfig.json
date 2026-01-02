@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "strict": true,
+    "jsx": "react-jsx",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+
+    "module": "ESNext",
+    "outDir": "build",
+    "rootDir": "./src",
+    "paths": {
+      "~/*": [
+        "./src/*"
+      ],
+      "~/schema/*": [
+        "./src/schema/*"
+      ],
+      "~/emails/*": [
+        "./src/emails/*"
+      ],
+      "~/components/*": [
+        "./src/components/*"
+      ],
+    }
+  },
+  "include": [
+    // "components/**/*",
+    // "schema/**/*",
+    // "emails/**/*",
+    "src/**/*",
+  ],
+}

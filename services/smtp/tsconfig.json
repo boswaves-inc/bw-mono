@@ -1,0 +1,24 @@
+{
+    "files": [],
+    "references": [
+        {
+            "path": "./proc/tsconfig.json"
+        },
+        {
+            "path": "./sdk/tsconfig.json"
+        },
+    ],
+    "compilerOptions": {
+        "declaration": true,
+        "declarationMap": true,
+        "strict": true,
+        "noEmit": false,
+        "jsx": "react-jsx",
+        "target": "ES2022",
+        "module": "ES2022",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "moduleResolution": "bundler",
+        "skipLibCheck": true
+    }
+}

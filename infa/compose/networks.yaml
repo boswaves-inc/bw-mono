@@ -1,0 +1,4 @@
+networks:
+  shared:
+    name: boswaves_net
+    driver: bridge
