@@ -77,8 +77,8 @@ jobs:
     steps:
       - name: Check CI status
         run: |
-          if [[ "${{ needs.ci-smtp.result }}" == "failure" ]] || \
-             [[ "${{ needs.ci-webstore.result }}" == "failure" ]] || \
+          if [[ "${{ needs.ci-smtp.result }}" =~ ^(failure|cancelled)$ ]] || \
+            [[ "${{ needs.ci-webstore.result }}" =~ ^(failure|cancelled)$ ]]; then
             echo "CI failed"
             exit 1
           fi
