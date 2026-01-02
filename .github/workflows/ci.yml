@@ -29,7 +29,7 @@ jobs:
             webstore:
               - 'services/webstore/**'
 
-  build-smtp:
+  ci-smtp:
     runs-on: ubuntu-latest
     needs: changes
     if: needs.changes.outputs.smtp == 'true'
@@ -48,7 +48,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build:smtp
 
-  build-webstore:
+  ci-webstore:
     runs-on: ubuntu-latest
     needs: changes
     if: needs.changes.outputs.webstore == 'true'
@@ -71,14 +71,14 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - changes
-      - build-smtp
-      - build-webstore
+      - ci-smtp
+      - ci-webstore
     if: always()
     steps:
       - name: Check CI status
         run: |
-          if [[ "${{ needs.build-smtp.result }}" == "failure" ]] || \
-             [[ "${{ needs.build-webstore.result }}" == "failure" ]] || \
+          if [[ "${{ needs.ci-smtp.result }}" == "failure" ]] || \
+             [[ "${{ needs.ci-webstore.result }}" == "failure" ]] || \
             echo "CI failed"
             exit 1
           fi
