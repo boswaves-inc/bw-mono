@@ -1,5 +1,6 @@
 {
     "private": true,
+    "name": "@boswaves-inc/webstore",
     "scripts": {
         "db:generate": "dotenv -- drizzle-kit generate",
         "db:migrate": "dotenv -- drizzle-kit migrate",
