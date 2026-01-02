@@ -3,10 +3,36 @@ name: CI
 on:
   pull_request:
     branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
-  ci-sdk:
+  changes:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      smtp: ${{ steps.filter.outputs.smtp }}
+      webstore: ${{ steps.filter.outputs.webstore }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            smtp:
+              - 'services/smtp/**'
+            webstore:
+              - 'services/webstore/**'
+
+  build-smtp:
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.smtp == 'true'
     steps:
       - uses: actions/checkout@v4
 
@@ -20,10 +46,12 @@ jobs:
           cache: "pnpm"
 
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter ./libs/sdk build
+      - run: pnpm build:smtp
 
-  ci-proc:
+  build-webstore:
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.webstore == 'true'
     steps:
       - uses: actions/checkout@v4
 
@@ -37,4 +65,21 @@ jobs:
           cache: "pnpm"
 
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter ./libs/proc build
+      - run: pnpm build:webstore
+
+  ci-ok:
+    runs-on: ubuntu-latest
+    needs:
+      - changes
+      - build-smtp
+      - build-webstore
+    if: always()
+    steps:
+      - name: Check CI status
+        run: |
+          if [[ "${{ needs.build-smtp.result }}" == "failure" ]] || \
+             [[ "${{ needs.build-webstore.result }}" == "failure" ]] || \
+            echo "CI failed"
+            exit 1
+          fi
+          echo "CI passed"
