@@ -7,32 +7,21 @@
         "test": "turbo test",
         "build": "turbo build",
         "clean": "rm -rf node_modules **/node_modules **/.turbo **/dist **/.next",
-        "smtp:dev": "turbo dev --filter=@boswaves-inc/smtp...",
-        "smtp:test": "turbo test --filter=@boswaves-inc/smtp...",
-        "smtp:build": "turbo build --filter=@boswaves-inc/smtp...",
-        "smtp:dbmig": "dotenv -- drizzle-kit migrate --config=services/smtp/drizzle.config",
-        "smtp:dbgen": "dotenv -- drizzle-kit generate --config=services/smtp/drizzle.config",
-        "store:dev": "turbo dev --filter=@boswaves-inc/store...",
-        "store:test": "turbo test --filter=@boswaves-inc/store...",
-        "store:build": "turbo build --filter=@boswaves-inc/store...",
-        "store:dbmig": "dotenv -- drizzle-kit migrate --config=services/webstore/drizzle.config",
-        "store:dbgen": "dotenv -- drizzle-kit generate --config=services/webstore/drizzle.config",
+        "dev:smtp": "turbo dev --filter=@boswaves-inc/smtp-*...",
+        "dev:store": "turbo dev --filter=@boswaves-inc/webstore-*...",
+        "build:smtp": "turbo build --filter=@boswaves-inc/smtp-*...",
+        "build:store": "turbo build --filter=@boswaves-inc/webstore-*...",
+        "db:generate": "turbo db:generate",
+        "db:migrate": "turbo db:migrate",
+        "db:studio": "turbo db:studio",
         "infra:up": "cd infra && docker compose up -d",
         "infra:down": "cd infra && docker compose down",
         "infra:logs": "cd infra && docker compose logs -f"
     },
-    "dependencies": {
-        "chargebee": "^3.14.0",
-        "drizzle-orm": "^0.45.1",
-        "lodash": "^4.17.21",
-        "postgres": "^3.4.7"
-    },
     "devDependencies": {
-        "@types/lodash": "^4.17.20",
-        "@types/node": "^22.18.10",
+        "turbo": "^2.0.0",
         "dotenv-cli": "^10.0.0",
         "drizzle-kit": "^0.31.8",
-        "typescript": "^5.4.0",
-        "turbo": "^2.0.0"
+        "typescript": "^5.4.0"
     }
 }
