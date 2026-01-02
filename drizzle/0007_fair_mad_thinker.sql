@@ -1,1 +1,0 @@
-ALTER TABLE "items" ALTER COLUMN "excerpt" SET NOT NULL;

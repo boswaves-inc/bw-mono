@@ -1,2 +1,0 @@
--- Custom SQL migration file, put your code below! --
--- Function to notify on new email

@@ -1,1 +1,0 @@
-ALTER TABLE "user_sessions" RENAME COLUMN "expires_at" TO "expired_at";
