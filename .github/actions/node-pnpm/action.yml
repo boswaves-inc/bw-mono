@@ -1,0 +1,25 @@
+name: pnpm setup
+description: Setup pnpm + node + cache + install
+
+inputs:
+    node:
+        description: Node version
+        required: false
+        default: "20"
+    pnpm:
+        description: PNPM version
+        required: false
+        default: "9"
+
+runs:
+    using: "composite"
+    steps:
+      - uses: pnpm/action-setup@v4
+        with:
+            version: ${{ inputs.pnpm }}
+      - uses: actions/setup-node@v4
+        with:
+            node-version: ${{ inputs.node }}
+            cache: "pnpm"
+      - shell: bash
+        run: pnpm install --frozen-lockfile

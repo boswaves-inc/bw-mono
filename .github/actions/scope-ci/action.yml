@@ -1,0 +1,60 @@
+name: Scope (CI)
+description: Decide which services to run (branch-aware + paths-filter on main/PR)
+
+outputs:
+    smtp:
+        description: Run SMTP
+        value: ${{ steps.out.outputs.smtp }}
+    webstore:
+        description: Run Webstore
+        value: ${{ steps.out.outputs.webstore }}
+
+runs:
+    using: composite
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+        with:
+            filters: |
+                smtp:
+                  - 'services/smtp/**'
+                webstore:
+                  - 'services/webstore/**'
+                shared:
+                  - 'scripts/**'
+                  - 'pnpm-lock.yaml'
+                  - 'pnpm-workspace.yaml'
+                  - 'package.json'
+                  - 'turbo.json'
+                  - '.github/**'
+
+      - id: out
+        shell: bash
+        run: |
+            set -euo pipefail
+            ref="${GITHUB_REF#refs/heads/}"
+
+            if [[ "$ref" == "smtp" ]]; then
+              echo "smtp=true" >> "$GITHUB_OUTPUT"
+              echo "webstore=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            if [[ "$ref" == "webstore" ]]; then
+              echo "smtp=false" >> "$GITHUB_OUTPUT"
+              echo "webstore=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            smtp="${{ steps.filter.outputs.smtp || 'false' }}"
+            webstore="${{ steps.filter.outputs.webstore || 'false' }}"
+            shared="${{ steps.filter.outputs.shared || 'false' }}"
+
+            if [[ "$shared" == "true" ]]; then
+              smtp="true"
+              webstore="true"
+            fi
+
+            echo "smtp=$smtp" >> "$GITHUB_OUTPUT"
+            echo "webstore=$webstore" >> "$GITHUB_OUTPUT"
