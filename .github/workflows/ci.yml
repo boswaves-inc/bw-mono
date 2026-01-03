@@ -23,7 +23,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - id: scope
-              uses: ./.github/actions/scope-ci
+              uses: ./.github/actions/scope
 
     ci-smtp:
         name: CI SMTP
@@ -32,7 +32,7 @@ jobs:
         if: needs.scope.outputs.smtp == 'true'
         steps:
             - uses: actions/checkout@v4
-            - uses: ./.github/actions/node-pnpm
+            - uses: ./.github/actions/node
             - run: pnpm run build:smtp
 
     ci-webstore:
@@ -42,7 +42,7 @@ jobs:
         if: needs.scope.outputs.webstore == 'true'
         steps:
             - uses: actions/checkout@v4
-            - uses: ./.github/actions/node-pnpm
+            - uses: ./.github/actions/node
             - run: pnpm run build:webstore
 
     ci-ok:
