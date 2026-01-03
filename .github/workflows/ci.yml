@@ -29,20 +29,20 @@ jobs:
               uses: ./.github/actions/scope-ci
 
     ci-smtp:
-        name: SMTP
+        name: CI SMTP
         needs: scope
-        if: needs.scope.outputs.smtp == 'true'
         runs-on: ubuntu-latest
+        if: needs.scope.outputs.smtp == 'true'
         steps:
             - uses: actions/checkout@v4
             - uses: ./.github/actions/node-pnpm
             - run: pnpm run build:smtp
 
     ci-webstore:
-        name: Webstore
+        name: CI Webstore
         needs: scope
-        if: needs.scope.outputs.webstore == 'true'
         runs-on: ubuntu-latest
+        if: needs.scope.outputs.webstore == 'true'
         steps:
             - uses: actions/checkout@v4
             - uses: ./.github/actions/node-pnpm
