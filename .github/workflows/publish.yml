@@ -1,0 +1,69 @@
+name: Publish
+
+on:
+    workflow_run:
+        workflows: [CI]
+        branches: [main]
+        types: [completed]
+
+permissions:
+    contents: read
+    packages: write
+
+jobs:
+    scope:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            pull-requests: read
+        if: github.event.workflow_run.conclusion == 'success'
+        outputs:
+            smtp: ${{ steps.scope.outputs.smtp }}
+            webstore: ${{ steps.scope.outputs.webstore }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - id: scope
+              uses: ./.github/actions/scope-ci
+
+    publish-smtp:
+        needs: scope
+        runs-on: ubuntu-latest
+        if: needs.scope.outputs.smtp == 'true'
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                ref: ${{ github.event.workflow_run.head_sha }}
+                
+            - uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - uses: docker/build-push-action@v5
+              with:
+                  context: ./services/smtp
+                  push: true
+                  tags: ghcr.io/${{ github.repository }}/smtp:latest
+
+    publish-webstore:
+        needs: scope
+        runs-on: ubuntu-latest
+        if: needs.scope.outputs.webstore == 'true'
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                ref: ${{ github.event.workflow_run.head_sha }}
+
+            - uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - uses: docker/build-push-action@v5
+              with:
+                  context: ./services/webstore
+                  push: true
+                  tags: ghcr.io/${{ github.repository }}/webstore:latest

@@ -1,0 +1,4 @@
+networks:
+  shared_net:
+    name: shared_net
+    driver: bridge

@@ -12,7 +12,7 @@ services:
     - --pandaproxy-addr 0.0.0.0:8082
     - --advertise-pandaproxy-addr localhost:8082
     networks:
-    - kafka_net
+    - shared_net
     ports:
     - 8081:8081
     - 8082:8082
@@ -26,12 +26,8 @@ services:
     environment:
       KAFKA_BROKERS: redpanda:29092
     networks:
-    - kafka_net
+    - shared_net
     ports:
     - 8080:8080
     depends_on:
     - redpanda
-
-networks:
-  kafka_net:
-    driver: bridge

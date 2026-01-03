@@ -9,4 +9,4 @@ services:
     - http://host.docker.internal:3000
     - "--url=${NGROK_DNS}"
     networks:
-    - host_net
+    - shared_net

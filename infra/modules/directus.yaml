@@ -1,0 +1,45 @@
+name: bw-smtp
+
+services:
+  directus:
+    image: directus/directus:latest
+    restart: always
+    ports:
+    - "8055:8055"
+    environment:
+      KEY: "replace-with-random-string"
+      SECRET: "replace-with-random-string"
+
+      # Database (PostgreSQL recommended)
+      DB_CLIENT: "pg"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_DATABASE: "directus"
+      DB_USER: "directus"
+      DB_PASSWORD: "directus"
+
+      # Admin user
+      ADMIN_EMAIL: "admin@example.com"
+      ADMIN_PASSWORD: "d1r3ctu5"
+
+      # Public URL
+      PUBLIC_URL: "https://cdn.yourdomain.com"
+
+      # File storage
+      STORAGE_LOCATIONS: "local"
+      STORAGE_LOCAL_ROOT: "./uploads"
+
+      # Image transformations
+      ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: "6000"
+
+    volumes:
+    - directus_vol:/uploads:/directus/uploads
+    - directus_vol:/extensions:/directus/extensions
+    networks:
+    - shared_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  directus_vol:

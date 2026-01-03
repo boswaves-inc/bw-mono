@@ -5,15 +5,16 @@ services:
     ports:
     - 5432:5432
     environment:
-    - POSTGRES_DB=${PG_DATABASE}
+    - POSTGRES_DB=${PG_DATABASE:-postgres}
     - POSTGRES_USER=${PG_USERNAME}
     - POSTGRES_PASSWORD=${PG_PASSWORD}
     volumes:
     - postgres_vol:/var/lib/postgresql/data
+    - ../runtime:/docker-entrypoint-initdb.d:ro
     networks:
-    - host_net
+    - shared_net
     healthcheck:
-      test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${PG_USERNAME} -d ${PG_DATABASE}'" ]
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${PG_USERNAME} -d ${PG_DATABASE:-postgres}'" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -30,7 +31,11 @@ services:
     volumes:
     - pgadmin_vol:/var/lib/pgadmin
     networks:
-    - host_net
+    - shared_net
     depends_on:
       postgres:
         condition: service_healthy
+
+volumes:
+  postgres_vol:
+  pgadmin_vol:
