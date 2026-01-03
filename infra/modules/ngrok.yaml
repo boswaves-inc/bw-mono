@@ -3,7 +3,7 @@ services:
     image: ngrok/ngrok
     container_name: bw-ngrok
     environment:
-      NGROK_AUTHTOKEN: "${NGROK_AUTH}"
+      NGROK_AUTHTOKEN: ${NGROK_AUTH}
     command:
     - "http"
     - http://host.docker.internal:3000
