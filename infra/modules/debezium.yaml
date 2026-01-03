@@ -1,0 +1,24 @@
+include:
+- ./postgres.yaml
+
+services:
+  debezium:
+    image: debezium/connect-jdbc-es:${DEBEZIUM_VERSION}
+    container_name: bw-debezium
+    build:
+      context: debezium-jdbc-es
+      args:
+        DEBEZIUM_VERSION: ${DEBEZIUM_VERSION}
+    ports:
+    - 8083:8083
+    - 5005:5005
+    environment:
+    - GROUP_ID=1
+    - BOOTSTRAP_SERVERS=kafka:9092
+    - CONFIG_STORAGE_TOPIC=pg_configs
+    - OFFSET_STORAGE_TOPIC=pg_offsets
+    - STATUS_STORAGE_TOPIC=pg_status
+    depends_on:
+      # - elastic
+      postgres:
+        condition: service_healthy

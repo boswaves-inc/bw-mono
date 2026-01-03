@@ -8,6 +8,11 @@ import { Auth } from "./auth";
 import { Jwt } from "@boswaves-inc/webstore-core/jwt";
 import { Smtp } from "@boswaves-inc/smtp-sdk";
 import postgres, { Postgres } from "@boswaves-inc/webstore-core/postgres";
+import { Directus } from "./directus";
+
+if (!process.env.CDN_HOST) {
+  throw new Error('CDN_HOST variable not set')
+}
 
 if (!process.env.SMTP_BROKERS) {
   throw new Error('SMTP_BROKERS variable not set')
@@ -40,9 +45,13 @@ const smtp_client = await Smtp.connect({
   brokers: process.env.SMTP_BROKERS.split(',')
 })
 
+const cdn_client = new Directus({
+  url: process.env.CDN_HOST
+})
+
 const cb_client = new Chargebee({
-  site: process.env.CB_SITE!,
-  apiKey: process.env.CB_API_KEY!
+  site: process.env.CB_SITE,
+  apiKey: process.env.CB_API_KEY
 })
 
 const jwt_client = new Jwt({
@@ -91,6 +100,7 @@ app_router.use(createRequestHandler({
       },
       theme,
       jwt: jwt_client,
+      cdn: cdn_client,
       smtp: smtp_client,
       auth: auth_client,
       postgres: pg_client,

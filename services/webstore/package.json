@@ -10,6 +10,7 @@
     },
     "dependencies": {
         "@boswaves-inc/webstore-core": "workspace:*",
+        "@directus/sdk": "^20.3.0",
         "chargebee": "^3.14.0",
         "drizzle-orm": "^0.44.6",
         "lodash": "^4.17.21",

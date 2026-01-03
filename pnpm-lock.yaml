@@ -7,6 +7,21 @@ settings:
 importers:
 
   .:
+    devDependencies:
+      dotenv-cli:
+        specifier: ^10.0.0
+        version: 10.0.0
+      drizzle-kit:
+        specifier: ^0.31.8
+        version: 0.31.8
+      turbo:
+        specifier: ^2.0.0
+        version: 2.7.2
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+
+  services/smtp:
     dependencies:
       chargebee:
         specifier: ^3.14.0
@@ -33,11 +48,11 @@ importers:
       drizzle-kit:
         specifier: ^0.31.8
         version: 0.31.8
-      turbo:
-        specifier: ^2.0.0
-        version: 2.7.2
+      tsx:
+        specifier: ^4.20.6
+        version: 4.21.0
       typescript:
-        specifier: ^5.4.0
+        specifier: ^5.9.2
         version: 5.9.3
 
   services/smtp/proc:
@@ -209,6 +224,46 @@ importers:
       dotenv-cli:
         specifier: ^10.0.0
         version: 10.0.0
+      tsx:
+        specifier: ^4.20.6
+        version: 4.21.0
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+
+  services/webstore:
+    dependencies:
+      '@boswaves-inc/webstore-core':
+        specifier: workspace:*
+        version: link:core
+      '@directus/sdk':
+        specifier: ^20.3.0
+        version: 20.3.0
+      chargebee:
+        specifier: ^3.14.0
+        version: 3.17.0
+      drizzle-orm:
+        specifier: ^0.44.6
+        version: 0.44.7(postgres@3.4.7)
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+      postgres:
+        specifier: ^3.4.7
+        version: 3.4.7
+    devDependencies:
+      '@types/lodash':
+        specifier: ^4.17.20
+        version: 4.17.21
+      '@types/node':
+        specifier: ^22.18.10
+        version: 22.19.3
+      dotenv-cli:
+        specifier: ^10.0.0
+        version: 10.0.0
+      drizzle-kit:
+        specifier: ^0.31.5
+        version: 0.31.8
       tsx:
         specifier: ^4.20.6
         version: 4.21.0
@@ -528,6 +583,9 @@ importers:
 
   services/webstore/core:
     dependencies:
+      '@directus/sdk':
+        specifier: ^20.3.0
+        version: 20.3.0
       async_hooks:
         specifier: ^1.0.0
         version: 1.0.0
@@ -555,6 +613,9 @@ importers:
       nodemailer:
         specifier: ^7.0.12
         version: 7.0.12
+      p-queue:
+        specifier: ^9.0.1
+        version: 9.0.1
       postgres:
         specifier: ^3.4.7
         version: 3.4.7
@@ -709,6 +770,9 @@ importers:
       morgan:
         specifier: ^1.10.1
         version: 1.10.1
+      p-queue:
+        specifier: ^9.0.1
+        version: 9.0.1
       postgres:
         specifier: ^3.4.7
         version: 3.4.7
@@ -1150,6 +1214,10 @@ packages:
 
   '@date-fns/tz@1.4.1':
     resolution: {integrity: sha512-P5LUNhtbj6YfI3iJjw5EL9eUAG6OitD0W3fWQcpQjDRc/QIsL0tRNuO1PcDvPccWL1fSTXXdE1ds+l95DV/OFA==}
+
+  '@directus/sdk@20.3.0':
+    resolution: {integrity: sha512-auy59B0A7Ri+4JDy0JcdFHnsHvOkl3ixWMWYciXAbm4oYIE9S4be8xEpIwA5qhlPTOprJ6JHPWo9rEvcrLwNtA==}
+    engines: {node: '>=22'}
 
   '@drizzle-team/brocli@0.10.2':
     resolution: {integrity: sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w==}
@@ -6128,6 +6196,14 @@ packages:
     resolution: {integrity: sha512-tkAQEw8ysMzmkhgw8k+1U/iPhWNhykKnSk4Rd5zLoPJCuJaGRPo6YposrZgaxHKzDHdDWWZvE/Sk7hsL2X/CpQ==}
     engines: {node: '>=18'}
 
+  p-queue@9.0.1:
+    resolution: {integrity: sha512-RhBdVhSwJb7Ocn3e8ULk4NMwBEuOxe+1zcgphUy9c2e5aR/xbEsdVXxHJ3lynw6Qiqu7OINEyHlZkiblEpaq7w==}
+    engines: {node: '>=20'}
+
+  p-timeout@7.0.1:
+    resolution: {integrity: sha512-AxTM2wDGORHGEkPCt8yqxOTMgpfbEHqF51f/5fJCmwFC3C/zNcGT63SymH2ttOAaiIws2zVg4+izQCjrakcwHg==}
+    engines: {node: '>=20'}
+
   p-try@2.2.0:
     resolution: {integrity: sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==}
     engines: {node: '>=6'}
@@ -8271,6 +8347,8 @@ snapshots:
     optional: true
 
   '@date-fns/tz@1.4.1': {}
+
+  '@directus/sdk@20.3.0': {}
 
   '@drizzle-team/brocli@0.10.2': {}
 
@@ -13463,6 +13541,13 @@ snapshots:
       p-limit: 3.1.0
 
   p-map@7.0.4: {}
+
+  p-queue@9.0.1:
+    dependencies:
+      eventemitter3: 5.0.1
+      p-timeout: 7.0.1
+
+  p-timeout@7.0.1: {}
 
   p-try@2.2.0: {}
 

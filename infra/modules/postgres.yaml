@@ -5,13 +5,30 @@ services:
     ports:
     - 5432:5432
     environment:
+      # core
       POSTGRES_DB: ${PG_DATABASE:-postgres}
       POSTGRES_USER: ${PG_USERNAME}
       POSTGRES_PASSWORD: ${PG_PASSWORD}
+
+      # webstore
+      WEBSTORE_PASSWORD: ${WEBSTORE_PG_PASSWORD}
+      WEBSTORE_USER: ${WEBSTORE_PG_USERNAME}
+      WEBSTORE_DB: ${WEBSTORE_PG_DATABASE}
+
+      # smtp
+      SMTP_PASSWORD: ${SMTP_PG_PASSWORD}
+      SMTP_USER: ${SMTP_PG_USERNAME}
+      SMTP_DB: ${SMTP_PG_DATABASE}
+
+      # directus
+      DIRECTUS_USER: ${CDN_PG_USERNAME}
+      DIRECTUS_PASSWORD: ${CDN_PG_PASSWORD}
+      DIRECTUS_DB: ${CDN_PG_DATABASE}
     volumes:
     - postgres_vol:/var/lib/postgresql/data
-    - ../runtime:/docker-entrypoint-initdb.d:ro
+    - ../runtime/postgres:/docker-entrypoint-initdb.d:ro
     networks:
+    - postgres_net
     - shared_net
     healthcheck:
       test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${PG_USERNAME} -d ${PG_DATABASE:-postgres}'" ]
@@ -32,9 +49,15 @@ services:
     - pgadmin_vol:/var/lib/pgadmin
     networks:
     - shared_net
+    - postgres_net
     depends_on:
       postgres:
         condition: service_healthy
+
+networks:
+  postgres_net:
+    name: postges_net
+    driver: bridge
 
 volumes:
   postgres_vol:

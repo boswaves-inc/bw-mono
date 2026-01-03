@@ -1,5 +1,8 @@
 name: bw-smtp
 
+include:
+- ./postgres.yaml
+
 services:
   directus:
     image: directus/directus:latest
@@ -8,23 +11,31 @@ services:
     ports:
     - 8055:8055
     environment:
-      KEY: replace-with-random-string
-      SECRET: replace-with-random-string
+      KEY: ${CDN_KEY}
+      SECRET: ${CDN_SECRET}
 
       # Database (PostgreSQL recommended)
       DB_PORT: 5432
       DB_CLIENT: pg
       DB_HOST: postgres
-      DB_USER: directus
-      DB_DATABASE: directus
-      DB_PASSWORD: ${PG_DIRECTUS_PASSWORD}
-
-      # Admin user
-      ADMIN_EMAIL: admin@example.com
-      ADMIN_PASSWORD: d1r3ctu5
+      DB_USER: ${CDN_PG_USERNAME}
+      DB_DATABASE: ${CDN_PG_DATABASE}
+      DB_PASSWORD: ${CDN_PG_PASSWORD}
 
       # Public URL
-      PUBLIC_URL: https://cdn.yourdomain.com
+      PUBLIC_URL: ${DIRECTUS_DNS}
+
+      # Admin user
+      ADMIN_EMAIL: ${CDN_ADMIN_USER}
+      ADMIN_PASSWORD: ${CDN_ADMIN_PASSWORD}
+
+      # Admin user
+      CORS_ENABLED: ${CDN_CORS_ENABLED}
+      CORS_ORIGIN: ${CDN_CORS_ORIGIN}
+
+      # Admin user
+      # CONTENT_SECURITY_POLICY_DIRECTIVES__ENABLED: false
+      CONTENT_SECURITY_POLICY_DIRECTIVES__FRAME_SRC: ${CDN_CSPD_FRAME}
 
       # File storage
       STORAGE_LOCATIONS: local
@@ -37,6 +48,7 @@ services:
     - directus_vol:/uploads:/directus/uploads
     - directus_vol:/extensions:/directus/extensions
     networks:
+    - postgres_net
     - shared_net
     depends_on:
       postgres:

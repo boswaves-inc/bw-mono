@@ -6,8 +6,8 @@
     "compilerOptions": {
         "outDir": "dist",
         "rootDir": "./src",
-        "noEmit": false,    "declarationMap": true,
-
+        "noEmit": false,
+        "declarationMap": true,
         "composite": true
     }
 }
