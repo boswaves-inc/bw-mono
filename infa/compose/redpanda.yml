@@ -1,0 +1,37 @@
+services:
+  redpanda:
+    image: redpandadata/redpanda:v24.1.1
+    container_name: bw-redpanda
+    command:
+    - redpanda start
+    - --smp 1
+    - --overprovisioned
+    - --node-id 0
+    - --kafka-addr PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+    - --advertise-kafka-addr PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
+    - --pandaproxy-addr 0.0.0.0:8082
+    - --advertise-pandaproxy-addr localhost:8082
+    networks:
+    - kafka_net
+    ports:
+    - 8081:8081
+    - 8082:8082
+    - 9092:9092
+    - 29092:29092
+
+  rpadmin:
+    image: redpandadata/console:v2.4.5
+    container_name: bw-rpadmin
+    restart: on-failure
+    environment:
+      KAFKA_BROKERS: redpanda:29092
+    networks:
+    - kafka_net
+    ports:
+    - 8080:8080
+    depends_on:
+    - redpanda
+
+networks:
+  kafka_net:
+    driver: bridge

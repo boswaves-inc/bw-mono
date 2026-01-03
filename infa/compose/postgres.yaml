@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: timescale/timescaledb-ha:pg18
+    container_name: bw-postgres
+    ports:
+    - 5432:5432
+    environment:
+    - POSTGRES_DB=${PG_DATABASE}
+    - POSTGRES_USER=${PG_USERNAME}
+    - POSTGRES_PASSWORD=${PG_PASSWORD}
+    volumes:
+    - postgres_vol:/var/lib/postgresql/data
+    networks:
+    - host_net
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${PG_USERNAME} -d ${PG_DATABASE}'" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: bw-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+    - "5440:80"
+    volumes:
+    - pgadmin_vol:/var/lib/pgadmin
+    networks:
+    - host_net
+    depends_on:
+      postgres:
+        condition: service_healthy
