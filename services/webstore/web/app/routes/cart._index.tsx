@@ -1,4 +1,3 @@
-import Page from "~/components/page";
 import { data, Form, Link, Outlet, useFetcher } from "react-router";
 import type { Route } from "./+types/cart._index";
 import { formData } from "zod-form-data";
@@ -7,7 +6,6 @@ import { Cart, CartItem, Item, ItemPrice } from "@boswaves-inc/webstore-core";
 import { and, eq, getTableColumns, isNotNull, notExists, sql, } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import Section from "~/components/section";
-import { Footer } from "~/components/v3/footer";
 import { Container } from "~/components/v3/container";
 import { GradientBackground } from "~/components/v3/gradient";
 import { Navigation } from "~/components/v3/navbar";

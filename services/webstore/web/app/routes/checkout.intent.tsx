@@ -14,7 +14,7 @@ export async function action({ request, context }: Route.ActionArgs) {
     const intent = await context.chargebee.paymentIntent.create({
         amount: 10000,
         currency_code: 'EUR',
-        customer_id: user.cbid,
+        customer_id: user.uid,
         gateway_account_id: 'gw_BTLvdtV06HFfy2GI',
         // payment_method_type: 'apple_pay'
         // success_url: '',

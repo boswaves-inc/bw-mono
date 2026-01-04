@@ -14,6 +14,10 @@ if (!process.env.CDN_HOST) {
   throw new Error('CDN_HOST variable not set')
 }
 
+if (!process.env.CDN_TOKEN) {
+  throw new Error('CDN_HOST variable not set')
+}
+
 if (!process.env.SMTP_BROKERS) {
   throw new Error('SMTP_BROKERS variable not set')
 }
@@ -46,7 +50,8 @@ const smtp_client = await Smtp.connect({
 })
 
 const cdn_client = new Directus({
-  url: process.env.CDN_HOST
+  url: process.env.CDN_HOST,
+  token: process.env.CDN_TOKEN
 })
 
 const cb_client = new Chargebee({

@@ -3,12 +3,11 @@ import Section from "~/components/section";
 import Paragraph from "~/components/core/paragraph";
 import { Check, ChevronLeft, Flame, Star } from "lucide-react";
 import FaqAccordion from "~/sections/faq/accordion";
-import { data, Link, useFetcher } from "react-router";
+import { data, Link} from "react-router";
 import Panel from "~/components/core/panel";
 import { Item, ItemPrice, ItemScript, PeriodUnit, Script } from "@boswaves-inc/webstore-core";
-import { and, eq, getTableColumns, isNotNull } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { useCart } from "~/context/cart";
-import { includes } from "lodash";
 import { Fragment } from "react/jsx-runtime";
 import { formatCurrency } from "@coingecko/cryptoformat";
 import { Button } from "~/components/core/v2/button";
@@ -127,8 +126,8 @@ export default ({ loaderData: { id, name, script, item_price, created_at, ...res
           </div>
         </div>
         <div className="hidden md:block mt-6">
-          <div className="relative overflow-hidden rounded-2xl ring-1 shadow-xl ring-gray-900/5 dark:ring-white/5 h-[500px]">
-            <img src={script.image} className="absolute ring-1 w-[calc(100%+6px)] h-[500px] overflow-hidden" />
+          <div className="relative overflow-hidden rounded-2xl ring-1 shadow-xl ring-gray-900/5 dark:ring-white/5 h-125">
+            <img src={script.image} className="absolute ring-1 w-[calc(100%+6px)] h-125 overflow-hidden" />
             {/* <iframe src="https://s.tradingview.com/embed/ItnS5Inz" className="absolute -inset-x-1 outline-0 -top-px -bottom-6 ring w-[calc(100%+6px)] h-[524px] overflow-hidden" /> */}
           </div>
         </div>

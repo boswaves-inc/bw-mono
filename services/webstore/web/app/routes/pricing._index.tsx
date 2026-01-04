@@ -1,7 +1,6 @@
 import { data, Link } from "react-router";
 import { Container } from "~/components/v3/container";
 import { Heading, Lead, Subheading } from "~/components/v3/core/typography";
-import { Footer } from "~/components/v3/footer";
 import { Gradient, GradientBackground } from "~/components/v3/gradient";
 import { Navigation } from "~/components/v3/navbar";
 import { LogoCloud } from "~/components/v3/sections/logo-cloud";

@@ -41,7 +41,7 @@ const smtp_client = new Smtp({
         maxConnections: 5,
         maxMessages: 100,
         host: process.env.SMTP_HOST,
-        port: process.env.STMP_PORT ? Number(process.env.STMP_PORT) : 5432,
+        port: process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : 5432,
         auth: {
             user: process.env.SMTP_EMAIL,
             pass: process.env.SMTP_PASSWORD

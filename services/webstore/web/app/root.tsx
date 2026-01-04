@@ -13,15 +13,11 @@ import {
 import "./root.css";
 import { twMerge } from "tailwind-merge";
 import type { Route } from "./+types/root";
-import Footer from "./components/footer";
-import Header from "./components/header";
 import { CartProvider } from "./context/cart";
-import countryToCurrency, { type Currencies, type Countries } from "country-to-currency";
-import { ISO3166 } from "./components/iso";
-import Page from "./components/page";
 import { Container } from "./components/v3/container";
 import { GradientBackground } from "./components/v3/gradient";
 import { Navigation } from "./components/v3/navbar";
+import { Editor } from "./components/layout/editor";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -102,11 +98,13 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
 export default function App({ loaderData: { cart } }: Route.ComponentProps) {
   return (
-    <CartProvider cart={cart}>
-      {/* <Header /> */}
-      <Outlet />
-      {/* <Footer /> */}
-    </CartProvider>
+    <Editor editMode state={{ globals: {}, headerNavigation: {}, footerNavigation: {} }} >
+      <CartProvider cart={cart}>
+        {/* <Header /> */}
+        <Outlet />
+        {/* <Footer /> */}
+      </CartProvider>
+    </Editor>
   );
 }
 

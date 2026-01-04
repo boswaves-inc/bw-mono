@@ -30,7 +30,7 @@ export const Bento = ({ className, eyebrow, title, description, graphic, fade = 
                 <p className="mt-1 text-2xl/8 font-medium tracking-tight text-gray-950 dark:text-white">
                     {title}
                 </p>
-                <p className="mt-2 max-w-[600px] text-sm/6 text-gray-600 dark:text-gray-400">
+                <p className="mt-2 max-w-150 text-sm/6 text-gray-600 dark:text-gray-400">
                     {description}
                 </p>
             </div>

@@ -1,7 +1,6 @@
 import { Link, type MetaArgs } from "react-router";
 import type { Route } from "../+types/root";
 
-import Page from "~/components/page";
 import Section from "~/components/section";
 import { Container } from "~/components/v3/container";
 import { Button } from "~/components/v3/core/button";
@@ -19,7 +18,7 @@ import { LogoCluster } from "~/components/v3/graphic/logo-cluster";
 import { Atlas } from "~/components/v3/graphic/atlas";
 import { cn } from "~/utils/class";
 import { Testemonials } from "~/components/v3/sections/testemonials";
-import { Footer } from "~/components/v3/footer";
+import { Footer } from "~/components/layout/footer";
 
 export function meta({ }: MetaArgs) {
   return [
@@ -28,7 +27,13 @@ export function meta({ }: MetaArgs) {
   ];
 }
 
-export async function loader({ }: Route.LoaderArgs) {
+export async function loader({ context: { cdn } }: Route.LoaderArgs) {
+  const ss = await cdn.read_file('bcda437e-d7f5-4cca-aed1-9d92f049c5b6', {
+
+  })
+
+  console.log(ss)
+
   return [
     { title: "New React Router App" },
     { name: "description", content: "Welcome to React Router!" },
@@ -43,12 +48,14 @@ export default function renderer() {
       <div className="relative">
         <Gradient className="absolute inset-2 bottom-0 rounded-4xl ring-1 ring-black/5 ring-inset" />
         <Container className="relative">
+
           <Navigation>
             <Link to={'/blog/radiant-raises-100m-series-a-from-tailwind-ventures'} className="flex items-center gap-1 rounded-full bg-fuchsia-950/35 px-3 py-0.5 text-sm/6 font-medium text-white data-hover:bg-fuchsia-950/30">
               BosWaves raises $100M Series A from Tailwind Ventures
               <ChevronRightIcon className="size-4" />
             </Link>
           </Navigation>
+
           <div className="pt-16 pb-24 sm:pt-24 sm:pb-32 md:pt-32 md:pb-48">
             <h1 className="font-display text-6xl/[0.9] font-medium tracking-tight text-balance text-gray-950 sm:text-8xl/[0.8] md:text-9xl/[0.8]">
               Close every deal.

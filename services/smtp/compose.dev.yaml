@@ -3,8 +3,6 @@ name: boswaves_smtp
 include:
 - ../../infra/compose.yaml
 - ../../infra/modules/postgres.yaml
-- ../../infra/modules/directus.yaml
 - ../../infra/modules/redpanda.yaml
 
-# - ./services/smtp/compose.yml
-# - ./services/webstore/compose.yml
+# - ../../infra/modules/directus.yaml
