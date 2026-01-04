@@ -2,11 +2,11 @@
   "name": "@boswaves-inc/smtp-proc",
   "private": true,
   "scripts": {
-    "dev": "dotenv -- tsx --watch src/index.ts",
-    "dev:email": "email dev --dir src/emails --port 3000",
     "build": "tsup",
-    "start": "node dist/index.js",
+    "dev": "dotenv -- tsx --watch src/index.ts",
     "gen": "tsx scripts/gen_types.ts",
+    "start": "node dist/index.js",
+    "studio": "email dev --dir src/emails --port 3000",
     "db:gen": "dotenv -- drizzle-kit generate",
     "db:mig": "dotenv -- drizzle-kit migrate"
   },
