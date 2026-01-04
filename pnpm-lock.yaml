@@ -603,6 +603,9 @@ importers:
       '@coingecko/cryptoformat':
         specifier: ^0.8.2
         version: 0.8.2
+      '@directus/sdk':
+        specifier: ^20.3.0
+        version: 20.3.0
       '@directus/visual-editing':
         specifier: ^1.1.0
         version: 1.1.0
