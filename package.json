@@ -1,6 +1,7 @@
 {
     "name": "boswaves-inc",
     "private": true,
+      "packageManager": "pnpm@9.10.0",
     "scripts": {
         "clean": "rm -rf node_modules **/node_modules **/.turbo **/dist **/.next"
     },

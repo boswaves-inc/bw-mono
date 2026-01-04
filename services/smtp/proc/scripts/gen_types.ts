@@ -1,9 +1,13 @@
-import { join } from 'path';
+import { dirname, join } from 'path';
 import { Project, VariableDeclarationKind, ts } from 'ts-morph';
 import { createAuxiliaryTypeStore, printNode, zodToTs } from 'zod-to-ts';
 import { load } from '../src/routes';
 import _ from 'lodash';
 import { toPascalCase, } from 'string-transform';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const __input = join(__dirname, '../src/routes');
 const __output = join(__dirname, '../../sdk/src/schema.ts');

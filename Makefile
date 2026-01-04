@@ -3,7 +3,7 @@ export
 
 # === Gen ===
 gen/smtp:
-	pnpm run gen --filter=@boswaves-inc/smtp-*...
+	pnpm turbo gen --filter=@boswaves-inc/smtp-*...
 
 
 # === Dev ===
@@ -73,4 +73,29 @@ rm:
 
 # === Help ===
 help:
-	@grep -E '^[a-zA-Z_/]+:.*' Makefile | sort
+	@echo Available targets:
+	@echo.
+	@echo   gen/smtp        - Generate SMTP packages
+	@echo.
+	@echo   dev/smtp        - Dev SMTP packages
+	@echo   dev/webstore    - Dev Webstore packages
+	@echo   dev             - Dev all
+	@echo.
+	@echo   build/smtp      - Build SMTP packages
+	@echo   build/webstore  - Build Webstore packages
+	@echo   build           - Build all
+	@echo.
+	@echo   up/infra        - Start infra containers
+	@echo   up/smtp         - Start SMTP containers
+	@echo   up/webstore     - Start Webstore containers
+	@echo   up              - Start all containers
+	@echo.
+	@echo   down/infra      - Stop infra containers
+	@echo   down/smtp       - Stop SMTP containers
+	@echo   down/webstore   - Stop Webstore containers
+	@echo   down            - Stop all containers
+	@echo.
+	@echo   rm/infra        - Remove infra containers and volumes
+	@echo   rm/smtp         - Remove SMTP containers and volumes
+	@echo   rm/webstore     - Remove Webstore containers and volumes
+	@echo   rm              - Remove all containers and volumes
