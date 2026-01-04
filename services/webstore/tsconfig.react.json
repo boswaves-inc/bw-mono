@@ -1,9 +1,5 @@
 {
     "extends": "./tsconfig.json",
-    "include": [
-        ".react-router/types/**/*",
-        "drizzle.config.ts"
-    ],
     "references": [
         {
             "path": "./core/tsconfig.json"

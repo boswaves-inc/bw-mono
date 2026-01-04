@@ -2,11 +2,13 @@
   "name": "@boswaves-inc/smtp-proc",
   "private": true,
   "scripts": {
-    "build": "tsup",
-    "start": "node dist/index.js",
     "dev": "dotenv -- tsx --watch src/index.ts",
     "dev:email": "email dev --dir src/emails --port 3000",
-    "gen:schema": "tsx scripts/gen_schema.ts"
+    "build": "tsup",
+    "start": "node dist/index.js",
+    "gen": "tsx scripts/gen_types.ts",
+    "db:gen": "dotenv -- drizzle-kit generate",
+    "db:mig": "dotenv -- drizzle-kit migrate"
   },
   "dependencies": {
     "@react-email/components": "1.0.3",

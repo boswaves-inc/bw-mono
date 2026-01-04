@@ -21,40 +21,6 @@ importers:
         specifier: ^5.4.0
         version: 5.9.3
 
-  services/smtp:
-    dependencies:
-      chargebee:
-        specifier: ^3.14.0
-        version: 3.17.0
-      drizzle-orm:
-        specifier: ^0.45.1
-        version: 0.45.1(postgres@3.4.7)
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
-      postgres:
-        specifier: ^3.4.7
-        version: 3.4.7
-    devDependencies:
-      '@types/lodash':
-        specifier: ^4.17.20
-        version: 4.17.21
-      '@types/node':
-        specifier: ^22.18.10
-        version: 22.19.3
-      dotenv-cli:
-        specifier: ^10.0.0
-        version: 10.0.0
-      drizzle-kit:
-        specifier: ^0.31.8
-        version: 0.31.8
-      tsx:
-        specifier: ^4.20.6
-        version: 4.21.0
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.3
-
   services/smtp/proc:
     dependencies:
       '@react-email/components':
@@ -233,46 +199,6 @@ importers:
       dotenv-cli:
         specifier: ^10.0.0
         version: 10.0.0
-      tsx:
-        specifier: ^4.20.6
-        version: 4.21.0
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.3
-
-  services/webstore:
-    dependencies:
-      '@boswaves-inc/webstore-core':
-        specifier: workspace:*
-        version: link:core
-      '@directus/sdk':
-        specifier: ^20.3.0
-        version: 20.3.0
-      chargebee:
-        specifier: ^3.14.0
-        version: 3.17.0
-      drizzle-orm:
-        specifier: ^0.44.6
-        version: 0.44.7(postgres@3.4.7)
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
-      postgres:
-        specifier: ^3.4.7
-        version: 3.4.7
-    devDependencies:
-      '@types/lodash':
-        specifier: ^4.17.20
-        version: 4.17.21
-      '@types/node':
-        specifier: ^22.18.10
-        version: 22.19.3
-      dotenv-cli:
-        specifier: ^10.0.0
-        version: 10.0.0
-      drizzle-kit:
-        specifier: ^0.31.5
-        version: 0.31.8
       tsx:
         specifier: ^4.20.6
         version: 4.21.0
@@ -648,7 +574,7 @@ importers:
         specifier: ^1.9.10
         version: 1.9.10
       '@types/node':
-        specifier: ^22.18.10
+        specifier: ^22.19.3
         version: 22.19.3
       '@types/nodemailer':
         specifier: ^7.0.4

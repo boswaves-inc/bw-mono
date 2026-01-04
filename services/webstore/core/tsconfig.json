@@ -1,11 +1,12 @@
 {
     "extends": "../tsconfig.react.json",
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "drizzle.config.ts"
     ],
     "compilerOptions": {
         "outDir": "dist",
-        "rootDir": "./src",
+        "rootDir": "./",
         "noEmit": false,
         "declarationMap": true,
         "composite": true

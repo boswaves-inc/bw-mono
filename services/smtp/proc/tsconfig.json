@@ -1,6 +1,8 @@
 {
-  "extends": "../tsconfig.json",
   "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "noEmit": false,
     "target": "ES2022",
     "strict": true,
     "jsx": "react-jsx",
@@ -12,6 +14,11 @@
     "module": "ESNext",
     "outDir": "dist",
     "rootDir": "./",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2022"
+    ],
     "paths": {
       "~/*": [
         "./src/*"

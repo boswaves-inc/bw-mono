@@ -1,67 +1,76 @@
 -include .env
 export
 
-# === Infrastructure ===
-infra/up:
-	docker compose -f infra/compose.yaml up -d
+# === Gen ===
+gen/smtp:
+	pnpm run gen --filter=@boswaves-inc/smtp-*...
 
-infra/down:
-	docker compose -f infra/compose.yaml down
 
-infra/rm:
-	docker compose -f infra/compose.yaml down -v
+# === Dev ===
+dev/smtp:
+	pnpm turbo dev --filter=@boswaves-inc/smtp-*...
 
-# === SMTP ===
-smtp/dev:
-	pnpm run gen:schema
-	pnpm run dev:smtp
+dev/webstore:
+	pnpm turbo dev --filter=@boswaves-inc/webstore-*...
 
-smtp/build:
-	pnpm run build:smtp
-
-smtp/up:
-	docker compose -f services/smtp/compose.dev.yaml up -d
-
-smtp/down:
-	docker compose -f services/smtp/compose.dev.yaml down
-
-smtp/rm:
-	docker compose -f services/smtp/compose.dev.yaml down -v
-
-# === Webstore ===
-webstore/dev:
-	pnpm run dev:webstore
-
-webstore/build:
-	pnpm run build:webstore
-
-webstore/up:
-	docker compose -f services/webstore/compose.dev.yaml up -d
-
-webstore/down:
-	docker compose -f services/webstore/compose.dev.yaml down
-
-webstore/rm:
-	docker compose -f services/webstore/compose.dev.yaml down -v
-
-# === All ===
 dev:
-	pnpm run dev
+	pnpm turbo dev
+
+# === Build ===
+build/smtp:
+	pnpm turbo build --filter=@boswaves-inc/smtp-*...
+
+build/webstore:
+	pnpm turbo build --filter=@boswaves-inc/webstore-*...
 
 build:
-	pnpm run build
+	pnpm turbo build
+
+# === Up ===
+up/infra:
+	docker compose -f infra/compose.yaml up -d
+
+up/smtp:
+	docker compose -f services/smtp/compose.dev.yaml up -d
+
+up/webstore:
+	docker compose -f services/webstore/compose.dev.yaml up -d
 
 up:
-	$(MAKE) infra/up
-	$(MAKE) smtp/up
-	$(MAKE) webstore/up
+	$(MAKE) up/infra
+	$(MAKE) up/smtp
+	$(MAKE) up/webstore
+
+# === Down ===
+down/infra:
+	docker compose -f infra/compose.yaml down
+
+down/smtp:
+	docker compose -f services/smtp/compose.dev.yaml down
+
+down/webstore:
+	docker compose -f services/webstore/compose.dev.yaml down
 
 down:
-	$(MAKE) smtp/down
-	$(MAKE) webstore/down
-	$(MAKE) infra/down
+	$(MAKE) down/smtp
+	$(MAKE) down/webstore
+	$(MAKE) down/infra
+
+# === Remove ===
+rm/infra:
+	docker compose -f infra/compose.yaml down -v
+
+rm/smtp:
+	docker compose -f services/smtp/compose.dev.yaml down -v
+
+rm/webstore:
+	docker compose -f services/webstore/compose.dev.yaml down -v
 
 rm:
-	$(MAKE) smtp/rm
-	$(MAKE) webstore/rm
-	$(MAKE) infra/rm
+	$(MAKE) rm/smtp
+	$(MAKE) rm/webstore
+	$(MAKE) rm/infra
+
+# === Help ===
+help:
+	@grep -E '^[a-zA-Z_/]+:.*' Makefile | sort

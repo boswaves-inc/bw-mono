@@ -12,17 +12,6 @@
   "files": [
     "dist"
   ],
-  "scripts": {
-    "build": "dotenv -- tsc",
-    "prepublishOnly": "dotenv -- npm run build"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/boswaves-inc/smtp.git"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "dependencies": {
     "compression": "^1.8.1",
     "express": "^5.1.0",

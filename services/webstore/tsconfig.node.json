@@ -1,6 +1,5 @@
 {
     "extends": "./tsconfig.json",
-    // "files": ["./drizzle.config.ts"],
     "references": [
         {
             "path": "./web/tsconfig.node.json"

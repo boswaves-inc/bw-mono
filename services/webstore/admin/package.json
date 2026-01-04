@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "dotenv -- node server.js",
     "build": "react-router build",
-    "start": "node server.js",
-    "dev": "dotenv -- node server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "@boswaves-inc/webstore-core": "workspace:*",

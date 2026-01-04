@@ -2,6 +2,11 @@
   "name": "@boswaves-inc/webstore-core",
   "private": true,
   "type": "module",
+  "scripts": {
+    "db:gen": "dotenv -- drizzle-kit generate",
+    "db:mig": "dotenv -- drizzle-kit migrate",
+    "db:studio": "dotenv -- drizzle-kit studio"
+  },
   "exports": {
     ".": "./src/index.ts",
     "./*": "./src/*/index.ts",
@@ -32,7 +37,7 @@
     "@types/compression": "^1.8.1",
     "@types/express": "^5.0.3",
     "@types/morgan": "^1.9.10",
-    "@types/node": "^22.18.10",
+    "@types/node": "^22.19.3",
     "@types/nodemailer": "^7.0.4",
     "dotenv-cli": "^10.0.0",
     "drizzle-kit": "^0.31.5",

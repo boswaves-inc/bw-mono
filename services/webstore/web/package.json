@@ -3,10 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "dotenv -- node server.js",
     "build": "react-router build",
-    "start": "node server.js",
-    "gen:types": "dotenv -- tsx ./scripts/generate.ts",
-    "dev": "dotenv -- node server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "@boswaves-inc/smtp-sdk": "workspace:*",
