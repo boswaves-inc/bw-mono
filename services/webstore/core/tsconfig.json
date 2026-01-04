@@ -1,14 +1,28 @@
 {
-    "extends": "../tsconfig.react.json",
     "include": [
         "src/**/*",
         "drizzle.config.ts"
     ],
     "compilerOptions": {
+        "verbatimModuleSyntax": true,
+        "skipLibCheck": true,
+        "checkJs": true,
+        "strict": true,
+        "jsx": "react-jsx",
+        "target": "ES2022",
+        "module": "ES2022",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "moduleResolution": "bundler",
         "outDir": "dist",
         "rootDir": "./",
         "noEmit": false,
         "declarationMap": true,
-        "composite": true
+        "composite": true,
+        "lib": [
+            "DOM",
+            "DOM.Iterable",
+            "ES2022"
+        ],
     }
 }

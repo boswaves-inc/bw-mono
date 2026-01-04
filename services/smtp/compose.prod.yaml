@@ -1,0 +1,8 @@
+name: boswaves_smtp
+
+include:
+- ../../infra/compose.yaml
+- ../../infra/modules/postgres.yaml
+- ../../infra/modules/redpanda.yaml
+
+# - ../../infra/modules/directus.yaml
