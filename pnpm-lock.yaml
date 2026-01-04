@@ -32,6 +32,9 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.1.18
         version: 4.1.18
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       compression:
         specifier: ^1.8.1
         version: 1.8.1
@@ -80,6 +83,12 @@ importers:
       string-transform:
         specifier: ^21.9.19
         version: 21.9.19
+      tailwind-merge:
+        specifier: ^3.3.1
+        version: 3.4.0
+      tailwind-variants:
+        specifier: ^3.1.1
+        version: 3.2.2(tailwind-merge@3.4.0)(tailwindcss@4.1.18)
       zod:
         specifier: ^4.3.4
         version: 4.3.4

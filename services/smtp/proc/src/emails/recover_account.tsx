@@ -1,6 +1,9 @@
 import z from 'zod/v4'
-import { Email } from '~/components/email'
+import { Button } from '~/components/elements/button'
+import { Section } from '~/components/elements/section'
+import { Html } from '~/components/elements/html'
 import { template } from '~/utils'
+import { Column, Heading, Img, Link, Row, Text } from '@react-email/components'
 
 const schema = z.object({
     otp: z.string()
@@ -9,14 +12,121 @@ const schema = z.object({
 const { handler, render } = template('recover_account', schema, ({
     otp = "000-123"
 }) => (
-    <Email>
-        <h1 className='text-brand'>
-            Recover Account
-        </h1>
-        <h1 className='text-black'>
-            {otp}
-        </h1>
-    </Email>
+    <Html>
+        <Section className="mt-8">
+            <Img
+                src={`https://react-email-demo-8li1l9xfn-resend.vercel.app/static/slack-logo.png`}
+                width="120"
+                height="36"
+                alt="Slack"
+            />
+        </Section>
+        <Heading className="text-[#1d1c1d] text-4xl font-bold my-7.5 mx-0 p-0 leading-10.5">
+            Confirm your email address
+        </Heading>
+        <Text className="text-xl mb-7.5">
+            Your confirmation code is below - enter it in your open browser
+            window and we'll help you get signed in.
+        </Text>
+        <Section className="bg-[rgb(245,244,245)] rounded mb-7.5 py-10 px-2.5">
+            <Text className="text-3xl leading-6 text-center align-middle">
+                {otp}
+            </Text>
+        </Section>
+
+        <Text className="text-black text-sm leading-6">
+            If you didn't request this email, there's nothing to worry about,
+            you can safely ignore it.
+        </Text>
+
+        <Section>
+            <Row className="mb-8 pl-2 pr-2">
+                <Column className="w-2/3">
+                    <Img
+                        src={`https://react-email-demo-8li1l9xfn-resend.vercel.app/static/slack-logo.png`}
+                        width="120"
+                        height="36"
+                        alt="Slack"
+                    />
+                </Column>
+                <Column align="right">
+                    <Link href="/">
+                        <Img
+                            src={`https://react-email-demo-8li1l9xfn-resend.vercel.app/static/slack-facebook.png`}
+                            width="32"
+                            height="32"
+                            alt="Slack"
+                            className="inline ml-2"
+                        />
+                    </Link>
+                    <Link href="/">
+                        <Img
+                            src={`https://react-email-demo-8li1l9xfn-resend.vercel.app/static/slack-facebook.png`}
+                            width="32"
+                            height="32"
+                            alt="Slack"
+                            className="inline ml-2"
+                        />
+                    </Link>
+                    <Link href="/">
+                        <Img
+                            src={`https://react-email-demo-8li1l9xfn-resend.vercel.app/static/slack-facebook.png`}
+                            width="32"
+                            height="32"
+                            alt="Slack"
+                            className="inline ml-2"
+                        />
+                    </Link>
+                </Column>
+            </Row>
+        </Section>
+
+        <Section>
+            {/* <Link
+                className="text-[#b7b7b7] underline"
+                href="https://slackhq.com"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Our blog
+            </Link>
+            &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+            <Link
+                className="text-[#b7b7b7] underline"
+                href="https://slack.com/legal"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Policies
+            </Link>
+            &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+            <Link
+                className="text-[#b7b7b7] underline"
+                href="https://slack.com/help"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Help center
+            </Link>
+            &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+            <Link
+                className="text-[#b7b7b7] underline"
+                href="https://slack.com/community"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-auth="NotApplicable"
+                data-linkindex="6"
+            >
+                Slack Community
+            </Link> */}
+            <Text className="text-xs leading-3.75 text-left mb-12.5 text-[#b7b7b7]">
+                ©2022 Slack Technologies, LLC, a Salesforce company. <br />
+                500 Howard Street, San Francisco, CA 94105, USA <br />
+                <br />
+                All rights reserved.
+            </Text>
+        </Section>
+    </Html>
 ))
 
 export { handler }
