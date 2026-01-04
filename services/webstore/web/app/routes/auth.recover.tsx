@@ -23,25 +23,22 @@ export const loader = async ({ request, context: { auth } }: Route.LoaderArgs) =
 export const action = async ({ request, context: { auth } }: Route.ActionArgs) => {
     switch (request.method.toLowerCase()) {
         case 'post': {
-            const form = await request.formData()
-
-            // Validate the form data
-            const result = await formData({
-                email: z.email("email is required"),
-            }).parseAsync(form)
-
             try {
+
+                const form = await request.formData()
+
+                // Validate the form data
+                const result = await formData({
+                    email: z.email("email is required"),
+                }).parseAsync(form)
+
                 // Request the recovery OTP
                 return await auth.recover(request, result.email, {
                     onSuccess: './code'
                 })
             }
             catch ({ message }: any) {
-                console.log(message)
-
-                return data({ error: message }, {
-                    status: 400
-                })
+                return data<{ error: string }>({ error: message }, { status: 400 })
             }
         }
     }

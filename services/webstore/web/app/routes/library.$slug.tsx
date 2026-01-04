@@ -12,7 +12,6 @@ import { Fragment } from "react/jsx-runtime";
 import { formatCurrency } from "@coingecko/cryptoformat";
 import { Button } from "~/components/core/v2/button";
 import { Heading } from "~/components/core/v2/typography";
-import Page from "~/components/page";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -82,7 +81,7 @@ export default ({ loaderData: { id, name, script, item_price, created_at, ...res
   }
 
   return (
-    <Page>
+    <div className="px-4 sm:px-6 relative lg:px-8  max-w-7xl mx-auto">
       <Section>
         <Link relative="path" to='..' className="block w-fit">
           <Heading size="h4" className="w-fit">
@@ -322,6 +321,6 @@ export default ({ loaderData: { id, name, script, item_price, created_at, ...res
         </div>
       </Section>
       <FaqAccordion />
-    </Page>
+    </div>
   );
 }

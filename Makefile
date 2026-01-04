@@ -13,6 +13,7 @@ infra/rm:
 
 # === SMTP ===
 smtp/dev:
+	pnpm run gen:schema
 	pnpm run dev:smtp
 
 smtp/build:

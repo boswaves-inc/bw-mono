@@ -4,13 +4,14 @@
     "target": "ES2022",
     "strict": true,
     "jsx": "react-jsx",
+    "composite": true,
     "moduleResolution": "bundler",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "module": "ESNext",
     "outDir": "dist",
-    "rootDir": "./src",
+    "rootDir": "./",
     "paths": {
       "~/*": [
         "./src/*"
@@ -28,8 +29,6 @@
   },
   "include": [
     // "components/**/*",
-    // "schema/**/*",
-    // "emails/**/*",
     "src/**/*",
   ],
 }

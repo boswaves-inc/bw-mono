@@ -2,9 +2,8 @@ import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { KafkaMessage as PrimitiveMessage } from "kafkajs"
 import { Logger } from "~/services/logger"
 import schema from '~/schema/index'
-import SMTPPool from "nodemailer/lib/smtp-pool";
-import nodemailer from "nodemailer";
 import { Smtp } from "./services/smtp";
+import { ZodObject, ZodType } from "zod/v4";
 
 export interface Context {
     smtp: Smtp,
@@ -12,20 +11,33 @@ export interface Context {
     postgres: PostgresJsDatabase<typeof schema>
 }
 
-export interface KafkaRoute {
-    beginning: boolean | undefined;
-    match: (string | RegExp)[];
-    handler: KafkaRouteHandler;
-};
-
-export interface KafkaMiddleware {
-    handler: KafkaMiddlewareHandler;
-};
-
-export interface KafkaMessage {
-    partition: number,
-    message: PrimitiveMessage
+export interface RouteTopic {
+    key: string,
+    topic: string,
+    path: string
 }
 
-export type KafkaRouteHandler = (message: KafkaMessage) => Promise<void> | void;
-export type KafkaMiddlewareHandler = (message: KafkaMessage, next: any) => Promise<void> | void;
+export interface RouteMessage {
+    partition: number,
+    message: PrimitiveMessage,
+    context: Context
+}
+
+export interface RouteHandle {
+    from_beginning: boolean | undefined
+}
+
+export interface RouteModule {
+    schema: ZodType
+    default: RouteHandler,
+    handle?: RouteHandle | undefined
+}
+
+export interface RouteMap {
+    [topic: string]: {
+        module: RouteModule,
+        key: string
+    }
+}
+
+export type RouteHandler = (message: RouteMessage) => Promise<void> | void;

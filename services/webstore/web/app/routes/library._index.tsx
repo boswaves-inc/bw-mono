@@ -14,7 +14,6 @@ import { and, eq, getTableColumns, isNotNull, sql } from "drizzle-orm";
 import { formatCurrency } from "@coingecko/cryptoformat";
 import { Button } from "~/components/core/v2/button";
 import { Heading } from "~/components/core/v2/typography";
-import Page from "~/components/page";
 import Section from "~/components/section";
 
 export function meta({ }: Route.MetaArgs) {
@@ -52,7 +51,7 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
   const cart = useCart()
 
   return (
-    <Page>
+    <div className="px-4 sm:px-6 relative lg:px-8  max-w-7xl mx-auto">
       <Section>
         <div>
           <Heading size="h1">
@@ -191,6 +190,6 @@ export default function renderer({ loaderData }: Route.ComponentProps) {
           ))}
         </div>
       </Section>
-    </Page>
+    </div>
   )
 }

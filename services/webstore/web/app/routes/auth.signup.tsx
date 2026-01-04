@@ -6,7 +6,7 @@ import z from "zod/v4";
 import { GradientBackground } from "~/components/v3/gradient";
 import { Mark } from "~/components/v3/logo";
 import { Button } from "~/components/v3/core/button";
-import { Form, FormdMessage, FormField, FormItem, FormLabel } from "~/components/v3/core/form";
+import { Form, FormMessage, FormField, FormItem, FormLabel } from "~/components/v3/core/form";
 import { CheckboxControl, InputControl } from "~/components/v3/core/form/control";
 
 export const meta = ({ }: Route.MetaArgs) => [
@@ -135,7 +135,7 @@ export default () => {
                                 />
 
                             </div>
-                            <FormdMessage />
+                            <FormMessage />
                             <Button type="submit" className="w-full">
                                 Sign up
                             </Button>

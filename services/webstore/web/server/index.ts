@@ -49,10 +49,10 @@ const smtp_client = await Smtp.connect({
   brokers: process.env.SMTP_BROKERS.split(',')
 })
 
-const cdn_client = new Directus({
-  url: process.env.CDN_HOST,
-  token: process.env.CDN_TOKEN
-})
+// const cdn_client = new Directus({
+//   url: process.env.CDN_HOST,
+//   token: process.env.CDN_TOKEN
+// })
 
 const cb_client = new Chargebee({
   site: process.env.CB_SITE,
@@ -105,7 +105,7 @@ app_router.use(createRequestHandler({
       },
       theme,
       jwt: jwt_client,
-      cdn: cdn_client,
+      // cdn: cdn_client,
       smtp: smtp_client,
       auth: auth_client,
       postgres: pg_client,

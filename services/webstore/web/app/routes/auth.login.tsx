@@ -3,7 +3,7 @@ import { data, Link } from "react-router";
 import { Mark } from "~/components/v3/logo";
 import { Button } from "~/components/v3/core/button";
 import { useForm } from "react-hook-form";
-import { Form, FormdMessage, FormField, FormItem, FormLabel } from "~/components/v3/core/form";
+import { Form, FormMessage, FormField, FormItem, FormLabel } from "~/components/v3/core/form";
 import { InputControl } from "~/components/v3/core/form/control";
 import { formData } from "zod-form-data";
 import { z } from "zod/v4";
@@ -112,7 +112,7 @@ export default () => {
                             </Link>
 
                         </div>
-                        <FormdMessage />
+                        <FormMessage />
                         <Button type="submit" className="w-full">
                             Sign in
                         </Button>

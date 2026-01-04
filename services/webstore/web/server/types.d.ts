@@ -28,7 +28,7 @@ declare module "react-router" {
     jwt: Jwt,
     auth: Auth,
     smtp: Smtp,
-    cdn: Directus
+    // cdn: Directus
     postgres: Postgres
     chargebee: InstanceType<typeof Chargebee>
   }

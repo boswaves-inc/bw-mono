@@ -3,13 +3,13 @@ import { data, Link } from "react-router";
 import { Container } from "~/components/v3/container";
 import { Button } from "~/components/v3/core/button";
 import { Heading, Lead, Subheading } from "~/components/v3/core/typography";
-import { Footer } from "~/components/v3/footer";
 import { GradientBackground } from "~/components/v3/gradient";
 import Motion from "~/components/v3/motion";
 import { Navigation } from "~/components/v3/navbar";
 import type { Route } from "./+types/company";
 import _ from "lodash";
 import { Fragment } from "react/jsx-runtime";
+import { Footer } from "~/components/layout/footer";
 
 export const loader = ({ }: Route.LoaderArgs) => {
     return data({

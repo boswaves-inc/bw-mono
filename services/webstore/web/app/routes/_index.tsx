@@ -28,11 +28,11 @@ export function meta({ }: MetaArgs) {
 }
 
 export async function loader({ context: { cdn } }: Route.LoaderArgs) {
-  const ss = await cdn.read_file('bcda437e-d7f5-4cca-aed1-9d92f049c5b6', {
+  // const ss = await cdn.read_file('bcda437e-d7f5-4cca-aed1-9d92f049c5b6', {
 
-  })
+  // })
 
-  console.log(ss)
+  // console.log(ss)
 
   return [
     { title: "New React Router App" },

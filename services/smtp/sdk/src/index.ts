@@ -1,5 +1,2 @@
 export { Smtp } from './client'
-
-
-
-export * from './types'
+export * from './schema'

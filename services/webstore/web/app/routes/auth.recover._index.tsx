@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Form, FormField, FormItem, FormLabel } from "~/components/v3/core/form";
+import { Form, FormField, FormItem, FormLabel, FormMessage } from "~/components/v3/core/form";
 import { Link } from "react-router";
 import { Mark } from "~/components/v3/logo";
 import { InputControl } from "~/components/v3/core/form/control";
@@ -33,6 +33,8 @@ export default () => {
                         </FormItem>
                     )}
                 />
+
+                <FormMessage />
 
                 <Button type="submit" className="w-full">
                     Reset Password

@@ -1,9 +1,17 @@
-import { Kafka as Primitive, KafkaConfig, logLevel as KafkaLevel, Consumer, } from "kafkajs"
-import { KafkaRoute, KafkaRouteHandler } from "../types";
+import { Kafka as Primitive, KafkaConfig, logLevel as KafkaLevel, Consumer, Producer, Partitioners, } from "kafkajs"
+import { Context, RouteHandler } from "../types";
 import { Logger } from "~/services/logger";
+
+interface KafkaRoute {
+    beginning: boolean | undefined;
+    match: (string | RegExp)[];
+    handler: RouteHandler;
+};
 
 export class Kafka {
     private _consumer: Consumer;
+    private _producer: Producer;
+
     private _routes: KafkaRoute[] = [];
 
     constructor({ logger, config }: { logger: Logger, config: KafkaConfig }) {
@@ -26,12 +34,16 @@ export class Kafka {
             }
         })
 
+        this._producer = client.producer({
+            createPartitioner: Partitioners.DefaultPartitioner,
+        })
+
         this._consumer = client.consumer({
             groupId: 'boswaves/smtp',
         })
     }
 
-    public on(match: string | (string | RegExp)[], handler: KafkaRouteHandler, beginning?: boolean | undefined) {
+    public on(match: string | (string | RegExp)[], handler: RouteHandler, beginning?: boolean | undefined) {
         this._routes.push({
             match: typeof match === 'string' ? [match] : match,
             beginning,
@@ -39,9 +51,11 @@ export class Kafka {
         });
     }
 
-    public async run() {
+    public async run(context: Context) {
         await this._consumer.run({
             eachMessage: async ({ topic, partition, message }) => {
+                console.log(topic)
+
                 const route = this._routes.find(r => {
                     return r.match.some(m => typeof m === 'string' ? m === topic : m.test(topic))
                 });
@@ -49,9 +63,11 @@ export class Kafka {
                 if (route == undefined) {
                     return
                 }
+                
                 else {
                     await route.handler({
                         partition,
+                        context,
                         message
                     });
                 }

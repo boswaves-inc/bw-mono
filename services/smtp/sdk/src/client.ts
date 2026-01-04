@@ -1,9 +1,8 @@
-import { CompressionTypes, Kafka, Message, Partitioners, Producer } from "kafkajs";
-import { Config, QueueArgs, ScheduleArgs } from "./types";
+import { CompressionTypes, Kafka, KafkaConfig, Message, Partitioners, Producer } from "kafkajs";
+import { QueueArgs, ScheduleArgs } from "./schema";
 
 export class Smtp {
     private _producer: Producer;
-
 
     private constructor(producer: Producer) {
         this._producer = producer
@@ -31,10 +30,11 @@ export class Smtp {
         })
     }
 
-    public static async connect({ clientId = '@boswaves-inc/smtp-sdk', ...config }: Config) {
-        const client = new Kafka({ ...config, clientId, })
+    public static async connect({ clientId = '@boswaves-inc/smtp-sdk', ...config }: KafkaConfig) {
+        const client = new Kafka({ ...config, clientId })
         const producer = client.producer({
             createPartitioner: Partitioners.DefaultPartitioner,
+            allowAutoTopicCreation: false
         })
 
         await producer.connect()

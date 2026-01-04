@@ -1,5 +1,4 @@
 {
-    "files": [],
     "references": [
         {
             "path": "./proc/tsconfig.json"
@@ -19,6 +18,11 @@
         "esModuleInterop": true,
         "resolveJsonModule": true,
         "moduleResolution": "bundler",
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "lib": [
+            "DOM",
+            "DOM.Iterable",
+            "ES2022"
+        ]
     }
 }

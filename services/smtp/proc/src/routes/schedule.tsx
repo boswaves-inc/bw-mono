@@ -1,7 +1,14 @@
 import z from "zod/v4";
 import { idempotency_key } from "~/utils";
-import { Context, KafkaMessage } from "~/types";
+import { Context, RouteMessage } from "~/types";
 import { formData } from "zod-form-data";
+
+export const schema = formData({
+    template: z.string(),
+    to_emails: z.string().array(),
+    cc_emails: z.string().array().optional().default([]),
+    bcc_emails: z.string().array().optional().default([]),
+})
 
 export default ({ logger }: Context) => {
     const schema = formData({
@@ -11,7 +18,7 @@ export default ({ logger }: Context) => {
         bcc_emails: z.string().array(),
     })
 
-    return async ({ message }: KafkaMessage) => {
+    return async ({ message }: RouteMessage) => {
         if (message.value == undefined) {
             logger.error('missing message value')
 

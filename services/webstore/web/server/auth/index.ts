@@ -1,6 +1,6 @@
 import { addDays, addMinutes, isPast, milliseconds, millisecondsToSeconds as seconds } from "date-fns"
 import { crypt, gen_salt, increment } from "@boswaves-inc/webstore-core/utils/drizzle"
-import { Email, User, UserCredentials } from "@boswaves-inc/webstore-core"
+import { User, UserCredentials } from "@boswaves-inc/webstore-core"
 import { Session } from "@boswaves-inc/webstore-core/schema/auth/session"
 import { and, eq, gt, isNull, ne } from "drizzle-orm"
 import { recoverSession, authSession } from "./cookies"
@@ -247,13 +247,17 @@ export class Auth {
 
 
             // Queue the OTP email to be sent
-            await this._smtp.send()
-
-            await tx.insert(Email).values({
-                recipient: email,
-                sender: '"Maddison Foo Koch" <maddison53@ethereal.email>',
-                subject: "Hello ✔",
+            await this._smtp.queue({
+                template: '',
+                subject: 'hello',
+                to_emails: [email]
             })
+
+            // await tx.insert(Email).values({
+            //     recipient: email,
+            //     sender: '"Maddison Foo Koch" <maddison53@ethereal.email>',
+            //     subject: "Hello ✔",
+            // })
 
             // Create the user in the chargebee backend
             await this._chargebee.customer.create({
@@ -325,15 +329,20 @@ export class Auth {
 
             session.set('token', token)
 
-            await this._smtp.send()
 
             // Queue the OTP email to be sent
-            await tx.insert(Email).values({
-                recipient: email,
-                template: null,
-                sender: '"Maddison Foo Koch" <maddison53@ethereal.email>',
-                subject: "Hello ✔",
+            await this._smtp.queue({
+                template: '',
+                subject: 'hello',
+                to_emails: [email]
             })
+
+            // await tx.insert(Email).values({
+            //     recipient: email,
+            //     template: null,
+            //     sender: '"Maddison Foo Koch" <maddison53@ethereal.email>',
+            //     subject: "Hello ✔",
+            // })
         });
 
         return redirect(onSuccess, {
@@ -398,15 +407,19 @@ export class Auth {
             // Apply the newly signed token to the session cookie
             session.set('token', updated)
 
-            await this._smtp.send()
-
             // Queue the OTP email to be sent
-            await tx.insert(Email).values({
-                recipient: user.email,
-                template: null,
-                sender: '"Maddison Foo Koch" <maddison53@ethereal.email>',
-                subject: "Hello ✔",
+            await this._smtp.queue({
+                template: '',
+                subject: 'hello',
+                to_emails: [user.email]
             })
+
+            // await tx.insert(Email).values({
+            //     recipient: email,
+            //     template: null,
+            //     sender: '"Maddison Foo Koch" <maddison53@ethereal.email>',
+            //     subject: "Hello ✔",
+            // })
         });
 
         return data({ success: true }, {
@@ -561,6 +574,23 @@ export class Auth {
         }
 
         await this._postgres.transaction(async tx => {
+            // get the user from the uid to te the email
+            const user = await tx.query.User.findFirst({
+                where: and(
+                    eq(User.uid, token.sub),
+                    ne(User.status, 'deleted')
+                ),
+            })
+
+            // If user has been deleted, perform onFailure redirect
+            if (user == undefined) {
+                throw redirect(onFailure, {
+                    headers: [
+                        ['Set-Cookie', await recoverSession.destroySession(session)]
+                    ]
+                })
+            }
+
             await tx.update(UserOtp).set({
                 revoked_at: new Date()
             }).where(and(
@@ -577,14 +607,19 @@ export class Auth {
                 expires_at: new Date(Date.now() + 10 * 60 * 1e3),
             }).returning()
 
-            await this._smtp.send()
-
-            // Queue OTP to be sent
-            await tx.insert(Email).values({
-                recipient: "seaszn.libertas@gmail.com",
-                sender: '"Maddison Foo Koch" <maddison53@ethereal.email>',
-                subject: "Hello ✔",
+            // Queue the OTP email to be sent
+            await this._smtp.queue({
+                template: '',
+                subject: 'hello',
+                to_emails: [user.email]
             })
+
+            // await tx.insert(Email).values({
+            //     recipient: email,
+            //     template: null,
+            //     sender: '"Maddison Foo Koch" <maddison53@ethereal.email>',
+            //     subject: "Hello ✔",
+            // })
         });
 
         return data({ success: true })

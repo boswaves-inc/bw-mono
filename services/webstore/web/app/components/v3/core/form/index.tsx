@@ -197,7 +197,7 @@ export const FormFieldMessage = ({ className, ...props }: ComponentProps<'p'>) =
     )
 }
 
-export const FormdMessage = ({ className, ...props }: ComponentProps<'p'>) => {
+export const FormMessage = ({ className, ...props }: ComponentProps<'p'>) => {
     const { errors } = useFormState()
 
 

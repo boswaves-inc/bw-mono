@@ -1,11 +1,8 @@
 import { Logger } from "./services/logger";
 import { Kafka } from "./services/kafka";
-import queued from "./routes/email_queued";
-import scheduled from "./routes/email_scheduled";
-import nodemailer from 'nodemailer'
 import { Postgres } from './services/postgres';
 import { Smtp } from "./services/smtp";
-import postcss from 'postcss'
+import routes from "./routes";
 
 if (!process.env.SMTP_HOST) {
     throw new Error('SMTP_HOST variable not set')
@@ -57,41 +54,38 @@ const kafka_client = new Kafka({
     },
 })
 
-// Handle smtp.email-queued messages
-kafka_client.on('smtp.email-queued', queued({
-    logger: log_client,
-    postgres: pg_client,
-    smtp: smtp_client,
-
-}))
-
-// Handle smtp.email-scheduled messages
-kafka_client.on('smtp.email-scheduled', scheduled({
-    logger: log_client,
-    postgres: pg_client,
-    smtp: smtp_client,
-
-}))
-
-// Handle uncaught exceptions
-process.on('uncaughtException', async (err) => {
-    console.error('Uncaught exception:', err);
-    await kafka_client.disconnect()
-
-    process.exit(1);
-});
-
-// Handle unhandled promise rejections
-process.on('unhandledRejection', async (reason, promise) => {
-    console.error('Unhandled rejection at:', promise, 'reason:', reason);
-    await kafka_client.disconnect()
-
-    process.exit(1);
-});
-
 const main = async () => {
+    const route_map = await routes()
+
+    for (const [topic, { module, key }] of Object.entries(route_map)) {
+        const { default: factory, schema, handle } = module;
+        const beginning = handle?.from_beginning;
+
+        kafka_client.on(topic, factory, beginning);
+    }
+
+    // Handle uncaught exceptions
+    process.on('uncaughtException', async (err) => {
+        console.error('Uncaught exception:', err);
+        await kafka_client.disconnect()
+
+        process.exit(1);
+    });
+
+    // Handle unhandled promise rejections
+    process.on('unhandledRejection', async (reason, promise) => {
+        console.error('Unhandled rejection at:', promise, 'reason:', reason);
+        await kafka_client.disconnect()
+
+        process.exit(1);
+    });
+
     await kafka_client.connect()
-    await kafka_client.run()
+    await kafka_client.run({
+        logger: log_client,
+        postgres: pg_client,
+        smtp: smtp_client,
+    })
 }
 
 // Start the worker

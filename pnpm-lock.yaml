@@ -111,12 +111,18 @@ importers:
       react-email:
         specifier: ^5.1.1
         version: 5.1.1
+      string-transform:
+        specifier: ^21.9.19
+        version: 21.9.19
       zod:
         specifier: ^4.3.4
         version: 4.3.4
       zod-form-data:
         specifier: ^3.0.1
         version: 3.0.1(zod@4.3.4)
+      zod-to-ts:
+        specifier: ^2.0.0
+        version: 2.0.0(typescript@5.9.3)(zod@4.3.4)
     devDependencies:
       '@react-email/preview-server':
         specifier: ^5.1.1
@@ -137,7 +143,7 @@ importers:
         specifier: ^1.9.10
         version: 1.9.10
       '@types/node':
-        specifier: ^22.18.13
+        specifier: ^22.19.3
         version: 22.19.3
       '@types/nodemailer':
         specifier: ^7.0.4
@@ -157,6 +163,9 @@ importers:
       tailwindcss:
         specifier: ^4.1.13
         version: 4.1.18
+      ts-morph:
+        specifier: ^27.0.2
+        version: 27.0.2
       tsup:
         specifier: ^8.5.1
         version: 8.5.1(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.9.3)
@@ -3441,6 +3450,9 @@ packages:
   '@tanstack/virtual-core@3.13.14':
     resolution: {integrity: sha512-b5Uvd8J2dc7ICeX9SRb/wkCxWk7pUwN214eEPAQsqrsktSKTCmyLxOQWSMgogBByXclZeAdgZ3k4o0fIYUIBqQ==}
 
+  '@ts-morph/common@0.28.1':
+    resolution: {integrity: sha512-W74iWf7ILp1ZKNYXY5qbddNaml7e9Sedv5lvU1V8lftlitkc9Pq1A+jlH23ltDgWYeZFFEqGCD1Ies9hqu3O+g==}
+
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
 
@@ -3978,6 +3990,9 @@ packages:
     peerDependencies:
       react: ^18 || ^19 || ^19.0.0-rc
       react-dom: ^18 || ^19 || ^19.0.0-rc
+
+  code-block-writer@13.0.3:
+    resolution: {integrity: sha512-Oofo0pq3IKnsFtuHqSF7TqBfr71aeyZDVJ0HpmqB7FBM2qEigL0iPONSCZSO9pE9dZTAxANe5XHG9Uy0YMv8cg==}
 
   color-convert@1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
@@ -6253,6 +6268,9 @@ packages:
     resolution: {integrity: sha512-+TXdhKCySpJDynCxgAPoGVyAkiK3QPusQ63/BdU5t68QcYzyU6zkP/T7F3gkMQBVUYqdWEADKa6Kx5zg8QIKrg==}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
+  path-browserify@1.0.1:
+    resolution: {integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==}
+
   path-exists@3.0.0:
     resolution: {integrity: sha512-bpC7GYwiDYQ4wYLe+FA8lhRjhQCMcQGuSgGGqDkg/QerRWw9CmGRT0iSOVRSZJ29NMLZgIzqaljJ63oaL4NIJQ==}
     engines: {node: '>=4'}
@@ -7015,6 +7033,9 @@ packages:
     resolution: {integrity: sha512-QwiXZgpRcKkhTj2Scnn++4PKtWsH0kpzZ62L2R6c/LUVYv7hVnZqcg2+sMuT6R7Jusu1vviK/MFsu6kNJfWlEQ==}
     engines: {node: '>=4'}
 
+  string-transform@21.9.19:
+    resolution: {integrity: sha512-T1YFD4MkljYI1rBxpncsdsnq5wHnlpjiHn50h6WLGsS78kVqn473HoXzEPw/z+9zpsQ6RhIDuMgVO2z5fIhfyw==}
+
   string-width@4.2.3:
     resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}
     engines: {node: '>=8'}
@@ -7234,6 +7255,9 @@ packages:
   ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
 
+  ts-morph@27.0.2:
+    resolution: {integrity: sha512-fhUhgeljcrdZ+9DZND1De1029PrE+cMkIP7ooqkLRTrRLTqcki2AstsyJm0vRNbTbVCNJ0idGlbBrfqc7/nA8w==}
+
   tsconfck@3.1.6:
     resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
     engines: {node: ^18 || >=20}
@@ -7371,6 +7395,9 @@ packages:
   uint8array-extras@1.5.0:
     resolution: {integrity: sha512-rvKSBiC5zqCCiDZ9kAOszZcDvdAHwwIKJG33Ykj43OKcWsnmcBRL09YTU4nOeHZ8Y2a7l1MgTd08SBe9A8Qj6A==}
     engines: {node: '>=18'}
+
+  uint@21.6.2:
+    resolution: {integrity: sha512-2kdYektVZzHjg8Rhs4YgSnGZQkBnOa8/Xkt67YRhBMo8T36cjxbb3MnQrEgqAMSh36RAvxJWiiSOI9ySLbtwpA==}
 
   unbox-primitive@1.1.0:
     resolution: {integrity: sha512-nWJ91DjeOkej/TA8pXQ3myruKpKEYgqvpw9lz4OPHj/NWFNluYrjbz9j01CJ8yKQd2g4jFoOkINCTW2I5LEEyw==}
@@ -7687,6 +7714,12 @@ packages:
     resolution: {integrity: sha512-uwSrDzpLDoXeAxePjPHrjjMelE5pk5zL5JcwLFISvqidGjtPl7hcheH584xGcS76c9IRHq6tqdGkf+A4eKO6Cw==}
     peerDependencies:
       zod: '>= 3.25.0'
+
+  zod-to-ts@2.0.0:
+    resolution: {integrity: sha512-aHsUgIl+CQutKAxtRNeZslLCLXoeuSq+j5HU7q3kvi/c2KIAo6q4YjT7/lwFfACxLB923ELHYMkHmlxiqFy4lw==}
+    peerDependencies:
+      typescript: ^5.0.0
+      zod: ^3.25.0 || ^4.0.0
 
   zod@4.3.4:
     resolution: {integrity: sha512-Zw/uYiiyF6pUT1qmKbZziChgNPRu+ZRneAsMUDU6IwmXdWt5JwcUfy2bvLOCUtz5UniaN/Zx5aFttZYbYc7O/A==}
@@ -10486,6 +10519,12 @@ snapshots:
 
   '@tanstack/virtual-core@3.13.14': {}
 
+  '@ts-morph/common@0.28.1':
+    dependencies:
+      minimatch: 10.1.1
+      path-browserify: 1.0.1
+      tinyglobby: 0.2.15
+
   '@types/babel__core@7.20.5':
     dependencies:
       '@babel/parser': 7.28.5
@@ -11098,6 +11137,8 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
       - '@types/react-dom'
+
+  code-block-writer@13.0.3: {}
 
   color-convert@1.9.3:
     dependencies:
@@ -13607,6 +13648,8 @@ snapshots:
 
   partof@1.0.0: {}
 
+  path-browserify@1.0.1: {}
+
   path-exists@3.0.0: {}
 
   path-exists@4.0.0: {}
@@ -14528,6 +14571,10 @@ snapshots:
 
   strict-uri-encode@2.0.0: {}
 
+  string-transform@21.9.19:
+    dependencies:
+      uint: 21.6.2
+
   string-width@4.2.3:
     dependencies:
       emoji-regex: 8.0.0
@@ -14763,6 +14810,11 @@ snapshots:
 
   ts-interface-checker@0.1.13: {}
 
+  ts-morph@27.0.2:
+    dependencies:
+      '@ts-morph/common': 0.28.1
+      code-block-writer: 13.0.3
+
   tsconfck@3.1.6(typescript@5.9.3):
     optionalDependencies:
       typescript: 5.9.3
@@ -14903,6 +14955,8 @@ snapshots:
     optional: true
 
   uint8array-extras@1.5.0: {}
+
+  uint@21.6.2: {}
 
   unbox-primitive@1.1.0:
     dependencies:
@@ -15234,6 +15288,11 @@ snapshots:
   zod-form-data@3.0.1(zod@4.3.4):
     dependencies:
       '@rvf/set-get': 7.0.1
+      zod: 4.3.4
+
+  zod-to-ts@2.0.0(typescript@5.9.3)(zod@4.3.4):
+    dependencies:
+      typescript: 5.9.3
       zod: 4.3.4
 
   zod@4.3.4: {}
