@@ -60,11 +60,7 @@ export class Kafka {
                     return r.match.some(m => typeof m === 'string' ? m === topic : m.test(topic))
                 });
 
-                if (route == undefined) {
-                    return
-                }
-                
-                else {
+                if(route != undefined){
                     await route.handler({
                         partition,
                         context,

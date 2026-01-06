@@ -1,12 +1,13 @@
 {
   "name": "@boswaves-inc/smtp-proc",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "tsup",
     "dev": "dotenv -- tsx --watch src/index.ts",
     "gen": "tsx scripts/gen_types.ts",
-    "start": "node dist/index.js",
-    "studio": "email dev --dir src/emails --port 3000",
+    "start": "dotenv -- node dist/index.js",
+    "studio": "email dev --dir src/emails --port 8080",
     "db:gen": "dotenv -- drizzle-kit generate",
     "db:mig": "dotenv -- drizzle-kit migrate"
   },
@@ -21,6 +22,7 @@
     "express": "^5.1.0",
     "kafkajs": "^2.2.4",
     "lodash-es": "^4.17.21",
+    "lucide-react": "^0.545.0",
     "morgan": "^1.10.1",
     "nodemailer": "^7.0.12",
     "pino": "^10.1.0",

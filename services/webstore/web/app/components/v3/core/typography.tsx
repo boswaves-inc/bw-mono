@@ -33,6 +33,7 @@ const subheadingVariant = tv({
     }
 })
 
+
 interface HeadingProps extends ComponentProps<'h1'>, VariantProps<typeof headingVariant> {
     asChild?: boolean;
 }

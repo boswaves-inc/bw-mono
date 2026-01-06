@@ -2,7 +2,7 @@ import { Logger } from "./services/logger";
 import { Kafka } from "./services/kafka";
 import { Postgres } from './services/postgres';
 import { Smtp } from "./services/smtp";
-import routes from "./routes";
+import { loadBlockMap, loadRouteMap } from "./utils";
 
 if (!process.env.SMTP_HOST) {
     throw new Error('SMTP_HOST variable not set')
@@ -55,11 +55,18 @@ const kafka_client = new Kafka({
 })
 
 const main = async () => {
-    const route_map = await routes()
+    const route_map = await loadRouteMap()
+    const block_map = await loadBlockMap()
+
+    log_client.info({
+        blocks: Object.keys(block_map),
+        routes: Object.keys(route_map),
+    }, 'Context loaded')
 
     for (const [topic, { module, key }] of Object.entries(route_map)) {
         const { default: factory, schema, handle } = module;
         const beginning = handle?.from_beginning;
+
 
         kafka_client.on(topic, factory, beginning);
     }

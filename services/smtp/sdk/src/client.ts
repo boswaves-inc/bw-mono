@@ -1,5 +1,5 @@
 import { CompressionTypes, Kafka, KafkaConfig, Message, Partitioners, Producer } from "kafkajs";
-import { QueueArgs, ScheduleArgs } from "./schema";
+import { QueueArgs, ScheduleArgs, Topic } from "./gen/routes";
 
 export class Smtp {
     private _producer: Producer;
@@ -8,7 +8,13 @@ export class Smtp {
         this._producer = producer
     }
 
-    private async _send(topic: string, input: Message | Message[]) {
+    // [n: Topic]: (body: QueueArgs) => {
+    //     // const records = await this._send('smtp.queue', {
+    //     //     value: JSON.stringify(body)
+    //     // })
+    // }
+
+    private async _send(topic: Topic, input: Message | Message[]) {
         const messages = Array.isArray(input) ? input : [input]
 
         return await this._producer.send({
@@ -18,14 +24,15 @@ export class Smtp {
         })
     }
 
+
     public async queue(body: QueueArgs) {
-        const records = await this._send('smtp.email-queued', {
+        const records = await this._send('smtp.queue', {
             value: JSON.stringify(body)
         })
     }
 
     public async schedule(body: ScheduleArgs) {
-        const records = await this._send('smtp.email-scheduled', {
+        const records = await this._send('smtp.schedule', {
             value: JSON.stringify(body)
         })
     }

@@ -11,6 +11,22 @@ export interface Context {
     postgres: PostgresJsDatabase<typeof schema>
 }
 
+export interface BlockType {
+    key: string,
+    path: string
+}
+
+export interface BlockModule {
+    schema: ZodObject | undefined
+    // default: RouteHandler,
+}
+
+export interface BlockMap {
+    [topic: string]: BlockModule,
+}
+
+export type RouteHandler = (message: RouteMessage) => Promise<void> | void;
+
 export interface RouteTopic {
     key: string,
     topic: string,
@@ -28,7 +44,7 @@ export interface RouteHandle {
 }
 
 export interface RouteModule {
-    schema: ZodType
+    schema: ZodObject
     default: RouteHandler,
     handle?: RouteHandle | undefined
 }
@@ -39,5 +55,3 @@ export interface RouteMap {
         key: string
     }
 }
-
-export type RouteHandler = (message: RouteMessage) => Promise<void> | void;
