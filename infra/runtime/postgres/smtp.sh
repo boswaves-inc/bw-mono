@@ -16,6 +16,8 @@ psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tc \
   "SELECT 1 FROM pg_database WHERE datname = '$SMTP_DB'" | grep -q 1 || \
   psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "CREATE DATABASE $SMTP_DB"
 
+GRANT ALL ON DATABASE $SMTP_DB TO $SMTP_USER;
+
 # grant permissions
 psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$SMTP_DB" <<EOF
 GRANT CREATE ON SCHEMA public TO $SMTP_USER;
