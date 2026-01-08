@@ -3,12 +3,11 @@ export
 
 # === Gen ===
 gen/smtp:
-	pnpm turbo gen --filter=@boswaves-inc/smtp-*...
-
+	pnpm turbo gen:sdk --filter=@boswaves-inc/smtp
 
 # === Dev ===
 dev/smtp:
-	pnpm turbo dev --filter=@boswaves-inc/smtp-*...
+	pnpm turbo dev --filter=@boswaves-inc/smtp
 
 dev/webstore:
 	pnpm turbo dev --filter=@boswaves-inc/webstore-*...
@@ -18,7 +17,7 @@ dev:
 
 # === Build ===
 build/smtp:
-	pnpm turbo build --filter=@boswaves-inc/smtp-*...
+	pnpm turbo build --filter=@boswaves-inc/smtp*...
 
 build/webstore:
 	pnpm turbo build --filter=@boswaves-inc/webstore-*...
@@ -75,27 +74,27 @@ rm:
 help:
 	@echo Available targets:
 	@echo.
-	@echo   gen/smtp        - Generate SMTP packages
+	@echo   gen/smtp        - Generate SMTP SDK
 	@echo.
-	@echo   dev/smtp        - Dev SMTP packages
-	@echo   dev/webstore    - Dev Webstore packages
+	@echo   dev/smtp        - Dev SMTP
+	@echo   dev/webstore    - Dev Store
 	@echo   dev             - Dev all
 	@echo.
 	@echo   build/smtp      - Build SMTP packages
-	@echo   build/webstore  - Build Webstore packages
+	@echo   build/webstore  - Build Store packages
 	@echo   build           - Build all
 	@echo.
 	@echo   up/infra        - Start infra containers
 	@echo   up/smtp         - Start SMTP containers
-	@echo   up/webstore     - Start Webstore containers
+	@echo   up/webstore     - Start Store containers
 	@echo   up              - Start all containers
 	@echo.
 	@echo   down/infra      - Stop infra containers
 	@echo   down/smtp       - Stop SMTP containers
-	@echo   down/webstore   - Stop Webstore containers
+	@echo   down/webstore   - Stop Store containers
 	@echo   down            - Stop all containers
 	@echo.
 	@echo   rm/infra        - Remove infra containers and volumes
 	@echo   rm/smtp         - Remove SMTP containers and volumes
-	@echo   rm/webstore     - Remove Webstore containers and volumes
+	@echo   rm/webstore     - Remove Store containers and volumes
 	@echo   rm              - Remove all containers and volumes

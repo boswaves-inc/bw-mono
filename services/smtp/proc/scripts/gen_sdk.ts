@@ -1,10 +1,10 @@
 import { dirname, join } from 'path';
-import { Project, SourceFile, VariableDeclarationKind, ts } from 'ts-morph';
+import { Project, Scope, SourceFile, VariableDeclarationKind, ts } from 'ts-morph';
 import { createAuxiliaryTypeStore, printNode, zodToTs } from 'zod-to-ts';
 import { toPascalCase, } from 'string-transform';
 import { fileURLToPath } from 'url';
 import { loadElementMap, loadRouteMap } from '../src/utils';
-import _ from 'lodash';
+import * as _ from 'lodash-es';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -12,8 +12,6 @@ const __dirname = dirname(__filename);
 const write = async (output: string, tx: (file: SourceFile) => Promise<void>) => {
   const project = new Project();
   const file = project.createSourceFile(output, '', { overwrite: true, });
-
-  file.insertText(0, '// AUTO-GENERATED - DO NOT EDIT');
 
   await tx(file)
 
@@ -23,11 +21,54 @@ const write = async (output: string, tx: (file: SourceFile) => Promise<void>) =>
     semicolons: ts.SemicolonPreference.Insert
   });
 
+  // Normalize any existing double newlines first
+  file.replaceWithText(file.getFullText().replace(/\n{2,}/g, '\n'));
+
+  // Add blank lines between top-level declarations (excluding imports)
+  const declarations = [
+    ...file.getTypeAliases(),
+    ...file.getInterfaces(),
+    ...file.getClasses(),
+    ...file.getFunctions(),
+    ...file.getVariableStatements(),
+  ].sort((a, b) => b.getStart() - a.getStart());
+
+  for (const decl of declarations) {
+    decl.appendWhitespace('\n');
+  }
+
+  // Add blank line after last import
+  const imports = file.getImportDeclarations();
+  if (imports.length > 0) {
+    imports[imports.length - 1].appendWhitespace('\n');
+  }
+
+  // Add blank lines between class members (excluding properties)
+  for (const cls of file.getClasses()) {
+    const properties = cls.getProperties();
+    const methods = [
+      ...cls.getConstructors(),
+      ...cls.getMethods(),
+    ].sort((a, b) => b.getStart() - a.getStart());
+
+    // Add blank line after last property (before constructor/methods)
+    if (properties.length > 0) {
+      properties[properties.length - 1].appendWhitespace('\n');
+    }
+
+    // Add blank lines between constructors and methods
+    for (const member of methods) {
+      member.appendWhitespace('\n');
+    }
+  }
+
+  file.insertText(0, '// AUTO-GENERATED - DO NOT EDIT\n\n');
+
   await file.save();
 }
 
 const gen_elements = async () => {
-  const output = join(__dirname, '../../sdk/src/gen/elements.ts');
+  const output = join(__dirname, '../../sdk/src/elements.ts');
   const store = createAuxiliaryTypeStore()
 
   await write(output, async file => {
@@ -77,14 +118,14 @@ const gen_elements = async () => {
 }
 
 const gen_routes = async () => {
-  const output = join(__dirname, '../../sdk/src/gen/routes.ts');
+  const output = join(__dirname, '../../sdk/src/routes.ts');
   const store = createAuxiliaryTypeStore()
 
   await write(output, async file => {
     const map = await loadRouteMap()
     const topics = Object.keys(map)
 
-    file.insertImportDeclaration(1, {
+    file.addImportDeclaration({
       namedImports: [
         'Primitive',
         'Element'
@@ -118,7 +159,7 @@ const gen_routes = async () => {
     file.addTypeAlias({
       isExported: true,
       name: 'TopicArgsMap',
-      type: `{\n${topics.map(t => `  '${t}': ${toPascalCase(`${map[t].key}_args`)},`).join('\n')}\n}`
+      type: `{\n${topics.map(t => `  '${t}': ${toPascalCase(`${map[t].key}Args`)},`).join('\n')}\n}`
     });
 
     file.addTypeAlias({
@@ -136,9 +177,112 @@ const gen_routes = async () => {
   })
 }
 
+const gen_index = async () => {
+  const output = join(__dirname, '../../sdk/src/index.ts');
+
+  await write(output, async file => {
+    const map = await loadRouteMap()
+    const topics = Object.keys(map)
+
+    file.addImportDeclaration({
+      namedImports: [
+        'CompressionTypes',
+        'Kafka',
+        'KafkaConfig',
+        'Message',
+        'Partitioners',
+        'Producer'
+      ],
+      moduleSpecifier: 'kafkajs'
+    })
+
+    file.addImportDeclaration({
+      namedImports: ['Topic', ...topics.map(t => toPascalCase(`${map[t].key}Args`))],
+      isTypeOnly: true,
+      moduleSpecifier: './routes'
+    })
+
+    file.addClass({
+      isExported: true,
+      name: 'Smtp',
+      properties: [{
+        name: '_producer',
+        type: 'Producer',
+        scope: Scope.Private,
+      }],
+      ctors: [{
+        scope: Scope.Private,
+        parameters: [{ name: 'producer', type: 'Producer' }],
+        statements: 'this._producer = producer;'
+      }],
+      methods: [
+
+        {
+          name: '_send',
+          scope: Scope.Private,
+          isAsync: true,
+          parameters: [
+            { name: 'topic', type: 'Topic' },
+            { name: 'input', type: 'Message | Message[]' }
+          ],
+          statements: `
+            const messages = Array.isArray(input) ? input : [input];
+            return await this._producer.send({
+              topic,
+              messages,
+              compression: CompressionTypes.None,
+            });
+          `.trim()
+        },
+        ...topics.map(topic => {
+          const { key } = map[topic]
+          const argsType = toPascalCase(`${key}_args`)
+
+          return {
+            name: _.camelCase(key),
+            scope: Scope.Public,
+            isAsync: true,
+            parameters: [{ name: 'body', type: argsType }],
+            statements: `
+              return await this._send('${topic}', {
+                value: JSON.stringify(body)
+              });
+            `.trim()
+          }
+        }),
+        {
+          name: 'connect',
+          scope: Scope.Public,
+          isStatic: true,
+          isAsync: true,
+          parameters: [
+            {
+              name: `{ clientId = '@boswaves-inc/smtp-sdk', ...config }`,
+              type: 'KafkaConfig'
+            }
+          ],
+          returnType: 'Promise<Smtp>',
+          statements: `
+            const client = new Kafka({ ...config, clientId });
+            const producer = client.producer({
+              createPartitioner: Partitioners.DefaultPartitioner,
+              allowAutoTopicCreation: false
+            });
+
+            await producer.connect();
+
+            return new Smtp(producer);
+          `.trim()
+        },
+      ]
+    })
+  })
+}
+
 const run = async () => {
   await gen_elements()
   await gen_routes()
+  await gen_index()
 }
 
 run()

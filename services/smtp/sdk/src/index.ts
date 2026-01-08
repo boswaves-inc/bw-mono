@@ -1,28 +1,39 @@
-import { Element } from './gen/elements'
-export { Smtp } from './client'
-export * from './gen/routes'
+// AUTO-GENERATED - DO NOT EDIT
 
-// export const queue = <const C extends readonly Element[]>({ }: {
-//     to_emails: string[]
-//     cc_emails?: string[] | undefined
-//     bcc_emails?: string[] | undefined
-//     content: C
-// }) => {
-//     //
-// };
+import { CompressionTypes, Kafka, KafkaConfig, Message, Partitioners, Producer } from "kafkajs";
+import type { Topic, QueueArgs } from "./routes";
 
-// queue({
-//     to_emails: [
-//         'admin@example.com'
-//     ],
-//     content: [
-//         {
-//             type: 'button',
-//             content: 'Click me'
-//         },
-//         {
-//             type: 'markdown',
-//             content: '# Markdown header'
-//         },
-//     ]
-// })
+export class Smtp {
+  private _producer: Producer;
+
+  private constructor(producer: Producer) {
+    this._producer = producer;
+  }
+
+  private async _send(topic: Topic, input: Message | Message[]) {
+    const messages = Array.isArray(input) ? input : [input];
+    return await this._producer.send({
+      topic,
+      messages,
+      compression: CompressionTypes.None,
+    });
+  }
+
+  public async queue(body: QueueArgs) {
+    return await this._send('smtp.queue', {
+      value: JSON.stringify(body)
+    });
+  }
+
+  public static async connect({ clientId = '@boswaves-inc/smtp-sdk', ...config }: KafkaConfig): Promise<Smtp> {
+    const client = new Kafka({ ...config, clientId });
+    const producer = client.producer({
+      createPartitioner: Partitioners.DefaultPartitioner,
+      allowAutoTopicCreation: false
+    });
+    await producer.connect();
+    return new Smtp(producer);
+  }
+
+}
+

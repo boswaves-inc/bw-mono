@@ -15,6 +15,13 @@
       "when": 1767392414686,
       "tag": "0001_noisy_tag",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1767881901098,
+      "tag": "0002_rare_human_fly",
+      "breakpoints": true
     }
   ]
 }

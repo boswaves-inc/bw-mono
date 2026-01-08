@@ -1,21 +1,23 @@
 {
     "$schema": "https://turbo.build/schema.json",
     "tasks": {
-        "gen": {
-            "outputs": []
+        "gen:sdk": {
+            "outputs": [],
+            "cache": false
         },
-        "@boswaves-inc/smtp-proc#gen": {
+        "@boswaves-inc/smtp#gen:sdk": {
             "inputs": [
-                "scripts/gen_types.ts",
+                "scripts/gen_sdk.ts",
                 "src/routes/**/*.ts"
             ],
             "outputs": [
                 "../sdk/src/schema.ts"
-            ]
+            ],
+            "cache": false
         },
         "build": {
             "dependsOn": [
-                "gen",
+                "gen:sdk",
                 "^build"
             ],
             "outputs": [
@@ -25,7 +27,7 @@
         },
         "dev": {
             "dependsOn": [
-                "gen"
+                "gen:sdk"
             ],
             "cache": false,
             "persistent": true

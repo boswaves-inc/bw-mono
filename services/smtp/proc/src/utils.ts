@@ -17,7 +17,7 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export const checksum = <T>(body: T) => {
+export const gen_fingerprint = <T>(body: T) => {
     return createHash('sha256').update(JSON.stringify(body)).digest('hex').slice(0, 32)
 }
 

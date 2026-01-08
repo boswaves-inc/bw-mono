@@ -19,11 +19,10 @@ services:
       SMTP_PASSWORD: ${SMTP_PG_PASSWORD}
       SMTP_USER: ${SMTP_PG_USERNAME}
       SMTP_DB: ${SMTP_PG_DATABASE}
-
-      # directus
-      DIRECTUS_USER: ${CDN_PG_USERNAME}
-      DIRECTUS_PASSWORD: ${CDN_PG_PASSWORD}
-      DIRECTUS_DB: ${CDN_PG_DATABASE}
+      # # directus
+      # DIRECTUS_USER: ${CDN_PG_USERNAME}
+      # DIRECTUS_PASSWORD: ${CDN_PG_PASSWORD}
+      # DIRECTUS_DB: ${CDN_PG_DATABASE}
     volumes:
     - postgres_vol:/var/lib/postgresql/data
     - ../runtime/postgres:/docker-entrypoint-initdb.d:ro

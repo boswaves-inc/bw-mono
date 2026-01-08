@@ -1,6 +1,6 @@
 import z from "zod/v4";
 
-import { checksum } from "~/utils";
+import { gen_fingerprint } from "~/utils";
 import { Email } from '~/schema/index'
 import { eq } from "drizzle-orm";
 import { RouteMessage } from "./_base";
@@ -17,20 +17,19 @@ export const schema = z.object({
 
 export default async ({ body, context: { logger, postgres, smtp } }: RouteMessage<typeof schema>) => {
     try {
-        const idempotency = checksum(body)
+        const fingerprint = gen_fingerprint(body)
+        
         const existing = await postgres.query.Email.findFirst({
-            where: eq(Email.idempotency_key, idempotency)
+            where: eq(Email.fingerprint, fingerprint)
         })
 
         if (existing) {
-            return logger.info({ idempotency_key: idempotency }, 'duplicate, skipping')
+            return logger.info({ fingerprint }, 'duplicate, skipping')
         }
 
         // Insert and process immediately
         const [email] = await postgres.insert(Email).values({
-            ...body,
-            idempotency_key: idempotency,
-            status: 'processing',
+            ...body, fingerprint, status: 'processing',
         }).returning()
 
         // // Send the actual email
