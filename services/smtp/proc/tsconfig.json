@@ -24,16 +24,14 @@
         "./src/schema/*"
       ],
       "~/emails/*": [
-        "./src/emails/*"
+        "./src/_emails/*"
       ],
       "~/components/*": [
-        "./src/components/*"
+        "./src/_components/*"
       ],
     }
   },
   "include": [
-    // "components/**/*",
-    "tsup.config.ts",
-    "src/**/*",
+    "src/**/*"
   ],
 }

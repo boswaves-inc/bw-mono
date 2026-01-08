@@ -15,7 +15,7 @@ export type SubHeadingProps = {};
 export type TextProps = {
   size?: ("default" | "lg") | undefined;
 };
-export type BlockPropsMap = {
+export type ElementPropsMap = {
   'button': ButtonProps,
   'heading': HeadingProps,
   'html': HtmlProps,
@@ -24,10 +24,10 @@ export type BlockPropsMap = {
   'sub-heading': SubHeadingProps,
   'text': TextProps,
 };
-export type BlockType = keyof BlockPropsMap;
-export type Block = {
-  [K in BlockType]: BlockPropsMap[K] & {
-    type: K,
-    content: (Block | Primitive)[] | Block | Primitive;
+export type ElementType = keyof ElementPropsMap;
+export type Element = {
+  [T in ElementType]: ElementPropsMap[T] & {
+    type: T,
+    content: (Element | Primitive)[] | Element | Primitive;
   }
-}[BlockType];
+}[ElementType];

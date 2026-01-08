@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "build": "tsup",
-    "dev": "dotenv -- tsx --watch src/index.ts",
-    "gen": "tsx scripts/gen_types.ts",
+    "dev": "dotenv -- tsx src/index.ts",
+    "gen": "tsx scripts/gen_sdk.ts",
     "start": "dotenv -- node dist/index.js",
     "studio": "email dev --dir src/emails --port 8080",
     "db:gen": "dotenv -- drizzle-kit generate",
@@ -45,6 +45,7 @@
     "@types/compression": "^1.8.1",
     "@types/express": "^5.0.5",
     "@types/lodash": "^4.17.20",
+    "@types/lodash-es": "^4.17.12",
     "@types/morgan": "^1.9.10",
     "@types/node": "^22.19.3",
     "@types/nodemailer": "^7.0.4",

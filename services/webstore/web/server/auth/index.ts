@@ -244,15 +244,18 @@ export class Auth {
                 expires_at: addMinutes(Date.now(), 10)
             }).returning()
 
-
-
             // Queue the OTP email to be sent
             await this._smtp.queue({
-                template: '',
-                subject: 'hello',
-                to_emails: [email]
+                to_emails: [email],
+                cc_emails: [],
+                bcc_emails: [],
+                content: [
+                    {
+                        type: 'text',
+                        content: `Verify your account: ${code}`
+                    }
+                ]
             })
-
             // await tx.insert(Email).values({
             //     recipient: email,
             //     sender: '"Maddison Foo Koch" <maddison53@ethereal.email>',
@@ -332,9 +335,15 @@ export class Auth {
 
             // Queue the OTP email to be sent
             await this._smtp.queue({
-                template: '',
-                subject: 'hello',
-                to_emails: [email]
+                to_emails: [email],
+                cc_emails: [],
+                bcc_emails: [],
+                content: [
+                    {
+                        type: 'text',
+                        content: `Recover your account: ${code}`
+                    }
+                ]
             })
 
             // await tx.insert(Email).values({
@@ -409,9 +418,15 @@ export class Auth {
 
             // Queue the OTP email to be sent
             await this._smtp.queue({
-                template: '',
-                subject: 'hello',
-                to_emails: [user.email]
+                to_emails: [user.email],
+                cc_emails: [],
+                bcc_emails: [],
+                content: [
+                    {
+                        type: 'text',
+                        content: `Recover your account: ${code}`
+                    }
+                ]
             })
 
             // await tx.insert(Email).values({
@@ -609,11 +624,16 @@ export class Auth {
 
             // Queue the OTP email to be sent
             await this._smtp.queue({
-                template: '',
-                subject: 'hello',
-                to_emails: [user.email]
+                to_emails: [user.email],
+                cc_emails: [],
+                bcc_emails: [],
+                content: [
+                    {
+                        type: 'text',
+                        content: `Verify your account: ${code}`
+                    }
+                ]
             })
-
             // await tx.insert(Email).values({
             //     recipient: email,
             //     template: null,

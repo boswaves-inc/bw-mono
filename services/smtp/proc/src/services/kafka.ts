@@ -1,16 +1,21 @@
 import { Kafka as Primitive, KafkaConfig, logLevel as KafkaLevel, Consumer, Producer, Partitioners, } from "kafkajs"
-import { Context, RouteHandler } from "../types";
+import { Context } from "../types";
 import { Logger } from "~/services/logger";
+import { z } from "zod/v4";
+import pino from "pino";
+import { RouteHandler } from "~/routes/_base";
 
 interface KafkaRoute {
     beginning: boolean | undefined;
     match: (string | RegExp)[];
+    schema: z.ZodObject,
     handler: RouteHandler;
 };
 
 export class Kafka {
     private _consumer: Consumer;
     private _producer: Producer;
+    private _logger: pino.Logger;
 
     private _routes: KafkaRoute[] = [];
 
@@ -23,13 +28,13 @@ export class Kafka {
             [KafkaLevel.NOTHING]: 'silent',
         } as const
 
+        this._logger = logger.child({ module: 'kafka' })
+
         const client = new Primitive({
             ...config,
             logCreator: () => {
-                const client = logger.child({ module: 'kafka' })
-
                 return ({ level, log: { message, ...rest } }) => {
-                    client[level_map[level]](rest, message)
+                    this._logger[level_map[level]](rest, message)
                 }
             }
         })
@@ -43,29 +48,45 @@ export class Kafka {
         })
     }
 
-    public on(match: string | (string | RegExp)[], handler: RouteHandler, beginning?: boolean | undefined) {
+    public on(match: string | (string | RegExp)[], schema: z.ZodObject, handler: RouteHandler, beginning?: boolean | undefined) {
         this._routes.push({
             match: typeof match === 'string' ? [match] : match,
             beginning,
             handler,
+            schema,
         });
     }
 
     public async run(context: Context) {
         await this._consumer.run({
-            eachMessage: async ({ topic, partition, message }) => {
-                console.log(topic)
-
+            eachMessage: async ({ topic, partition, message: { value, headers } }) => {
                 const route = this._routes.find(r => {
                     return r.match.some(m => typeof m === 'string' ? m === topic : m.test(topic))
                 });
 
-                if(route != undefined){
-                    await route.handler({
-                        partition,
-                        context,
-                        message
-                    });
+                if (route != undefined) {
+                    try {
+                        const data = JSON.parse(value?.toString() ?? "{}");
+                        const body = await route.schema.parseAsync(data)
+
+                        await route.handler({
+                            partition,
+                            context,
+                            headers,
+                            topic,
+                            body,
+                        });
+
+                        this._logger.debug({
+                            topic,
+                            partition,
+                            headers,
+                            body
+                        }, 'processed message')
+                    }
+                    catch (error) {
+
+                    }
                 }
             }
         })

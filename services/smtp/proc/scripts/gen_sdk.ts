@@ -3,7 +3,7 @@ import { Project, SourceFile, VariableDeclarationKind, ts } from 'ts-morph';
 import { createAuxiliaryTypeStore, printNode, zodToTs } from 'zod-to-ts';
 import { toPascalCase, } from 'string-transform';
 import { fileURLToPath } from 'url';
-import { loadBlockMap, loadRouteMap } from '../src/utils';
+import { loadElementMap, loadRouteMap } from '../src/utils';
 import _ from 'lodash';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -26,6 +26,56 @@ const write = async (output: string, tx: (file: SourceFile) => Promise<void>) =>
   await file.save();
 }
 
+const gen_elements = async () => {
+  const output = join(__dirname, '../../sdk/src/gen/elements.ts');
+  const store = createAuxiliaryTypeStore()
+
+  await write(output, async file => {
+    const map = await loadElementMap()
+    const types = Object.keys(map)
+
+    file.addTypeAlias({
+      isExported: true,
+      name: 'Primitive',
+      type: `string | number`
+    });
+
+    for (const type in map) {
+      const module = map[type]
+
+      if (module.schema) {
+        const { node } = zodToTs(module.schema, {
+          auxiliaryTypeStore: store
+        })
+
+        file.addTypeAlias({
+          isExported: true,
+          name: toPascalCase(`${type}Props`),
+          type: printNode(node),
+        });
+      }
+    }
+
+    file.addTypeAlias({
+      isExported: true,
+      name: 'ElementPropsMap',
+      type: `{\n${types.map(t => `  '${t}': ${toPascalCase(`${t}Props`)},`).join('\n')}\n}`
+    });
+
+    file.addTypeAlias({
+      isExported: true,
+      name: 'ElementType',
+      type: 'keyof ElementPropsMap',
+    });
+
+    file.addTypeAlias({
+      isExported: true,
+      name: 'Element',
+      type: `{\n[T in ElementType]: ElementPropsMap[T] & { type: T,\ncontent: (Element | Primitive)[] | Element | Primitive\n}\n}[ElementType]`,
+    });
+  });
+}
+
 const gen_routes = async () => {
   const output = join(__dirname, '../../sdk/src/gen/routes.ts');
   const store = createAuxiliaryTypeStore()
@@ -33,6 +83,15 @@ const gen_routes = async () => {
   await write(output, async file => {
     const map = await loadRouteMap()
     const topics = Object.keys(map)
+
+    file.insertImportDeclaration(1, {
+      namedImports: [
+        'Primitive',
+        'Element'
+      ],
+      isTypeOnly: true,
+      moduleSpecifier: './elements'
+    })
 
     file.addVariableStatement({
       declarationKind: VariableDeclarationKind.Const,
@@ -46,14 +105,13 @@ const gen_routes = async () => {
     for (const topic in map) {
       const { module, key } = map[topic]
       const { node } = zodToTs(module.schema, {
-        auxiliaryTypeStore: store
+        auxiliaryTypeStore: store,
       })
-
 
       file.addTypeAlias({
         isExported: true,
         name: toPascalCase(`${key}_args`),
-        type: printNode(node),
+        type: `${printNode(node)} & { content: (Element | Primitive)[] | Element | Primitive }`,
       });
     }
 
@@ -78,58 +136,8 @@ const gen_routes = async () => {
   })
 }
 
-const gen_blocks = async () => {
-  const output = join(__dirname, '../../sdk/src/gen/blocks.ts');
-  const store = createAuxiliaryTypeStore()
-
-  await write(output, async file => {
-    const map = await loadBlockMap()
-    const types = Object.keys(map)
-
-    file.addTypeAlias({
-      isExported: true,
-      name: 'Primitive',
-      type: `string | number`
-    });
-
-    for (const type in map) {
-      const module = map[type]
-
-      if (module.schema) {
-        const { node } = zodToTs(module.schema, {
-          auxiliaryTypeStore: store
-        })
-
-        file.addTypeAlias({
-          isExported: true,
-          name: toPascalCase(`${type}-props`),
-          type: printNode(node),
-        });
-      }
-    }
-
-    file.addTypeAlias({
-      isExported: true,
-      name: 'BlockPropsMap',
-      type: `{\n${types.map(t => `  '${t}': ${toPascalCase(`${t}-props`)},`).join('\n')}\n}`
-    });
-
-    file.addTypeAlias({
-      isExported: true,
-      name: 'BlockType',
-      type: 'keyof BlockPropsMap',
-    });
-
-    file.addTypeAlias({
-      isExported: true,
-      name: 'Block',
-      type: `{\n[K in BlockType]: BlockPropsMap[K] & { type: K,\ncontent: (Block | Primitive)[] | Block | Primitive\n}\n}[BlockType]`,
-    });
-  });
-}
-
 const run = async () => {
-  await gen_blocks()
+  await gen_elements()
   await gen_routes()
 }
 

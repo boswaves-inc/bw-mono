@@ -13,18 +13,14 @@ export const EmailStatus = pgEnum('email_status', [
 
 export const Email = pgTable('emails', {
     id: uuid('id').primaryKey().defaultRandom(),
-
-    template: text().notNull(),
-    payload: jsonb().$type<Record<string, unknown>>().notNull().default({}),
-
-    // Email content
     subject: text(),
-
+    
     to_emails: citext().array().notNull(),
     cc_emails: citext().array().notNull().default([]),
     bcc_emails: citext().array().notNull().default([]),
-    // payload: jsonb('payload').$type<Record<string, unknown>>().default({}),
-
+    
+    payload: jsonb().$type<Record<string, unknown>>().notNull().default({}),
+    
     status: EmailStatus('status').notNull().default('queued'),
     attempts: integer().notNull().default(0),
     max_attempts: integer().notNull().default(3),

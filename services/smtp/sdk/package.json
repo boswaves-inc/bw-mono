@@ -1,17 +1,9 @@
 {
   "name": "@boswaves-inc/smtp-sdk",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
+    ".": "./src/index.ts"
   },
-  "files": [
-    "dist"
-  ],
   "dependencies": {
     "compression": "^1.8.1",
     "express": "^5.1.0",

@@ -2,7 +2,8 @@ import { Logger } from "./services/logger";
 import { Kafka } from "./services/kafka";
 import { Postgres } from './services/postgres';
 import { Smtp } from "./services/smtp";
-import { loadBlockMap, loadRouteMap } from "./utils";
+import { loadElementMap, loadRouteMap } from "./utils";
+import { z } from "zod/v4";
 
 if (!process.env.SMTP_HOST) {
     throw new Error('SMTP_HOST variable not set')
@@ -55,20 +56,39 @@ const kafka_client = new Kafka({
 })
 
 const main = async () => {
-    const route_map = await loadRouteMap()
-    const block_map = await loadBlockMap()
+    const elements = await loadElementMap()
+    const routes = await loadRouteMap()
+
+    const primitive_type = z.union([
+        z.string(),
+        z.number()
+    ])
+
+    const element_type = z.discriminatedUnion<any, 'type'>('type', Object.entries(elements).map(([key, { schema }]) => {
+        return schema.extend({
+            type: z.literal(key),
+            content: z.lazy(() => content_type).optional()
+        })
+    }))
+
+    const content_type = z.lazy(() =>
+        z.union([element_type, primitive_type, z.array(content_type)])
+    )
 
     log_client.info({
-        blocks: Object.keys(block_map),
-        routes: Object.keys(route_map),
+        blocks: Object.keys(elements),
+        routes: Object.keys(routes),
     }, 'Context loaded')
 
-    for (const [topic, { module, key }] of Object.entries(route_map)) {
+    for (const [topic, { module, key }] of Object.entries(routes)) {
         const { default: factory, schema, handle } = module;
         const beginning = handle?.from_beginning;
 
+        const route_type = schema.extend({
+            content: content_type
+        })
 
-        kafka_client.on(topic, factory, beginning);
+        kafka_client.on(topic, route_type, factory, beginning);
     }
 
     // Handle uncaught exceptions

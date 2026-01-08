@@ -1,5 +1,5 @@
 import { CompressionTypes, Kafka, KafkaConfig, Message, Partitioners, Producer } from "kafkajs";
-import { QueueArgs, ScheduleArgs, Topic } from "./gen/routes";
+import { QueueArgs, Topic } from "./gen/routes";
 
 export class Smtp {
     private _producer: Producer;
@@ -31,11 +31,11 @@ export class Smtp {
         })
     }
 
-    public async schedule(body: ScheduleArgs) {
-        const records = await this._send('smtp.schedule', {
-            value: JSON.stringify(body)
-        })
-    }
+    // public async schedule(body: ScheduleArgs) {
+    //     const records = await this._send('smtp.schedule', {
+    //         value: JSON.stringify(body)
+    //     })
+    // }
 
     public static async connect({ clientId = '@boswaves-inc/smtp-sdk', ...config }: KafkaConfig) {
         const client = new Kafka({ ...config, clientId })

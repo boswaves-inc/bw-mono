@@ -1,11 +1,9 @@
 import z from "zod/v4";
 
-import { createInsertSchema } from "drizzle-zod";
-import { idempotency_key } from "~/utils";
-import { RouteMessage } from "~/types";
+import { checksum } from "~/utils";
 import { Email } from '~/schema/index'
 import { eq } from "drizzle-orm";
-import { formData } from "zod-form-data";
+import { RouteMessage } from "./_base";
 
 export const handle = {
     from_beginning: false
@@ -17,30 +15,23 @@ export const schema = z.object({
     bcc_emails: z.string().array().optional().default([]),
 })
 
-export default async ({ message, context: { logger, postgres, smtp } }: RouteMessage) => {
-    if (message.value == undefined) {
-        return logger.error('missing message value')
-    }
-
+export default async ({ body, context: { logger, postgres, smtp } }: RouteMessage<typeof schema>) => {
     try {
-        const content = JSON.parse(message.value.toString())
-        const body = await schema.parseAsync(content)
-        const idem_key = idempotency_key(body)
-
+        const idempotency = checksum(body)
         const existing = await postgres.query.Email.findFirst({
-            where: eq(Email.idempotency_key, idem_key)
+            where: eq(Email.idempotency_key, idempotency)
         })
 
         if (existing) {
-            return logger.info({ idempotency_key: idem_key }, 'duplicate, skipping')
+            return logger.info({ idempotency_key: idempotency }, 'duplicate, skipping')
         }
 
-        // // Insert and process immediately
-        // const [email] = await postgres.insert(Email).values({
-        //     ...body,
-        //     idempotency_key: idem_key,
-        //     status: 'processing',
-        // }).returning()
+        // Insert and process immediately
+        const [email] = await postgres.insert(Email).values({
+            ...body,
+            idempotency_key: idempotency,
+            status: 'processing',
+        }).returning()
 
         // // Send the actual email
         // await smtp.send_mail({
@@ -51,15 +42,15 @@ export default async ({ message, context: { logger, postgres, smtp } }: RouteMes
         //     subject: email.subject ?? undefined,
         // })
 
-        // // Mark as sent
-        // await postgres.update(Email).set({ status: 'sent', }).where(
-        //     eq(Email.id, email.id)
-        // )
+        // Mark as sent
+        await postgres.update(Email).set({ status: 'sent', }).where(
+            eq(Email.id, email.id)
+        )
 
         // logger.info({ email_id: email.id }, 'email sent')
     } catch (error) {
         if (error instanceof SyntaxError) {
-            logger.error({ raw: message.value.toString() }, 'invalid JSON')
+            logger.error(body, 'invalid JSON')
             return
         }
 
