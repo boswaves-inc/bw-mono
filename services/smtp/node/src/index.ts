@@ -53,39 +53,6 @@ const router = new Kafka({
     ],
 })
 
-// const router = new Kafka({
-//     logger: log_client,
-//     namespace: 'smtp',
-//     routes: './src/routes',
-//     group: 'boswaves-inc/smtp',
-//     brokers: [
-//         'host.docker.internal:9092'
-//     ],
-//     // transformRoute: ({ module }) => {
-//     //     const { schema: base, ...rest } = module;
-
-//     //     const schema = base.extend({
-//     //         content: content_type
-//     //     })
-
-//     //     return {
-//     //         module: {
-//     //             ...rest,
-//     //             schema,
-//     //         }
-//     //     }
-//     // },
-// })
-
-
-// const kafka_client = new Kafka({
-//     logger: log_client,
-//     config: {
-//         clientId: 'boswaves/smtp',
-//         brokers: ['host.docker.internal:9092'],
-//     },
-// })
-
 const main = async () => {
     // const elements = await loadElementMap()
     // const routes = await loadRouteMap()
@@ -127,7 +94,7 @@ const main = async () => {
 
     process.on('uncaughtException', async (err) => {
         console.error('Uncaught exception:', err);
-        // await router.disconnect()
+        await router.disconnect()
 
         process.exit(1);
     });

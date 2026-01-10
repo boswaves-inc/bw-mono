@@ -128,7 +128,11 @@ export class Kafka {
                 }
             }
         })
+    }
 
+    public async disconnect () {
+        await this._consumer.disconnect()
+        await this._producer.disconnect()
     }
 }
 
