@@ -1,0 +1,6 @@
+{
+    "workspace": {
+        "root": "${PWD}",
+        "uuid": "`npx --package uuid uuid v4`"
+    }
+}

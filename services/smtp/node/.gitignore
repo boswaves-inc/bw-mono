@@ -1,0 +1,11 @@
+.DS_Store
+.env
+/dist/
+/node_modules/
+
+# React Router
+/.react-email/
+/.react-router/
+/.drizzle/
+/.kafka-router/
+/build/

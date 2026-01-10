@@ -1,0 +1,4 @@
+name: boswaves_store
+
+include:
+- ../smtp/compose.prod.yaml

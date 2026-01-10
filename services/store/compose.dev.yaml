@@ -1,0 +1,6 @@
+name: boswaves_store
+
+include:
+- ../smtp/compose.dev.yaml
+
+# - ../../infra/modules/directus.yaml

@@ -1,5 +1,5 @@
 {
-  "id": "7b0e673c-0230-438f-aa21-82a0f2291c92",
+  "id": "970fcd3b-df17-4cd7-96af-444a780224e1",
   "prevId": "0da3b780-54ac-42fb-841f-5b71a382dcf5",
   "version": "7",
   "dialect": "postgresql",
@@ -14,19 +14,6 @@
           "primaryKey": true,
           "notNull": true,
           "default": "gen_random_uuid()"
-        },
-        "template": {
-          "name": "template",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "payload": {
-          "name": "payload",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'{}'::jsonb"
         },
         "subject": {
           "name": "subject",
@@ -53,6 +40,13 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'{}'"
+        },
+        "payload": {
+          "name": "payload",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::jsonb"
         },
         "status": {
           "name": "status",
@@ -96,8 +90,8 @@
           "notNull": true,
           "default": "now()"
         },
-        "idempotency_key": {
-          "name": "idempotency_key",
+        "fingerprint": {
+          "name": "fingerprint",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -138,11 +132,11 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "emails_idempotency_key_unique": {
-          "name": "emails_idempotency_key_unique",
+        "emails_fingerprint_unique": {
+          "name": "emails_fingerprint_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "idempotency_key"
+            "fingerprint"
           ]
         }
       },

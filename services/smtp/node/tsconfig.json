@@ -1,0 +1,45 @@
+{
+  "include": [
+    ".kafka-router/types/**/*",
+    "tsup.config.ts",
+    "src/**/*"
+  ],
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "composite": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "bundler",
+    "target": "ES2022",
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "outDir": "dist",
+    "rootDirs": [
+      "./",
+      "./.kafka-router/types"
+    ],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2022"
+    ],
+    "paths": {
+      "~/*": [
+        "./src/*"
+      ],
+      "~/schema/*": [
+        "./src/schema/*"
+      ],
+      "~/emails/*": [
+        "./src/components/_emails/*"
+      ],
+      "~/components/*": [
+        "./src/components/_components/*"
+      ],
+    }
+  },
+  // "include": [
+  //   "src/**/*"
+  // ],
+}

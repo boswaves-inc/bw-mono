@@ -1,0 +1,13 @@
+.DS_Store
+.env
+/node_modules/
+/.jwt/
+
+# React Router
+/.react-router/
+/.drizzle/
+/jwt/*
+
+
+/dist/
+/build/
