@@ -1,2 +1,2 @@
-export type { KafkaLoadContext, GetAnnotations, Headers, ModuleInfo } from './types'
+export type { KafkaLoadContext, GetAnnotations, KafkaHeaders as Headers, ModuleInfo } from './types'
 export { Kafka } from './client'

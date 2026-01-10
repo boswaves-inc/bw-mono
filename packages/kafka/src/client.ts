@@ -28,7 +28,6 @@ interface RouteDef<S extends z.ZodObject = z.ZodObject> {
     match: (string | RegExp)[];
     meta: ModuleMeta | undefined
     schema: S,
-    // module: ModuleInfo,
 };
 
 export class Kafka {
@@ -70,7 +69,7 @@ export class Kafka {
     }
 
     private async _load(context: KafkaLoadContext) {
-        const { routes, namespace } = await import("virtual:kafka-router/server-build");
+        const { routes } = await import("virtual:kafka-router/server-build");
 
         for (const { topic, module } of routes) {
             const meta = await module.meta?.({ context })

@@ -64,7 +64,6 @@ export const kafkaRouterPlugin = (): Plugin => {
             if (id === '\0kafka-router/server-build') {
                 return `
                     export { default as routes } from "${routes.replace(/\\/g, '/')}";
-                    export const namespace = "${config.namespace}";
                 `;
             }
         },
