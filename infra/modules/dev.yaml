@@ -1,0 +1,34 @@
+services:
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: bw-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+    - "5440:80"
+    volumes:
+    - pgadmin_vol:/var/lib/pgadmin
+    networks:
+    - shared_net
+    - postgres_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  ngrok:
+    image: ngrok/ngrok
+    container_name: bw-ngrok
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTH}
+    command:
+    - "http"
+    - http://host.docker.internal:3000
+    - "--url=${NGROK_DNS}"
+    networks:
+    - shared_net
+volumes:
+  grafana_vol:
+  pgadmin_vol:
+
+

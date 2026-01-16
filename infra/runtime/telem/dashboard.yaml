@@ -1,0 +1,25 @@
+apiVersion: 1
+
+providers:
+- name: services
+  type: file
+  disableDeletion: false
+  updateIntervalSeconds: 10
+  options:
+    path: /var/lib/grafana/dashboards
+    foldersFromFilesStructure: true
+
+# providers:
+# - name: nats
+#   folder: NATS
+#   type: file
+#   disableDeletion: false
+#   options:
+#     path: /var/lib/grafana/dashboards/nats
+
+# - name: postgres
+#   folder: Postgres
+#   type: file
+#   disableDeletion: false
+#   options:
+#     path: /var/lib/grafana/dashboards/postgres

@@ -1,6 +1,9 @@
 -include .env
 export
 
+PROJECT_NAME := boswaves
+COMPOSE := docker compose -p $(PROJECT_NAME)
+
 # === Gen ===
 gen/smtp:
 	pnpm turbo gen:sdk --filter=@boswaves-inc/smtp
@@ -29,8 +32,20 @@ build:
 up/infra:
 	docker compose -f infra/compose.yaml up -d
 
+up/nats:
+	@cp infra/runtime/nats/targets.yml runtime/prometheus/targets/nats.yml 2>/dev/null || true
+	@mkdir -p runtime/grafana/dashboards/nats
+	@cp infra/runtime/nats/dashboards/* runtime/grafana/dashboards/nats/ 2>/dev/null || true
+	$(COMPOSE) -f infa/modules/nats.yaml -f infa/modules/grafana.yaml up -d
+
+up/nats-slim:
+	$(COMPOSE) -f services/nats/compose.yaml up -d
+
 up/smtp:
-	docker compose -f services/smtp/compose.dev.yaml up -d
+	docker compose -f services/smtp/compose.dev.yaml up -d --build
+
+up/smtp:
+	docker compose -f services/smtp/compose.dev.yaml up -d --build
 
 up/webstore:
 	docker compose -f services/webstore/compose.dev.yaml up -d

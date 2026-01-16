@@ -10,10 +10,11 @@
         "module": "ES2022",
         "moduleResolution": "bundler",
         "esModuleInterop": true,
+        "verbatimModuleSyntax": true,
         "skipLibCheck": true,
         "resolveJsonModule": true,
         "outDir": "dist",
-        "rootDir": "./src",
+        "rootDir": "./",
         "declarationMap": true,
         "declaration": true,
         "noEmit": false,
@@ -22,5 +23,6 @@
             "DOM.Iterable",
             "ES2022"
         ]
-    }
+    },
+
 }

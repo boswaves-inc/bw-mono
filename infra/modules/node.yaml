@@ -1,0 +1,144 @@
+services:
+  exporter:
+    container_name: bw-exporter
+    image: prom/node-exporter
+    restart: unless-stopped
+    networks:
+    - telem_net
+    volumes:
+    - /proc:/host/proc:ro
+    - /sys:/host/sys:ro
+    - /:/rootfs:ro
+    command:
+    - "--path.procfs=/host/proc"
+    - "--path.rootfs=/rootfs"
+    - "--path.sysfs=/host/sys"
+    - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)"
+    - "--collector.systemd"
+    - "--collector.processes"
+
+  prometheus:
+    container_name: bw-prometheus
+    image: prom/prometheus
+    restart: unless-stopped
+    networks:
+    - telem_net
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - ../runtime/node/targets/:/etc/prometheus/targets/
+    - ../runtime/node/config.yml:/var/lib/prometheus/config.yml
+    - ../runtime/node/rules.yml:/var/lib/prometheus/rules.yml
+    - prom_vol:/prometheus
+    ports:
+    - 9090:9090
+    command:
+    - "--config.file=/var/lib/prometheus/config.yml"
+    - "--storage.tsdb.path=/prometheus"
+    - "--web.console.libraries=/var/lib/prometheus/console_libraries"
+    - "--web.console.templates=/var/lib/prometheus/consoles"
+    - "--web.enable-lifecycle"
+
+  postgres:
+    image: timescale/timescaledb-ha:pg18
+    container_name: bw-postgres
+    ports:
+    - 5432:5432
+    environment:
+      # core
+      POSTGRES_DB: ${PG_DATABASE:-postgres}
+      POSTGRES_USER: ${PG_USERNAME}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+
+      # webstore
+      STORE_PASSWORD: ${STORE_PG_PASSWORD}
+      STORE_USER: ${STORE_PG_USERNAME}
+      STORE_DB: ${STORE_PG_DATABASE}
+
+      # smtp
+      SMTP_PASSWORD: ${SMTP_PG_PASSWORD}
+      SMTP_USER: ${SMTP_PG_USERNAME}
+      SMTP_DB: ${SMTP_PG_DATABASE}
+    volumes:
+    - postgres_vol:/var/lib/postgresql/data
+    - ../runtime/postgres:/docker-entrypoint-initdb.d:ro
+    networks:
+    - postgres_net
+    - shared_net
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${PG_USERNAME} -d ${PG_DATABASE:-postgres}'" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  nats:
+    image: nats:2.10-alpine
+    container_name: bw-nats
+    restart: unless-stopped
+    ports:
+    - "4222:4222" # Client connections
+    - "8222:8222" # HTTP monitoring
+    - "6222:6222" # Cluster routing (for future scaling)
+    volumes:
+    - ../runtime/node/nats.conf:/etc/nats/nats.conf
+    - nats_vol:/data
+    command: [ "-c", "/etc/nats/nats.conf" ]
+    networks:
+    - shared_net
+    - nats_net
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8222/healthz" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  nats_cli:
+    image: natsio/nats-box:latest
+    container_name: bw-nats-cli
+    stdin_open: true
+    tty: true
+    entrypoint: /bin/sh
+    command: [ "-c", "while true; do sleep 3600; done" ]
+    networks:
+    - nats_net
+    - shared_net
+    depends_on:
+      nats:
+        condition: service_healthy
+
+  nats_prom:
+    image: natsio/prometheus-nats-exporter:latest
+    container_name: bw-nats-prom
+    command: -varz -connz -jsz=all http://nats:8222
+    labels:
+      prometheus.scrape: "true"
+      prometheus.port: "7777"
+      prometheus.job: "nats"
+    depends_on:
+      nats:
+        condition: service_healthy
+    networks:
+    - nats_net
+    - telem_net
+    ports:
+    - "7777:7777"
+
+volumes:
+  postgres_vol:
+  nats_vol:
+  prom_vol:
+
+
+networks:
+  nats_net:
+    name: nats_net
+    driver: bridge
+  telem_net:
+    name: telem_net
+    driver: bridge
+  postgres_net:
+    name: postgres_net
+    driver: bridge
+  shared_net:
+    name: shared_net
+    driver: bridge

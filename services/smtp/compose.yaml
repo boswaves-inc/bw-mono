@@ -1,0 +1,14 @@
+name: boswaves_smtp
+
+services:
+  smtp:
+    image: hello-world:latest
+    container_name: bw-smtp
+  # include:
+  # - ../../infra/compose.yaml
+  # - ../../infra/modules/nats.yaml
+
+  # - ../../infra/modules/postgres.yaml
+
+  # - ../../infra/modules/redpanda.yaml
+  # - ../../infra/modules/directus.yaml

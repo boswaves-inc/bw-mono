@@ -1,0 +1,18 @@
+services:
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: bw-grafana
+    restart: unless-stopped
+    ports:
+    - "3000:3000"
+    volumes:
+    - ../runtime/grafana/datasource.yaml:/etc/grafana/provisioning/datasources/grafana.yaml
+    - ../runtime/grafana/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
+    - ../runtime/grafana/dashboards:/var/lib/grafana/dashboards
+    - grafana_vol:/var/lib/grafana
+    networks:
+    - shared_net
+    - telem_net
+
+volumes:
+  grafana_vol:

@@ -9,18 +9,26 @@ datasources:
   access: proxy
   editable: true
 
-- name: Postgres
-  type: postgres
-  uid: P44368ADAD746BC27
-  url: postgres:5432
-  access: proxy
-  editable: true
-  user: ${PG_USERNAME}
-  jsonData:
-    database: ${PG_DATABASE}
-    sslmode: disable
-  secureJsonData:
-    password: ${PG_PASSWORD}
+# - name: NATS
+#   type: prometheus
+#   uid: P44368ADAD746BC27
+#   url: http://nats_prom:7777
+#   isDefault: false
+#   access: proxy
+#   editable: true
+
+# - name: Postgres
+#   type: postgres
+#   uid: P44368ADAD746BC27
+#   url: postgres:5432
+#   access: proxy
+#   editable: true
+#   user: ${PG_USERNAME}
+#   jsonData:
+#     database: ${PG_DATABASE}
+#     sslmode: disable
+#   secureJsonData:
+#     password: ${PG_PASSWORD}
 
 # - name: Loki
 #   type: loki
