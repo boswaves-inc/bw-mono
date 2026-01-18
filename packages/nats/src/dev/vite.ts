@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { ModuleDeclarationKind } from 'ts-morph';
 import { write } from '@boswaves-inc/codegen';
 
-const __ext = /\.(ts|js|mjs|cjs)$/;
+const __ext = /\.(ts|tsx|jsx|js|mjs|cjs)$/;
 const __cwd = process.cwd();
 const __file = readdirSync(__cwd)
     .find((file) => file.replace(__ext, '') === 'nats.config');
@@ -34,7 +34,7 @@ const config = await import(pathToFileURL(path).href).then(({ default: { namespa
     }
 });
 
-export const kafkaRouterPlugin = (): Plugin => {
+export const natsRouterPlugin = (): Plugin => {
     const routes = join(__cwd, config.input, 'routes')
 
     return {
@@ -78,18 +78,19 @@ export const kafkaRouterPlugin = (): Plugin => {
                 .filter((file) => !file.startsWith('_'))
 
             // Load the route topic
-            const topics = await Promise.all(files.map(async file => {
+            const subjects = await Promise.all(files.map(async file => {
                 // const filePath = join(routes, file)
 
                 return {
                     file,
                     key: file.replace(__ext, ''),
-                    topic: `${config.namespace}.${file.replace(__ext, '')}`,
+                    // topic: `${config.namespace}.${file.replace(__ext, '')}`,
+                    subject: `${config.namespace}.${file.replace(__ext, '')}`,
                     rel: './' + join(relative(__cwd, routes), file).replace(/\\/g, '/'),
                 }
             }))
 
-            if (topics.length > 0) {
+            if (subjects.length > 0) {
                 mkdirSync(types, { recursive: true })
 
                 // Generate the main routes file
@@ -97,9 +98,9 @@ export const kafkaRouterPlugin = (): Plugin => {
                     file.addTypeAlias({
                         name: 'RouteFiles',
                         type: `{\n
-                            ${topics.map(({ topic, file, key }) => `
+                            ${subjects.map(({ subject, file, key }) => `
                                 '${file}': { 
-                                    topic: "${topic}";\n 
+                                    subject: "${subject}";\n 
                                     key: "${key}";\n
                                 }
                             `).join('\n')}\n
@@ -109,7 +110,7 @@ export const kafkaRouterPlugin = (): Plugin => {
                     file.addTypeAlias({
                         name: 'RouteModules',
                         type: `{\n
-                            ${topics.map(({ rel, key }) => `
+                            ${subjects.map(({ rel, key }) => `
                                 '${key}': typeof import('${rel}')
                             `).join('\n')}\n
                         }`
@@ -117,7 +118,7 @@ export const kafkaRouterPlugin = (): Plugin => {
                 })
 
                 // Generate individual route files
-                for (const { key, file } of topics) {
+                for (const { key, file } of subjects) {
                     await write(join(types, config.input, 'routes', '+types', `${key}.ts`), async file => {
                         file.addImportDeclaration({
                             moduleSpecifier: '@boswaves-inc/nats-router',

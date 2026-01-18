@@ -1,7 +1,6 @@
 {
   "include": [
-    ".kafka-router/types/**/*",
-    "tsup.config.ts",
+    ".nats-router/types/**/*",
     "src/**/*"
   ],
   "compilerOptions": {
@@ -17,7 +16,7 @@
     "outDir": "dist",
     "rootDirs": [
       "./",
-      "./.kafka-router/types"
+      "./.nats-router/types",
     ],
     "lib": [
       "DOM",
@@ -31,11 +30,8 @@
       "~/schema/*": [
         "./src/schema/*"
       ],
-      "~/emails/*": [
-        "./src/components/_emails/*"
-      ],
-      "~/components/*": [
-        "./src/components/_components/*"
+      "~/elements/*": [
+        "./src/components/elements/*"
       ],
     }
   },

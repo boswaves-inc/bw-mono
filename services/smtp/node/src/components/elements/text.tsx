@@ -24,6 +24,8 @@ export const schema = z.object({
     ]).optional(),
 })
 
-export default ({ size, className, ...props }: ElementProps<typeof schema>) => (
-    <Primitive {...props} className={cn(variants({ size }), 'my-10 first:mt-0 last:mb-0', className)} />
+export default ({ content, size, className, ...props }: ElementProps<typeof schema>) => (
+    <Primitive {...props} className={cn(variants({ size }), 'my-10 first:mt-0 last:mb-0', className)} >
+        {content}
+    </Primitive>
 )

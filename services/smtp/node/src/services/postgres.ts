@@ -17,7 +17,7 @@ export class Postgres {
     private _store: PostgresJsDatabase<typeof schema>
 
     public constructor({ config, logger }: { config: postgres.Options<{}> | undefined, logger: Logger }) {
-        const log = logger.child({ module: 'postgres' })
+        const log = logger.child({ mod: 'postgres' })
 
         this._store = drizzle(postgres(config), {
             schema,

@@ -13,6 +13,6 @@ export class Smtp {
     }
 
     async send_mail(options: SendMailOptions) {
-        await this._inner.sendMail(options)
+        return await this._inner.sendMail(options)
     }
 }

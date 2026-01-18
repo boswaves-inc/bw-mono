@@ -13,7 +13,7 @@ export const EmailStatus = pgEnum('email_status', [
 
 export const Email = pgTable('emails', {
     id: uuid('id').primaryKey().defaultRandom(),
-    subject: text(),
+    subject: text().notNull(),
     
     to_emails: citext().array().notNull(),
     cc_emails: citext().array().notNull().default([]),

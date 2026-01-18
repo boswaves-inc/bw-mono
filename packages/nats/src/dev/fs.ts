@@ -3,13 +3,13 @@ import type { NatsConfig, ModuleInfo } from "../types"
 import { join } from "path";
 import { pathToFileURL } from "url";
 
-const __ext = /\.(ts|js|mjs|cjs)$/;
+const __ext = /\.(ts|tsx|jsx|js|mjs|cjs)$/;
 const __cwd = process.cwd();
 const __file = readdirSync(__cwd)
-    .find((file) => file.replace(__ext, '') === 'kafka.config');
+    .find((file) => file.replace(__ext, '') === 'nats.config');
 
 if (!__file) {
-    throw new Error('No kafka config found');
+    throw new Error('No nats config found');
 }
 
 const path = join(__cwd, __file);
@@ -23,7 +23,7 @@ const config = await import(pathToFileURL(path).href).then(({ default: { namespa
     }
 
     return {
-        out: join(process.cwd(), out ?? '.kafka-router'),
+        out: join(process.cwd(), out ?? '.nats-router'),
         routes: join(process.cwd(), routes),
         input: routes,
         namespace,
@@ -42,7 +42,8 @@ export const flatRoutes = async () => {
 
         return {
             module,
-            topic: `${config.namespace}.${file.replace(__ext, '')}`,
+            // topic: `${config.namespace}.${file.replace(__ext, '')}`,
+            subject: `${config.namespace}.${file.replace(__ext, '')}`,
         }
     }))
 

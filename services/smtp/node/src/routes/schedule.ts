@@ -2,19 +2,19 @@ import z from "zod/v4";
 import { gen_fingerprint } from "~/utils";
 import { Email } from '~/schema/index'
 import { eq } from "drizzle-orm";
-import { KafkaRoute } from "./+types/schedule";
+import { NatsRoute } from "./+types/schedule";
 
-export const meta = ({ context }: KafkaRoute.MetaArgs) => ({
-    beginning: false,
+export const meta = ({ context }: NatsRoute.MetaArgs) => ({
 })
 
-export const schema = async ({ context }: KafkaRoute.SchemaArgs) => z.object({
+export const schema = async ({ context }: NatsRoute.SchemaArgs) => z.object({
+    subject: z.string(),
     to_emails: z.string().array(),
     cc_emails: z.string().array().optional().default([]),
     bcc_emails: z.string().array().optional().default([]),
 })
 
-export default async ({ body, meta, context: { logger, postgres, smtp } }: KafkaRoute.ActionArgs) => {
+export default async ({ body, meta, logger, context: { postgres, smtp } }: NatsRoute.ActionArgs) => {
     try {
         // generate the body hash
         const fingerprint = gen_fingerprint(body)

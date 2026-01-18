@@ -77,7 +77,7 @@ export const Layout = ({ children }: PropsWithChildren) => {
                         fontFamily="Switzer"
                         fallbackFontFamily='sans-serif'
                         webFont={{
-                            url: "//cdn.fontshare.com/wf/BLNB4FAQFNK56DWWNF7PMGTCOTZHOEII/ST3WKSSDMBK2MIQQO3MAVYWLF4FTOLFV/6IN5WOLRCYP4G4MOCOHOMXNON6Q7MDAR.woff2",
+                            url: "https://cdn.fontshare.com/wf/BLNB4FAQFNK56DWWNF7PMGTCOTZHOEII/ST3WKSSDMBK2MIQQO3MAVYWLF4FTOLFV/6IN5WOLRCYP4G4MOCOHOMXNON6Q7MDAR.woff2",
                             format: "woff2",
                         }}
                         fontWeight={400}
@@ -87,7 +87,7 @@ export const Layout = ({ children }: PropsWithChildren) => {
                         fontFamily="Switzer"
                         fallbackFontFamily='sans-serif'
                         webFont={{
-                            url: "//cdn.fontshare.com/wf/OYB4CXKJQXKTNSLJMTDQOIVUL2V5EL7S/WYO2P7DQVV5RNXGMCUO2HL4RJP4VFUAS/6XPIMU23OJVRY676OG5YVJMWEHWICATX.woff2",
+                            url: "https://cdn.fontshare.com/wf/OYB4CXKJQXKTNSLJMTDQOIVUL2V5EL7S/WYO2P7DQVV5RNXGMCUO2HL4RJP4VFUAS/6XPIMU23OJVRY676OG5YVJMWEHWICATX.woff2",
                             format: "woff2",
                         }}
                         fontWeight={500}
@@ -97,7 +97,7 @@ export const Layout = ({ children }: PropsWithChildren) => {
                         fontFamily="Switzer"
                         fallbackFontFamily='sans-serif'
                         webFont={{
-                            url: "//cdn.fontshare.com/wf/5SZVFDB7V52TI6ULVC6J3WQZQCIZVDV5/ODYPSTCUDMKSTYIPTV4CLQ7URIK7XYBJ/YS3VPNVO4B3TOJMEXDGFZQ4TLZGGSRZC.woff2",
+                            url: "https://cdn.fontshare.com/wf/5SZVFDB7V52TI6ULVC6J3WQZQCIZVDV5/ODYPSTCUDMKSTYIPTV4CLQ7URIK7XYBJ/YS3VPNVO4B3TOJMEXDGFZQ4TLZGGSRZC.woff2",
                             format: "woff2",
                         }}
                         fontWeight={600}
@@ -107,7 +107,7 @@ export const Layout = ({ children }: PropsWithChildren) => {
                         fontFamily="Switzer"
                         fallbackFontFamily='sans-serif'
                         webFont={{
-                            url: "//cdn.fontshare.com/wf/HBNTRIISA5MEXGL5WPYI7CV2HIWTDV3Q/YDPDINVT673XLXNSTMLG4JNCZZMVVNPN/Y7SCNZJOT2MW5ADSGOFLDGH4TNL4JCQY.woff2",
+                            url: "https://cdn.fontshare.com/wf/HBNTRIISA5MEXGL5WPYI7CV2HIWTDV3Q/YDPDINVT673XLXNSTMLG4JNCZZMVVNPN/Y7SCNZJOT2MW5ADSGOFLDGH4TNL4JCQY.woff2",
                             format: "woff2",
                         }}
                         fontWeight={700}
@@ -119,7 +119,7 @@ export const Layout = ({ children }: PropsWithChildren) => {
                     <Preview>
                         Yelp recent login
                     </Preview>
-                    <Container className="">
+                    <Container >
                         {children}
                     </Container>
                 </Body>

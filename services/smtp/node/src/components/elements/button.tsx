@@ -31,7 +31,7 @@ const variants = tv({
     }
 })
 
-export const schema = href.extend({
+export const schema =  href.extend({
     variant: z.enum<readonly (keyof typeof variants.variants.variant)[]>([
         'primary',
         'secondary',
@@ -39,8 +39,10 @@ export const schema = href.extend({
     ]).optional(),
 })
 
-export default ({ variant, className, ...props }: ElementProps<typeof schema>) => {
+export default ({ content, variant = 'primary', className, ...props }: ElementProps<typeof schema>) => {
     return (
-        <Primitive {...props} className={cn(variants({ variant }), className)} />
+        <Primitive {...props} className={cn(variants({ variant }), className)} >
+            {content}
+        </Primitive>
     )
 }

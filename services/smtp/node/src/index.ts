@@ -1,3 +1,4 @@
+import { Nats } from "@boswaves-inc/nats-router";
 import { Logger } from "./services/logger";
 import { Postgres } from './services/postgres';
 import { Smtp } from "./services/smtp";
@@ -34,10 +35,11 @@ const smtp_client = new Smtp({
     postgres: pg_client,
     options: {
         pool: true,
+        secure: true,
         maxConnections: 5,
         maxMessages: 100,
         host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : 5432,
+        port: process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : 587,
         auth: {
             user: process.env.SMTP_EMAIL,
             pass: process.env.SMTP_PASSWORD
@@ -45,13 +47,21 @@ const smtp_client = new Smtp({
     }
 })
 
-const router = new Kafka({
+const router = new Nats({
     logger: log_client,
     group: 'boswaves-inc/smtp',
-    brokers: [
-        'host.docker.internal:9092'
+    servers: [
+        'host.docker.internal:4222'
     ],
 })
+
+// const router = new Kafka({
+//     logger: log_client,
+//     group: 'boswaves-inc/smtp',
+//     brokers: [
+//         'host.docker.internal:9092'
+//     ],
+// })
 
 const main = async () => {
     // const elements = await loadElementMap()
@@ -72,12 +82,6 @@ const main = async () => {
     // const content_type = z.lazy(() =>
     //     z.union([element_type, primitive_type, z.array(content_type)])
     // )
-
-    log_client.info({
-        // blocks: Object.keys(elements),
-        // routes: Object.keys(routes),
-    }, 'Context loaded')
-
 
     // for (const [topic, { module, key }] of Object.entries(base)) {
     //     const { default: factory, schema, handle } = module;
@@ -109,7 +113,6 @@ const main = async () => {
 
     await router.listen({
         postgres: pg_client,
-        logger: log_client,
         smtp: smtp_client,
     })
 }

@@ -1,7 +1,10 @@
 // vite.config.ts
 import path from 'path'
 import { defineConfig } from 'vite';
+
 import { kafkaRouterPlugin } from '@boswaves-inc/kafka-router/dev/vite';
+import { natsRouterPlugin } from '@boswaves-inc/nats-router/dev/vite';
+
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
@@ -14,15 +17,14 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            'lodash': 'lodash-es',
+            // 'lodash': 'lodash',
             // '~/schema/utils': path.resolve(__dirname, './schema/utils.ts'),
             '~/schema': path.resolve(__dirname, './src/schema/'),
             '~': path.resolve(__dirname, './src'),
         }
     },
     plugins: [
-        kafkaRouterPlugin(),
+        natsRouterPlugin(),
         tsconfigPaths()
-
     ],
 });
