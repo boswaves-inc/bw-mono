@@ -4,7 +4,6 @@ import { Element } from "./+types/lead";
 import { z } from "zod/v4";
 
 export const schema = ({ }: Element.SchemaArgs) => z.object({
-    content: z.string(),
 })
 
 export default ({ children, ...props }: Element.RenderArgs) => (

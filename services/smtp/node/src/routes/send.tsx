@@ -44,10 +44,10 @@ export default async ({ body, meta, logger, context: { postgres, smtp } }: NatsR
     const html = await render(
         <Layout>
             <Heading>
-                Verify your account
+                {/* Verify your account */}
             </Heading>
             <Heading size="h3">
-                000-000
+                {/* 000-000 */}
             </Heading>
         </Layout>
     )

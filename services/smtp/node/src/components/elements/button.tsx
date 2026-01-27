@@ -32,16 +32,15 @@ const variants = tv({
     }
 })
 
-export const schema = ({ content }: Element.SchemaArgs) => {
-    return href().extend({
+export const schema = ({ builder }: Element.SchemaArgs) => builder(
+    href().extend({
         variant: z.enum<readonly (keyof typeof variants.variants.variant)[]>([
             'primary',
             'secondary',
             'outline'
-        ]).optional(),
-        content: content()
+        ]).optional()
     })
-}
+).content()
 
 export default ({ children, variant = 'primary', ...props }: Element.RenderArgs) => (
     <Primitive {...props} className={cn(variants({ variant }), 'className')}>

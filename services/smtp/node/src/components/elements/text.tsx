@@ -17,15 +17,17 @@ const variants = tv({
 })
 
 
-export const schema = ({ }: Element.SchemaArgs) => z.object({
-    size: z.enum<readonly (keyof typeof variants.variants.size)[]>([
-        'default',
-        'lg',
-    ]).optional(),
-})
+export const schema = ({ builder }: Element.SchemaArgs) => builder(
+    z.object({
+        size: z.enum<readonly (keyof typeof variants.variants.size)[]>([
+            'default',
+            'lg',
+        ]).optional(),
+    })
+)
 
-export default ({ children, size, ...props }: Element.RenderArgs) => (
+export default ({ size, ...props }: Element.RenderArgs) => (
     <Primitive {...props} className={cn(variants({ size }), 'my-10 first:mt-0 last:mb-0', "className")} >
-        {children}
+        {/* {children} */}
     </Primitive>
 )

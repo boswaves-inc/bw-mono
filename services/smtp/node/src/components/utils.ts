@@ -42,3 +42,22 @@ export const primitive = () => z.union([
 //         z.array(content())
 //     ])
 // })
+
+
+// export const createSchemaBuilder = (contentFn: ContentFn): SchemaBuilder => {
+//     return (<TShape extends z.ZodRawShape, TContent extends readonly ElementType[]>(
+//         shape: TShape,
+//         contentTypes?: TContent
+//     ) => {
+//         if (contentTypes) {
+//             return Object.assign(
+//                 z.object({ ...shape, content: contentFn(contentTypes) }),
+//                 { __contentTypes: contentTypes }
+//             );
+//         }
+//         return Object.assign(
+//             z.object(shape),
+//             { __contentTypes: undefined }
+//         );
+//     }) as SchemaBuilder;
+// };
