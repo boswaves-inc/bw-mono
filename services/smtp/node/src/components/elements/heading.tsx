@@ -1,4 +1,3 @@
-import z from "zod/v4";
 import { tv } from "tailwind-variants";
 import { cn } from "../../utils";
 import { Heading as Primitive } from "@react-email/components";
@@ -17,7 +16,7 @@ const variants = tv({
     }
 })
 
-export const schema = ({ builder }: Element.SchemaArgs) => builder(z.object({
+export const schema = ({ builder }: Element.SchemaArgs) => builder(z => z.object({
     size: z.enum<readonly (keyof typeof variants.variants.size)[]>([
         'h1',
         'h2',

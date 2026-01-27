@@ -1,4 +1,3 @@
-import z from "zod/v4"
 import { tv } from 'tailwind-variants'
 import { cn } from '../../utils'
 import { Button as Primitive } from "@react-email/components";
@@ -32,15 +31,13 @@ const variants = tv({
     }
 })
 
-export const schema = ({ builder }: Element.SchemaArgs) => builder(
-    href().extend({
-        variant: z.enum<readonly (keyof typeof variants.variants.variant)[]>([
-            'primary',
-            'secondary',
-            'outline'
-        ]).optional()
-    })
-).content()
+export const schema = ({ builder }: Element.SchemaArgs) => builder(z => href().extend({
+    variant: z.enum<readonly (keyof typeof variants.variants.variant)[]>([
+        'primary',
+        'secondary',
+        'outline'
+    ]).optional()
+})).content()
 
 export default ({ children, variant = 'primary', ...props }: Element.RenderArgs) => (
     <Primitive {...props} className={cn(variants({ variant }), 'className')}>
