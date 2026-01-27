@@ -22,10 +22,10 @@ export const schema = ({ builder }: Element.SchemaArgs) => builder(z => z.object
         'default',
         'lg',
     ]).optional(),
-}))
+})).content()
 
-export default ({ size, ...props }: Element.RenderArgs) => (
+export default ({ children, size, ...props }: Element.RenderArgs) => (
     <Primitive {...props} className={cn(variants({ size }), 'my-10 first:mt-0 last:mb-0', "className")} >
-        {/* {children} */}
+        {children}
     </Primitive>
 )

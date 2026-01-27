@@ -22,11 +22,11 @@ export const schema = ({ builder }: Element.SchemaArgs) => builder(z => z.object
         'h2',
         'h3'
     ]).optional()
-}))
+})).content()
 
 
-export default ({ size, ...props }: Element.RenderArgs) => (
+export default ({ children, size, ...props }: Element.RenderArgs) => (
     <Primitive {...props} className={cn(variants({ size }), "className")} as={size} >
-        {/* {children} */}
+        {children}
     </Primitive>
 )
