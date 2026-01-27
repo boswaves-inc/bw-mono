@@ -1,7 +1,8 @@
 {
   "include": [
     ".nats-router/types/**/*",
-    "src/**/*"
+    ".codegen/types/**/*",
+    "src/**/*",
   ],
   "compilerOptions": {
     "declaration": true,
@@ -16,6 +17,7 @@
     "outDir": "dist",
     "rootDirs": [
       "./",
+      "./.codegen/types",
       "./.nats-router/types",
     ],
     "lib": [
@@ -35,7 +37,4 @@
       ],
     }
   },
-  // "include": [
-  //   "src/**/*"
-  // ],
 }

@@ -5,18 +5,25 @@ import { eq } from "drizzle-orm";
 import { NatsRoute } from "./+types/send";
 import { render } from "@react-email/components";
 import { Layout } from "~/components/layout";
-import Button from "~/components/elements/button";
 import Heading from "~/components/elements/heading";
 
 export const meta = ({ }: NatsRoute.MetaArgs) => ({
 })
 
-export const schema = async ({ }: NatsRoute.SchemaArgs) => z.object({
-    subject: z.string(),
-    to_emails: z.string().array(),
-    cc_emails: z.string().array().optional().default([]),
-    bcc_emails: z.string().array().optional().default([]),
-})
+export const schema = async ({ }: NatsRoute.SchemaArgs) => {
+    // const schemas = elements.map(({ module }) => module.schema({}))
+    // const content = z.array(z.discriminatedUnion('type', unionArray(schemas)))
+  
+    // console.log(content)
+
+    return z.object({
+        // content,
+        subject: z.string(),
+        to_emails: z.string().array(),
+        cc_emails: z.string().array().optional().default([]),
+        bcc_emails: z.string().array().optional().default([]),
+    })
+}
 
 export default async ({ body, meta, logger, context: { postgres, smtp } }: NatsRoute.ActionArgs) => {
     const fingerprint = gen_fingerprint(body)
@@ -36,8 +43,12 @@ export default async ({ body, meta, logger, context: { postgres, smtp } }: NatsR
 
     const html = await render(
         <Layout>
-            <Heading content={"Verify your account"} />
-            <Heading size="h3" content={"000-000"} />
+            <Heading>
+                Verify your account
+            </Heading>
+            <Heading size="h3">
+                000-000
+            </Heading>
         </Layout>
     )
 

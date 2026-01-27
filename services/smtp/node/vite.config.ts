@@ -4,6 +4,7 @@ import { defineConfig } from 'vite';
 
 import { kafkaRouterPlugin } from '@boswaves-inc/kafka-router/dev/vite';
 import { natsRouterPlugin } from '@boswaves-inc/nats-router/dev/vite';
+import { elementsPlugin } from './src/vite'
 
 import tsconfigPaths from 'vite-tsconfig-paths'
 
@@ -24,6 +25,9 @@ export default defineConfig({
         }
     },
     plugins: [
+        elementsPlugin({
+            input: './src/components'
+        }),
         natsRouterPlugin(),
         tsconfigPaths()
     ],

@@ -1,12 +1,10 @@
 import z from "zod/v4"
-import { ElementSchema } from "./_base"
+import { Element } from "./+types/html"
 
-// export const schema = z.object({
-//     content: z.string(),
-// })
+export const schema = ({ }: Element.SchemaArgs) => z.object({
+    content: z.string(),
+})
 
-export default ({ content }: ElementSchema) => {
-    return (
-        <div dangerouslySetInnerHTML={{ __html: content }} />
-    )
-}
+export default ({ content, ...props }: Element.RenderArgs) => (
+    <div {...props} dangerouslySetInnerHTML={{ __html: content }} />
+)

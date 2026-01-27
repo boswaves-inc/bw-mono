@@ -8,5 +8,6 @@
 /.react-router/
 /.kafka-router/
 /.nats-router/
+/.codegen/
 /.drizzle/
 /build/

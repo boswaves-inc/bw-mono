@@ -203,6 +203,9 @@ importers:
 
   services/smtp/node:
     dependencies:
+      '@boswaves-inc/codegen':
+        specifier: workspace:*
+        version: link:../../../packages/codegen
       '@boswaves-inc/kafka-router':
         specifier: workspace:*
         version: link:../../../packages/kafka

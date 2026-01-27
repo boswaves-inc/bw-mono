@@ -1,8 +1,8 @@
 import z from "zod/v4";
 import { tv } from "tailwind-variants";
 import { cn } from "../../utils";
-import { ElementProps } from "./_base";
 import { Heading as Primitive } from "@react-email/components";
+import { Element } from "./+types/heading";
 
 const variants = tv({
     variants: {
@@ -17,7 +17,8 @@ const variants = tv({
     }
 })
 
-export const schema = z.object({
+export const schema = ({ }: Element.SchemaArgs) => z.object({
+    content: z.string(),
     size: z.enum<readonly (keyof typeof variants.variants.size)[]>([
         'h1',
         'h2',
@@ -25,8 +26,9 @@ export const schema = z.object({
     ]).optional(),
 })
 
-export default ({ content, size, className, ...props }: ElementProps<typeof schema>) => (
-    <Primitive {...props} className={cn(variants({ size }), className)} as={size} >
-        {content}
+
+export default ({  size, ...props }: Element.RenderArgs) => (
+    <Primitive {...props} className={cn(variants({ size }), "className")} as={size} >
+        {/* {content} */}
     </Primitive>
 )

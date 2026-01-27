@@ -3,6 +3,7 @@ import { Text as Primitive } from "@react-email/components";
 import { ElementProps } from "./_base";
 import { tv } from "tailwind-variants";
 import z from "zod/v4";
+import { Element } from "./+types/text";
 
 const variants = tv({
     variants: {
@@ -17,15 +18,15 @@ const variants = tv({
 })
 
 
-export const schema = z.object({
+export const schema = ({ }: Element.SchemaArgs) => z.object({
     size: z.enum<readonly (keyof typeof variants.variants.size)[]>([
         'default',
         'lg',
     ]).optional(),
 })
 
-export default ({ content, size, className, ...props }: ElementProps<typeof schema>) => (
-    <Primitive {...props} className={cn(variants({ size }), 'my-10 first:mt-0 last:mb-0', className)} >
-        {content}
+export default ({ size, ...props }: Element.RenderArgs) => (
+    <Primitive {...props} className={cn(variants({ size }), 'my-10 first:mt-0 last:mb-0', "className")} >
+        {/* {content} */}
     </Primitive>
 )
