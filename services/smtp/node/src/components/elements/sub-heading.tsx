@@ -7,8 +7,8 @@ export const schema = ({ }: Element.SchemaArgs) => z.object({
     content: z.string(),
 })
 
-export default ({ content, ...props }: Element.RenderArgs) => (
+export default ({ children, ...props }: Element.RenderArgs) => (
     <Primitive {...props} className={cn('font-mono text-xs/5 font-semibold tracking-widest text-gray-500 uppercase dark:text-gray-400', "className")} >
-        {/* {content} */}
+        {children}
     </Primitive>
 )

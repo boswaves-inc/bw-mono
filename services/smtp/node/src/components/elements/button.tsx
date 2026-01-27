@@ -1,16 +1,9 @@
-import z, { array } from "zod/v4"
+import z from "zod/v4"
 import { tv } from 'tailwind-variants'
 import { cn } from '../../utils'
 import { Button as Primitive } from "@react-email/components";
 import { Element } from './+types/button'
-import { ElementType } from "../../../+elements";
 import { href } from "../utils";
-
-// type ElementNode = { type: ElementType } & Record<string, unknown>;
-
-// // recursion via interfaces (legal)
-// interface ContentArray extends Array<Content> { }
-// type Content = ElementNode | ContentArray;
 
 const variants = tv({
     base: "inline-flex justify-center gap-2 whitespace-nowrap items-center justify-center whitespace-nowrap border border-transparent",
@@ -46,11 +39,7 @@ export const schema = ({ content }: Element.SchemaArgs) => {
             'secondary',
             'outline'
         ]).optional(),
-        content: content([
-            'button',
-            'heading',
-            'lead'
-        ])
+        content: content()
     })
 }
 

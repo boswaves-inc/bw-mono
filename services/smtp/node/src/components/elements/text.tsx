@@ -1,6 +1,5 @@
 import { cn } from "../../utils";
 import { Text as Primitive } from "@react-email/components";
-import { ElementProps } from "./_base";
 import { tv } from "tailwind-variants";
 import z from "zod/v4";
 import { Element } from "./+types/text";
@@ -25,8 +24,8 @@ export const schema = ({ }: Element.SchemaArgs) => z.object({
     ]).optional(),
 })
 
-export default ({ size, ...props }: Element.RenderArgs) => (
+export default ({ children, size, ...props }: Element.RenderArgs) => (
     <Primitive {...props} className={cn(variants({ size }), 'my-10 first:mt-0 last:mb-0', "className")} >
-        {/* {content} */}
+        {children}
     </Primitive>
 )

@@ -17,7 +17,7 @@ const variants = tv({
     }
 })
 
-export const schema = ({ }: Element.SchemaArgs) => z.object({
+export const schema = ({ content }: Element.SchemaArgs) => z.object({
     content: z.string(),
     size: z.enum<readonly (keyof typeof variants.variants.size)[]>([
         'h1',
@@ -27,8 +27,8 @@ export const schema = ({ }: Element.SchemaArgs) => z.object({
 })
 
 
-export default ({  size, ...props }: Element.RenderArgs) => (
+export default ({ children, size, ...props }: Element.RenderArgs) => (
     <Primitive {...props} className={cn(variants({ size }), "className")} as={size} >
-        {/* {content} */}
+        {children}
     </Primitive>
 )

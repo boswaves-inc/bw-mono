@@ -5,6 +5,6 @@ export const schema = ({ }: Element.SchemaArgs) => z.object({
     content: z.string(),
 })
 
-export default ({ content, ...props }: Element.RenderArgs) => (
-    <div {...props} dangerouslySetInnerHTML={{ __html: content }} />
+export default ({ children, ...props }: Element.RenderArgs) => (
+    <div {...props} dangerouslySetInnerHTML={{ __html: children as string }} />
 )
