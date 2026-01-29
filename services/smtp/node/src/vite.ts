@@ -1,5 +1,5 @@
 import { type Plugin } from 'vite';
-import { ModuleDeclarationKind, VariableDeclarationKind } from 'ts-morph';
+import { ModuleDeclarationKind } from 'ts-morph';
 import { write } from '@boswaves-inc/codegen';
 import { mkdirSync, readdirSync } from 'fs';
 import { join, relative } from 'path';
@@ -67,6 +67,12 @@ export const elementsPlugin = ({ input }: CodegenConfig): Plugin => {
 
                 // Generate the main elements file
                 await write(join(types, '+elements.ts'), async file => {
+                    file.addImportDeclaration({
+                        isTypeOnly: true,
+                        moduleSpecifier: 'zod/v4',
+                        defaultImport: 'z',
+                    });
+
                     file.addTypeAlias({
                         isExported: true,
                         name: 'ElementModules',
@@ -85,60 +91,12 @@ export const elementsPlugin = ({ input }: CodegenConfig): Plugin => {
 
                     file.addTypeAlias({
                         isExported: true,
-                        name: 'ElementEntry<S extends ElementType = ElementType>',
-                        type: `{
-                            subject: S,
-                            module: ElementModules[S]
-                        }`
+                        name: 'Element',
+                        type: `{ 
+                            [K in ElementType]: z.output<ReturnType<ElementModules[K]['schema']>> & { type: K } 
+                        }[ElementType]`
                     })
                 })
-
-                // // Generate the main elements file
-                // await write(join(types, '+runtime.ts'), async file => {
-                //     file.addImportDeclaration({
-                //         isTypeOnly: true,
-                //         namedImports: ['ElementEntry'],
-                //         moduleSpecifier: './+elements'
-                //     })
-                    
-                //     file.addImportDeclarations(subjects.map(({ rel, key }, i) => ({
-                //         moduleSpecifier: rel.replace(__ext, ''),
-                //         namespaceImport: `__${i}`,
-                //     })));
-
-
-                //     file.addVariableStatement({
-                //         declarationKind: VariableDeclarationKind.Const,
-                //         isExported: true,
-                //         declarations: [
-                //             {
-                //                 name: "elements",
-                //                 initializer: writer => {
-                //                     writer.writeLine("[");
-                //                     subjects.forEach(({ key }, i) => {
-                //                         writer.writeLine(`  { subject: "${key}", module: __${i} },`);
-                //                     });
-                //                     writer.write("] as const satisfies readonly ElementEntry[]");
-                //                 }
-                //             }
-                //         ]
-                //     });
-                //     // file.addTypeAlias({
-                //     //     isExported: true,
-                //     //     name: 'ElementType',
-                //     //     type: `keyof ElementModules`
-                //     // })
-
-                //     // file.addTypeAlias({
-                //     //     isExported: true,
-                //     //     name: 'ElementEntry<S extends ElementType = ElementType>',
-                //     //     type: `{
-                //     //         subject: S,
-                //     //         module: ElementModules[S]
-                //     //     }`
-                //     // })
-                // })
-
 
                 // Generate individual element files
                 for (const { key, file } of subjects) {

@@ -1,6 +1,8 @@
-import z from "zod/v4";
+import z, { keyof } from "zod/v4";
 import { ReactNode } from "react";
 import { ElementType } from "../../+elements";
+
+export type PrimitiveType = keyof PrimitiveMap;
 
 export type PrimitiveMap = {
     string: string;
@@ -8,7 +10,7 @@ export type PrimitiveMap = {
     boolean: boolean;
 };
 
-export type PrimitiveType = keyof PrimitiveMap;
+export type Primitive = { [K in PrimitiveType]: PrimitiveMap[K] }[PrimitiveType]
 
 type ContentType = ElementType | PrimitiveType;
 

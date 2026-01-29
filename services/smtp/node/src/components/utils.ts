@@ -1,7 +1,7 @@
 import z from "zod/v4";
 import { element_map } from "virtual:smtp/elements";
 import { PrimitiveType } from "./types";
-import { ElementType } from "../../+elements";
+import { Element, ElementType } from "../../+elements";
 
 const primitives = {
     string: z.string(),
@@ -60,7 +60,7 @@ const content = (filter: readonly string[]) => {
         const schemas = elementTypes.map(getElementSchema);
 
         return z.array(
-            z.discriminatedUnion('type', unionArray(schemas))
+            z.discriminatedUnion('type', unionArray(schemas)) as unknown as z.ZodType<Element>
         );
     }
 
@@ -112,7 +112,5 @@ export const href = () => z.object({
 export const element = () => {
     const schemas = Object.keys(element_map).map(getElementSchema);
 
-    return z.discriminatedUnion('type', unionArray(schemas))
+    return z.discriminatedUnion('type', unionArray(schemas)) as unknown as z.ZodType<Element>
 };
-
-export { builder };
