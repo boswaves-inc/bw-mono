@@ -6,19 +6,27 @@ import { NatsRoute } from "./+types/send";
 import { render } from "@react-email/components";
 import { Layout } from "~/components/layout";
 import Heading from "~/components/elements/heading";
+import { element } from "~/components/utils";
+import { createAuxiliaryTypeStore, printNode, zodToTs } from 'zod-to-ts'
 
 export const meta = ({ }: NatsRoute.MetaArgs) => ({
 })
 
 export const schema = async ({ }: NatsRoute.SchemaArgs) => {
-    // const schemas = elements.map(({ module }) => module.schema({}))
-    // const content = z.array(z.discriminatedUnion('type', unionArray(schemas)))
-  
-    // console.log(content)
+    const store = createAuxiliaryTypeStore()
+    const { node } = zodToTs(z.array(element()), {
+        auxiliaryTypeStore: store
+    })
+
+    store.definitions.forEach(({ node }) => {
+        console.log(printNode(node))
+    })
+
+    console.log(printNode(node))
 
     return z.object({
-        // content,
         subject: z.string(),
+        content: z.array(element()),
         to_emails: z.string().array(),
         cc_emails: z.string().array().optional().default([]),
         bcc_emails: z.string().array().optional().default([]),

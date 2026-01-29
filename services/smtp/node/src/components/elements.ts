@@ -20,11 +20,21 @@ const load = async () => {
 
         return {
             module,
-            subject: `${file.replace(__ext, '')}`,
+            key: `${file.replace(__ext, '')}`,
         }
     }))
 
-    return topics
+    const map = topics.reduce<{ [key: string]: ElementInfo }>((prev, curr) => {
+        return {
+            ...prev,
+            [curr.key]: curr.module
+        }
+    }, {})
+
+    return { topics, map }
 }
 
-export default await load();
+const { topics, map } = await load()
+
+export { map as element_map }
+export default topics

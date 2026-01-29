@@ -40,7 +40,7 @@ export const elementsPlugin = ({ input }: CodegenConfig): Plugin => {
 
         load: async (id) => {
             if (id === "\0virtual:smtp/elements") {
-                return `export { default as elements } from "${elements.replace(/\\/g, '/')}";`
+                return `export { default as elements, element_map } from "${elements.replace(/\\/g, '/')}";`
             }
         },
 
@@ -93,51 +93,51 @@ export const elementsPlugin = ({ input }: CodegenConfig): Plugin => {
                     })
                 })
 
-                // Generate the main elements file
-                await write(join(types, '+runtime.ts'), async file => {
-                    file.addImportDeclaration({
-                        isTypeOnly: true,
-                        namedImports: ['ElementEntry'],
-                        moduleSpecifier: './+elements'
-                    })
+                // // Generate the main elements file
+                // await write(join(types, '+runtime.ts'), async file => {
+                //     file.addImportDeclaration({
+                //         isTypeOnly: true,
+                //         namedImports: ['ElementEntry'],
+                //         moduleSpecifier: './+elements'
+                //     })
                     
-                    file.addImportDeclarations(subjects.map(({ rel, key }, i) => ({
-                        moduleSpecifier: rel.replace(__ext, ''),
-                        namespaceImport: `__${i}`,
-                    })));
+                //     file.addImportDeclarations(subjects.map(({ rel, key }, i) => ({
+                //         moduleSpecifier: rel.replace(__ext, ''),
+                //         namespaceImport: `__${i}`,
+                //     })));
 
 
-                    file.addVariableStatement({
-                        declarationKind: VariableDeclarationKind.Const,
-                        isExported: true,
-                        declarations: [
-                            {
-                                name: "elements",
-                                initializer: writer => {
-                                    writer.writeLine("[");
-                                    subjects.forEach(({ key }, i) => {
-                                        writer.writeLine(`  { subject: "${key}", module: __${i} },`);
-                                    });
-                                    writer.write("] as const satisfies readonly ElementEntry[]");
-                                }
-                            }
-                        ]
-                    });
-                    // file.addTypeAlias({
-                    //     isExported: true,
-                    //     name: 'ElementType',
-                    //     type: `keyof ElementModules`
-                    // })
+                //     file.addVariableStatement({
+                //         declarationKind: VariableDeclarationKind.Const,
+                //         isExported: true,
+                //         declarations: [
+                //             {
+                //                 name: "elements",
+                //                 initializer: writer => {
+                //                     writer.writeLine("[");
+                //                     subjects.forEach(({ key }, i) => {
+                //                         writer.writeLine(`  { subject: "${key}", module: __${i} },`);
+                //                     });
+                //                     writer.write("] as const satisfies readonly ElementEntry[]");
+                //                 }
+                //             }
+                //         ]
+                //     });
+                //     // file.addTypeAlias({
+                //     //     isExported: true,
+                //     //     name: 'ElementType',
+                //     //     type: `keyof ElementModules`
+                //     // })
 
-                    // file.addTypeAlias({
-                    //     isExported: true,
-                    //     name: 'ElementEntry<S extends ElementType = ElementType>',
-                    //     type: `{
-                    //         subject: S,
-                    //         module: ElementModules[S]
-                    //     }`
-                    // })
-                })
+                //     // file.addTypeAlias({
+                //     //     isExported: true,
+                //     //     name: 'ElementEntry<S extends ElementType = ElementType>',
+                //     //     type: `{
+                //     //         subject: S,
+                //     //         module: ElementModules[S]
+                //     //     }`
+                //     // })
+                // })
 
 
                 // Generate individual element files
