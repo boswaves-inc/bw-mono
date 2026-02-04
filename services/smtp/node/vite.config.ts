@@ -1,10 +1,8 @@
 // vite.config.ts
 import path from 'path'
 import { defineConfig } from 'vite';
-
-import { kafkaRouterPlugin } from '@boswaves-inc/kafka-router/dev/vite';
 import { natsRouterPlugin } from '@boswaves-inc/nats-router/dev/vite';
-import { elementsPlugin } from './src/vite'
+import { elementsPlugin } from './src/vite/elements'
 
 import tsconfigPaths from 'vite-tsconfig-paths'
 

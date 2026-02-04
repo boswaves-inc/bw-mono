@@ -8,7 +8,7 @@ modules := "infra/modules"
 # === Helpers ===
 [private]
 [unix]
-init-svc service:
+stage service:
     mkdir -p {{runtime}}/node/targets
     mkdir -p {{runtime}}/telem/dashboards/{{service}}
     cp {{runtime}}/{{service}}/targets.yml {{runtime}}/node/targets/{{service}}.yml 2>/dev/null || true
@@ -16,7 +16,7 @@ init-svc service:
 
 [private]
 [windows]
-init-svc service:
+stage service:
     New-Item -ItemType Directory -Path {{runtime}}/node/targets -Force | Out-Null
     New-Item -ItemType Directory -Path {{runtime}}/telem/dashboards/{{service}} -Force | Out-Null
     if (Test-Path {{runtime}}/{{service}}/targets.yml) { Copy-Item {{runtime}}/{{service}}/targets.yml {{runtime}}/node/targets/{{service}}.yml }
@@ -59,16 +59,16 @@ build:
     pnpm turbo build
 
 # === Up ===
-up-telem project="boswaves_telem": (init-svc "telem")
+up-telem project="boswaves_telem": (stage "telem")
     docker compose -p {{project}} -f {{modules}}/node.yaml -f {{modules}}/telem.yaml up -d --build
 
-up-smtp project="boswaves_smtp": (init-svc "smtp")
+up-smtp project="boswaves_smtp": (stage "smtp")
     docker compose -p {{project}} -f {{modules}}/node.yaml -f services/smtp/compose.yaml up -d --build
 
-up-store project="boswaves_smtp": (init-svc "store")
+up-store project="boswaves_smtp": (stage "store")
     docker compose -p {{project}} -f {{modules}}/node.yaml -f services/store/compose.yaml up -d --build
 
-up-dev project="boswaves_dev":  (init-svc "smtp") (init-svc "store")
+up-dev project="boswaves_dev":  (stage "smtp") (stage "store")
     docker compose -p {{project}} -f {{modules}}/node.yaml -f {{modules}}/telem.yaml -f {{modules}}/dev.yaml up -d
 
 

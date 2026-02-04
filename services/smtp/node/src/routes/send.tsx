@@ -13,16 +13,16 @@ export const meta = ({ }: NatsRoute.MetaArgs) => ({
 })
 
 export const schema = async ({ }: NatsRoute.SchemaArgs) => {
-    const store = createAuxiliaryTypeStore()
-    const { node } = zodToTs(z.array(element()), {
-        auxiliaryTypeStore: store
-    })
+    // const store = createAuxiliaryTypeStore()
+    // const { node } = zodToTs(z.array(element()), {
+    //     auxiliaryTypeStore: store
+    // })
 
-    store.definitions.forEach(({ node }) => {
-        console.log(printNode(node))
-    })
+    // store.definitions.forEach(({ node }) => {
+    //     console.log(printNode(node))
+    // })
 
-    console.log(printNode(node))
+    // console.log(printNode(node))
 
     return z.object({
         subject: z.string(),

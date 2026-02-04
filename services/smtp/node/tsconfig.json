@@ -2,6 +2,7 @@
   "include": [
     ".nats-router/types/**/*",
     ".codegen/types/**/*",
+    "scripts/**/*",
     "src/**/*",
   ],
   "compilerOptions": {
