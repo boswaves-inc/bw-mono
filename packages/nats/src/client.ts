@@ -108,8 +108,8 @@ export class Nats {
         });
 
         await Promise.all(routes.map(async ({ subject, module }) => {
-            const meta = await module.meta?.({ context })
-            const schema = await module.schema({ meta, context })
+            const meta = await module.meta?.({ })
+            const schema = await module.schema({ meta })
 
             const subscription = connection.subscribe(subject, {
                 callback: async (error, { sid, data, headers, reply, ...rest }) => {
