@@ -1,12 +1,34 @@
 import { type Plugin } from 'vite';
 import { ModuleDeclarationKind } from 'ts-morph';
 import { write } from '@boswaves-inc/codegen';
-import { mkdirSync, readdirSync } from 'fs';
-import { join, relative } from 'path';
-import { __cwd, __primitives, loadElements } from './utils';
+import { mkdirSync } from 'fs';
+import { readdirSync } from "fs";
+import { join, relative } from "path";
 
+export const __ext = /\.(ts|tsx|jsx|js|mjs|cjs)$/;
+export const __cwd = process.cwd();
 
-const __types = join('.codegen', 'types')
+export const __primitives = ['string', 'boolean', 'number']
+export const __types = join('.codegen', 'types')
+
+export const loadElements = async (dir: string) => {
+    // Read the provided elements diectory
+    const files = readdirSync(dir)
+        .filter((file) => __ext.test(file))
+        .filter((file) => !file.startsWith('_'))
+        .filter((file) => !file.startsWith('.'))
+
+    // Load the route topic
+    return await Promise.all(files.map(async file => {
+        return {
+            file,
+            key: file.replace(__ext, ''),
+            rel: './' + join(relative(__cwd, dir), file).replace(/\\/g, '/'),
+        }
+    }))
+
+}
+
 
 interface CodegenConfig {
     input: string
@@ -44,14 +66,14 @@ export const elementsPlugin = ({ input }: CodegenConfig): Plugin => {
             }
         },
 
-        buildStart: async (ctx) => {
+        buildStart: async () => {
             const subjects = await loadElements(elements)
 
             if (subjects.length > 0) {
                 mkdirSync(__types, { recursive: true })
 
                 // Generate the main elements file
-                await write(join(__types, '+elements.ts'), async file => {
+                await write(join(__types, '+elements.ts'), async ({ file }) => {
                     file.addImportDeclaration({
                         isTypeOnly: true,
                         moduleSpecifier: 'zod/v4',
@@ -139,7 +161,7 @@ export const elementsPlugin = ({ input }: CodegenConfig): Plugin => {
 
                 // Generate individual element files
                 for (const { key } of subjects) {
-                    await write(join(__types, input, 'elements', '+types', `${key}.ts`), async file => {
+                    await write(join(__types, input, 'elements', '+types', `${key}.ts`), async ({ file }) => {
                         file.addImportDeclaration({
                             moduleSpecifier: '../../types',
                             namedImports: [

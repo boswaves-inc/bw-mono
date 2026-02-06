@@ -2,6 +2,8 @@ import z from "zod/v4";
 import { element_map } from "virtual:smtp/elements";
 import { ElementType, PrimitiveType, Primitive } from "../../+elements";
 
+export { element_map as elements }
+
 const primitives = {
     string: z.string(),
     number: z.number(),
@@ -23,29 +25,11 @@ const isPrimitive = (type: string): type is PrimitiveType => {
     return type in primitives;
 };
 
-const getElementSchema = (type: string) => {
-    const cached = cache.get(type);
-
-    if (cached != undefined) {
-        return cached
+const unionArray = <T>(xs: T[]): [T, ...T[]] => {
+    if (xs.length === 0) {
+        throw new Error("discriminatedUnion needs at least one option");
     }
-
-    const schema = z.lazy(() => {
-        const element = element_map[type];
-
-        // Fallback for unknown element modules
-        if (!element?.schema) {
-            // NOTE: if you want unknown elements to still accept content, add it here
-            return z.object({ type: z.literal(type) });
-        }
-
-        // element.schema({ builder }) should return a ZodObject
-        return element.schema({ builder }).extend({ type: z.literal(type) });
-    });
-
-    cache.set(type, schema)[type];
-
-    return schema;
+    return xs as [T, ...T[]];
 };
 
 const content = (filter: readonly string[]) => {
@@ -66,7 +50,7 @@ const content = (filter: readonly string[]) => {
 
     // Only elements => array of discriminated element objects
     if (primitiveTypes.length === 0 && elementTypes.length > 0) {
-        const schemas = elementTypes.map(getElementSchema);
+        const schemas = elementTypes.map(element);
         return z.array(
             z.discriminatedUnion("type", unionArray(schemas)) as unknown as z.ZodType<Element>
         );
@@ -75,7 +59,7 @@ const content = (filter: readonly string[]) => {
     // Mixed => array of (primitive | element-object)
     if (primitiveTypes.length > 0 && elementTypes.length > 0) {
         const primitiveSchemas = primitiveTypes.map((t) => primitives[t]);
-        const elementSchemas = elementTypes.map(getElementSchema);
+        const elementSchemas = elementTypes.map(element);
 
         return z.array(
             z.union(unionArray([...primitiveSchemas, ...elementSchemas])) as any as z.ZodType<Element | Primitive>
@@ -104,13 +88,6 @@ const builder = <S extends z.ZodObject = z.ZodObject<{}>>(shape?: (zod: typeof z
     });
 }
 
-export const unionArray = <T>(xs: T[]): [T, ...T[]] => {
-    if (xs.length === 0) {
-        throw new Error("discriminatedUnion needs at least one option");
-    }
-    return xs as [T, ...T[]];
-};
-
 export const href = () => z.object({
     href: z.string().optional(),
     target: z.enum([
@@ -121,8 +98,41 @@ export const href = () => z.object({
     ]).optional(),
 });
 
-export const element = () => {
-    const schemas = Object.keys(element_map).map(getElementSchema);
+export function element(): z.ZodType<Element, unknown, z.core.$ZodTypeInternals<Element, unknown>>
+export function element(type: keyof typeof element_map): z.ZodLazy<z.ZodObject<any, z.core.$strip>>
+export function element(type?: keyof typeof element_map) {
+    if (type == undefined) {
+        const schemas = Object.keys(element_map).map(element);
 
-    return z.discriminatedUnion("type", unionArray(schemas)) as unknown as z.ZodType<Element>;
+        return z.discriminatedUnion("type", unionArray(schemas)) as unknown as z.ZodType<Element>;
+    }
+
+    const cached = cache.get(type as string);
+
+    if (cached != undefined) {
+        return cached
+    }
+
+    const schema = z.lazy(() => {
+        const element = element_map[type];
+
+        // Fallback for unknown element modules
+        if (!element?.schema) {
+            // NOTE: if you want unknown elements to still accept content, add it here
+            return z.object({ type: z.literal(type) });
+        }
+
+        // element.schema({ builder }) should return a ZodObject
+        return element.schema({ builder }).extend({ type: z.literal(type) });
+    });
+
+    cache.set(type as string, schema)[type];
+
+    return schema;
 };
+
+// export const element = () => {
+//     const schemas = Object.keys(element_map).map(getElementSchema);
+
+//     return z.discriminatedUnion("type", unionArray(schemas)) as unknown as z.ZodType<Element>;
+// };

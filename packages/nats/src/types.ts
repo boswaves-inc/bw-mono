@@ -6,12 +6,12 @@ type ResultType<T> = T extends (...args: any) => any
     : never;
 
 type CreateMetaArgs<T extends ModuleInfo = ModuleInfo> = {
-    context: NatsLoadContext;
+    // context: NatsLoadContext;
 };
 
 type CreateSchemaArgs<T extends ModuleInfo = ModuleInfo> = {
     meta: ResultType<T['meta']> extends infer U extends ModuleMeta ? U : never,
-    context: NatsLoadContext;
+    // context: NatsLoadContext;
 };
 
 type CreateActionArgs<T extends ModuleInfo = ModuleInfo> = {

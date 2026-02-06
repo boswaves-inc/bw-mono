@@ -2,7 +2,7 @@
 import path from 'path'
 import { defineConfig } from 'vite';
 import { natsRouterPlugin } from '@boswaves-inc/nats-router/dev/vite';
-import { elementsPlugin } from './src/vite/elements'
+import { elementsPlugin } from './src/vite'
 
 import tsconfigPaths from 'vite-tsconfig-paths'
 
@@ -16,17 +16,15 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            // 'lodash': 'lodash',
-            // '~/schema/utils': path.resolve(__dirname, './schema/utils.ts'),
             '~/schema': path.resolve(__dirname, './src/schema/'),
             '~': path.resolve(__dirname, './src'),
         }
     },
     plugins: [
+        tsconfigPaths(),
         elementsPlugin({
             input: './src/components'
         }),
         natsRouterPlugin(),
-        tsconfigPaths()
     ],
 });

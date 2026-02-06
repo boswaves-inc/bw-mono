@@ -42,6 +42,7 @@ export const flatRoutes = async () => {
 
         return {
             module,
+            key: file.replace(__ext, ''),
             // topic: `${config.namespace}.${file.replace(__ext, '')}`,
             subject: `${config.namespace}.${file.replace(__ext, '')}`,
         }

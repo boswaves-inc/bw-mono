@@ -4,10 +4,11 @@ import { Email } from '~/schema/index'
 import { eq } from "drizzle-orm";
 import { NatsRoute } from "./+types/schedule";
 
-export const meta = ({ context }: NatsRoute.MetaArgs) => ({
+export const meta = ({  }: NatsRoute.MetaArgs) => ({
+    
 })
 
-export const schema = async ({ context }: NatsRoute.SchemaArgs) => z.object({
+export const schema = async ({  }: NatsRoute.SchemaArgs) => z.object({
     subject: z.string(),
     to_emails: z.string().array(),
     cc_emails: z.string().array().optional().default([]),

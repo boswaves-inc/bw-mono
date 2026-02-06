@@ -78,7 +78,7 @@ export const natsRouterPlugin = (): Plugin => {
                 .filter((file) => !file.startsWith('_'))
 
             // Load the route topic
-            const subjects = await Promise.all(files.map(async file => {
+            const subjects = await Promise.all(files.map(async (file) => {
                 // const filePath = join(routes, file)
 
                 return {
@@ -94,7 +94,7 @@ export const natsRouterPlugin = (): Plugin => {
                 mkdirSync(types, { recursive: true })
 
                 // Generate the main routes file
-                await write(join(types, '+routes.ts'), async file => {
+                await write(join(types, '+routes.ts'), async ({ file }) => {
                     file.addTypeAlias({
                         name: 'RouteFiles',
                         type: `{\n
@@ -118,8 +118,8 @@ export const natsRouterPlugin = (): Plugin => {
                 })
 
                 // Generate individual route files
-                for (const { key, file } of subjects) {
-                    await write(join(types, config.input, 'routes', '+types', `${key}.ts`), async file => {
+                for (const { key } of subjects) {
+                    await write(join(types, config.input, 'routes', '+types', `${key}.ts`), async ({ file }) => {
                         file.addImportDeclaration({
                             moduleSpecifier: '@boswaves-inc/nats-router',
                             namedImports: [
