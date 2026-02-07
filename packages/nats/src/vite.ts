@@ -1,4 +1,4 @@
-import type { NatsConfig } from '../types';
+import type { NatsConfig } from './types';
 import { type Plugin } from 'vite';
 import { join, relative } from 'path';
 import { mkdirSync, readdirSync } from 'fs';
@@ -6,7 +6,6 @@ import { pathToFileURL } from 'url';
 import _ from 'lodash';
 import { ModuleDeclarationKind } from 'ts-morph';
 import { write } from '@boswaves-inc/codegen';
-import { createAuxiliaryTypeStore } from 'zod-to-ts';
 
 const __ext = /\.(ts|tsx|jsx|js|mjs|cjs)$/;
 const __cwd = process.cwd();
@@ -19,7 +18,7 @@ if (!__file) {
 
 const config = await (async () => {
     const args = await import(pathToFileURL(join(__cwd, __file)).href)
-    
+
     const {
         namespace,
         routes,
@@ -62,14 +61,15 @@ export const natsRouterPlugin = (): Plugin => {
 
         resolveId(id) {
             if (id === 'virtual:nats-router/server-build') {
-                return '\nats-router/server-build';
+                return '\0nats-router/server-build';
             }
         },
 
         load(id) {
-            if (id === '\nats-router/server-build') {
+            if (id === '\0nats-router/server-build') {
                 return `
-                    export { default as routes } from "${routes.replace(/\\/g, '/')}";
+                export { default as routes } from "${routes.replace(/\\/g, '/')}";
+                export { default as config } from "${join(__cwd, __file).replace(/\\/g, '/')}";
                 `;
             }
         },

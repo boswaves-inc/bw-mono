@@ -1,12 +1,15 @@
-import { defineConfig } from "@boswaves-inc/nats-router/config";
+import { defineConfig } from "@boswaves-inc/nats-router";
 
 export default defineConfig({
     namespace: 'smtp',
     routes: './src',
     sdk: {
         out: '../sdk/src',
-        factory: ({ routes }) => {
-            console.log('test')
+        factory: ({ route }) => {
+
         }
+        // factory: ({ routes }) => {
+        //     console.log('test')
+        // }
     }
 })

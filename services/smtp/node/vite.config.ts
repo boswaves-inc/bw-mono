@@ -1,8 +1,8 @@
 // vite.config.ts
 import path from 'path'
 import { defineConfig } from 'vite';
-import { natsRouterPlugin } from '@boswaves-inc/nats-router/dev/vite';
 import { elementsPlugin } from './src/vite'
+import { natsRouterPlugin } from '@boswaves-inc/nats-router/vite';
 
 import tsconfigPaths from 'vite-tsconfig-paths'
 

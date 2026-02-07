@@ -1,7 +1,7 @@
-import { readdirSync } from "fs";
-import type { NatsConfig, ModuleInfo } from "../types"
-import { join } from "path";
+import type { NatsConfig, ModuleInfo } from "./types"
 import { pathToFileURL } from "url";
+import { readdirSync } from "fs";
+import { join } from "path";
 
 const __ext = /\.(ts|tsx|jsx|js|mjs|cjs)$/;
 const __cwd = process.cwd();

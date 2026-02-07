@@ -47,10 +47,11 @@ export interface NatsConfig {
     // out?: string,
     sdk: {
         out: string,
-        factory: (args: {
-            routes: typeof import('virtual:nats-router/server-build').routes
-            // write: (store: ZodToTsOptions['auxiliaryTypeStore']) => any
-        }) => void
+        factory: (args: { route: () => void }) => void
+        // factory: (args: {
+        //     routes: typeof import('virtual:nats-router/server-build').routes
+        //     // write: (store: ZodToTsOptions['auxiliaryTypeStore']) => any
+        // }) => void
     }
 }
 

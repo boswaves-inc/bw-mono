@@ -11,30 +11,7 @@ export const __cwd = process.cwd();
 export const __primitives = ['string', 'boolean', 'number']
 export const __types = join('.codegen', 'types')
 
-export const loadElements = async (dir: string) => {
-    // Read the provided elements diectory
-    const files = readdirSync(dir)
-        .filter((file) => __ext.test(file))
-        .filter((file) => !file.startsWith('_'))
-        .filter((file) => !file.startsWith('.'))
-
-    // Load the route topic
-    return await Promise.all(files.map(async file => {
-        return {
-            file,
-            key: file.replace(__ext, ''),
-            rel: './' + join(relative(__cwd, dir), file).replace(/\\/g, '/'),
-        }
-    }))
-
-}
-
-
-interface CodegenConfig {
-    input: string
-}
-
-export const elementsPlugin = ({ input }: CodegenConfig): Plugin => {
+export const elementsPlugin = ({ input }: { input: string }): Plugin => {
     const elements = join(__cwd, input, 'elements')
 
     return {
@@ -67,7 +44,20 @@ export const elementsPlugin = ({ input }: CodegenConfig): Plugin => {
         },
 
         buildStart: async () => {
-            const subjects = await loadElements(elements)
+            // Read the provided elements diectory
+            const files = readdirSync(elements)
+                .filter((file) => __ext.test(file))
+                .filter((file) => !file.startsWith('_'))
+                .filter((file) => !file.startsWith('.'))
+
+            // Load the route topic
+            const subjects = await Promise.all(files.map(async file => {
+                return {
+                    file,
+                    key: file.replace(__ext, ''),
+                    rel: './' + join(relative(__cwd, elements), file).replace(/\\/g, '/'),
+                }
+            }))
 
             if (subjects.length > 0) {
                 mkdirSync(__types, { recursive: true })
