@@ -1,8 +1,6 @@
 {
   "include": [
-    ".codegen/types/**/*",
-    ".dsvc/types/**/*",
-    "scripts/**/*",
+    ".nats-router/types/**/*",
     "src/**/*",
   ],
   "compilerOptions": {
@@ -17,9 +15,8 @@
     "module": "ESNext",
     "outDir": "dist",
     "rootDirs": [
+      "./.nats-router/types",
       "./",
-      "./.dsvc/types",
-      "./.codegen/types",
     ],
     "lib": [
       "DOM",
@@ -29,12 +26,6 @@
     "paths": {
       "~/*": [
         "./src/*"
-      ],
-      "~/schema/*": [
-        "./src/schema/*"
-      ],
-      "~/elements/*": [
-        "./src/components/elements/*"
       ],
     }
   },

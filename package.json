@@ -6,9 +6,12 @@
         "clean": "rm -rf node_modules **/node_modules **/.turbo **/dist **/.next"
     },
     "devDependencies": {
-        "turbo": "^2.0.0",
+        "@boswaves-inc/nats-router": "workspace:*",
+        "@boswaves-inc/dsvc": "workspace:*",
         "dotenv-cli": "^10.0.0",
         "drizzle-kit": "^0.31.8",
+        "tsx": "^4.20.6",
+        "turbo": "^2.0.0",
         "typescript": "^5.4.0"
     }
 }

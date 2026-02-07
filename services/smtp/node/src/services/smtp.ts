@@ -1,5 +1,4 @@
 import nodemailer, { TransportOptions, SendMailOptions } from "nodemailer"
-import Mail from "nodemailer/lib/mailer"
 import SMTPPool from "nodemailer/lib/smtp-pool"
 import { Postgres } from "./postgres"
 

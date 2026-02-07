@@ -1,7 +1,5 @@
-import { Logger } from "@boswaves-inc/log";
-import { Dsvc } from "@boswaves-inc/dsvc";
-import { Postgres } from './services/postgres';
-import { Smtp } from "./services/smtp";
+import { Nats } from "@boswaves-inc/nats-router";
+import { Logger } from "@boswaves-inc/logger";
 
 if (!process.env.SMTP_HOST) {
     throw new Error('SMTP_HOST variable not set')
@@ -19,34 +17,7 @@ const log_client = new Logger({
     level: 'debug'
 })
 
-const pg_client = new Postgres({
-    logger: log_client,
-    config: {
-        port: process.env.PG_HOST ? Number(process.env.PG_HOST) : 5432,
-        host: process.env.PG_HOST ?? 'localhost',
-        username: process.env.PG_USERNAME,
-        database: process.env.PG_DATABASE,
-        password: process.env.PG_PASSWORD,
-    }
-});
-
-const smtp_client = new Smtp({
-    postgres: pg_client,
-    options: {
-        pool: true,
-        secure: true,
-        maxConnections: 5,
-        maxMessages: 100,
-        host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : 587,
-        auth: {
-            user: process.env.SMTP_EMAIL,
-            pass: process.env.SMTP_PASSWORD
-        }
-    }
-})
-
-const router = new Dsvc({
+const router = new Nats({
     logger: log_client,
     group: 'boswaves-inc/smtp',
     servers: [
@@ -70,10 +41,7 @@ const main = async () => {
         process.exit(1);
     });
 
-    await router.listen({
-        postgres: pg_client,
-        smtp: smtp_client,
-    })
+    await router.listen({})
 }
 
 // Start the worker

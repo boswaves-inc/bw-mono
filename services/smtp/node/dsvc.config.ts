@@ -1,4 +1,4 @@
-import { defineConfig } from "@boswaves-inc/nats-router/config";
+import { defineConfig } from "@boswaves-inc/dsvc/config";
 import { printNode, zodToTs } from 'zod-to-ts';
 import { toPascalCase, } from 'string-transform';
 import { factory } from 'typescript'
@@ -6,13 +6,12 @@ import { factory } from 'typescript'
 export default defineConfig({
     namespace: 'smtp',
     routes: './src',
-    types: '.nats-router',
     sdk: {
         name: 'Smtp',
         out: '../sdk/src',
         pkg: '@boswaves-inc/smtp-sdk',
         build: async ({ store, remap, imports, write }) => {
-            const { default: elements } = await import('./src/components/elements')
+            const { default: elements } = await import('./src/components/elements.ts')
             const { element } = await import('./src/components/utils.ts')
 
             await write('elements.ts', async ({ file }) => {

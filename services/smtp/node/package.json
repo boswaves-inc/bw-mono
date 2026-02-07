@@ -5,15 +5,17 @@
   "scripts": {
     "build": "vite build",
     "dev": "dotenv -- vite-node --watch src/index.ts",
-    "sdk": "nats-sdk",
+    "sdk": "dsvc-sdk",
     "start": "dotenv -- node dist/index.js",
     "studio": "email dev --dir src/emails --port 8080",
     "db:gen": "dotenv -- drizzle-kit generate",
     "db:mig": "dotenv -- drizzle-kit migrate"
   },
   "dependencies": {
-    "@boswaves-inc/codegen": "workspace:*",
     "@boswaves-inc/nats-router": "workspace:*",
+    "@boswaves-inc/codegen": "workspace:*",
+    "@boswaves-inc/dsvc": "workspace:*",
+    "@boswaves-inc/log": "workspace:*",
     "@react-email/components": "1.0.3",
     "@react-email/render": "^1.0.1",
     "@tailwindcss/postcss": "^4.1.18",

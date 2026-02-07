@@ -6,7 +6,9 @@
 # React Router
 /.react-email/
 /.react-router/
+/.kafka-router/
+/.nats-router/
 /.codegen/
 /.drizzle/
-/.dsvc/
+/.turbo/
 /build/

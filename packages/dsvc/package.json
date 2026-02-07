@@ -1,9 +1,9 @@
 {
-  "name": "@boswaves-inc/nats-router",
+  "name": "@boswaves-inc/dsvc",
   "type": "module",
   "bin": {
-    "nats-init": "./bin/init/index.ts",
-    "nats-sdk": "./bin/sdk/index.ts"
+    "dsvc-init": "./bin/init/index.ts",
+    "dsvc-sdk": "./bin/sdk/index.ts"
   },
   "exports": {
     ".": "./src/index.ts",

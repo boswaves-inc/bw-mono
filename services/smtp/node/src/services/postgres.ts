@@ -10,7 +10,7 @@ import type { RowList, Row } from "postgres";
 
 import postgres from 'postgres';
 import schema from "~/schema/index";
-import { Logger } from "./logger";
+import { Logger } from "@boswaves-inc/log";
 
 
 export class Postgres {

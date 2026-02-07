@@ -4,7 +4,7 @@ import { toCamelCase, toPascalCase } from 'string-transform';
 import { Scope } from 'ts-morph';
 import { routes, config } from 'virtual:nats-router/server-build'
 import { createAuxiliaryTypeStore, printNode, zodToTs } from 'zod-to-ts';
-import type { NatsBuildContext } from '../src/types';
+import type { NatsBuildContext } from '../../src/types';
 
 const __cwd = process.cwd();
 

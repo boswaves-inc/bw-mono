@@ -2,16 +2,16 @@ import z from "zod/v4";
 import { gen_fingerprint } from "~/utils";
 import { Email } from '~/schema/index'
 import { eq } from "drizzle-orm";
-import { NatsRoute } from "./+types/send";
+import { DsvcRoute } from "./+types/send";
 import { render } from "@react-email/components";
 import { Layout } from "~/components/layout";
 import Heading from "~/components/elements/heading";
 import { element } from "~/components/utils";
 
-export const meta = ({ }: NatsRoute.MetaArgs) => ({
+export const meta = ({ }: DsvcRoute.MetaArgs) => ({
 })
 
-export const schema = async ({ }: NatsRoute.SchemaArgs) => {
+export const schema = async ({ }: DsvcRoute.SchemaArgs) => {
     return z.object({
         subject: z.string(),
         content: z.array(element()),
@@ -21,7 +21,7 @@ export const schema = async ({ }: NatsRoute.SchemaArgs) => {
     })
 }
 
-export default async ({ body, meta, logger, context: { postgres, smtp } }: NatsRoute.ActionArgs) => {
+export default async ({ body, meta, logger, context: { postgres, smtp } }: DsvcRoute.ActionArgs) => {
     const fingerprint = gen_fingerprint(body)
 
     const existing = await postgres.query.Email.findFirst({

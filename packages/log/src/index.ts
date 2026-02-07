@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import pino, { Bindings, ChildLoggerOptions, Level, LevelChangeEventListener, LevelMapping, LogFn, Logger as Primitive } from 'pino'
+import pino, { type Bindings, type ChildLoggerOptions, type Level, type LevelChangeEventListener, type LevelMapping, type LogFn, type Logger as Primitive } from 'pino'
 import pretty from "pino-pretty";
 
 const DEVELOPMENT = process.env.NODE_ENV !== 'production'

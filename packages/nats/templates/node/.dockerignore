@@ -1,6 +1,6 @@
 .react-router
+.nats-router
 .codegen
-.dsvc
 .turbo
 
 node_modules

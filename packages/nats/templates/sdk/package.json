@@ -1,5 +1,4 @@
 {
-  "name": "@boswaves-inc/smtp-sdk",
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
