@@ -11,9 +11,6 @@ importers:
       '@boswaves-inc/dsvc':
         specifier: workspace:*
         version: link:packages/dsvc
-      '@boswaves-inc/nats-router':
-        specifier: workspace:*
-        version: link:packages/nats
       dotenv-cli:
         specifier: ^10.0.0
         version: 10.0.0
@@ -145,6 +142,46 @@ importers:
       vite-node:
         specifier: ^5.2.0
         version: 5.2.0(@types/node@22.19.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.21.0)(yaml@2.8.2)
+
+  packages/dsvc/templates/node:
+    dependencies:
+      '@boswaves-inc/dsvc':
+        specifier: workspace:*
+        version: link:../..
+      '@boswaves-inc/log':
+        specifier: workspace:*
+        version: link:../../../log
+      zod:
+        specifier: ^4.3.4
+        version: 4.3.4
+      zod-form-data:
+        specifier: ^3.0.1
+        version: 3.0.1(zod@4.3.4)
+    devDependencies:
+      '@types/lodash':
+        specifier: ^4.17.20
+        version: 4.17.21
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
+      '@types/node':
+        specifier: ^22.19.3
+        version: 22.19.3
+      dotenv-cli:
+        specifier: ^10.0.0
+        version: 10.0.0
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vite:
+        specifier: ^7.3.0
+        version: 7.3.0(@types/node@22.19.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.21.0)(yaml@2.8.2)
+      vite-node:
+        specifier: ^5.2.0
+        version: 5.2.0(@types/node@22.19.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.21.0)(yaml@2.8.2)
+      vite-tsconfig-paths:
+        specifier: ^5.1.4
+        version: 5.1.4(typescript@5.9.3)(vite@7.3.0(@types/node@22.19.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.21.0)(yaml@2.8.2))
 
   packages/log:
     dependencies:
@@ -293,18 +330,12 @@ importers:
 
   services/smtp/node:
     dependencies:
-      '@boswaves-inc/codegen':
-        specifier: workspace:*
-        version: link:../../../packages/codegen
       '@boswaves-inc/dsvc':
         specifier: workspace:*
         version: link:../../../packages/dsvc
       '@boswaves-inc/log':
         specifier: workspace:*
         version: link:../../../packages/log
-      '@boswaves-inc/nats-router':
-        specifier: workspace:*
-        version: link:../../../packages/nats
       '@react-email/components':
         specifier: 1.0.3
         version: 1.0.3(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -329,9 +360,6 @@ importers:
       express:
         specifier: ^5.1.0
         version: 5.2.1
-      kafkajs:
-        specifier: ^2.2.4
-        version: 2.2.4
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.22
@@ -384,6 +412,9 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0(typescript@5.9.3)(zod@4.3.4)
     devDependencies:
+      '@boswaves-inc/codegen':
+        specifier: workspace:*
+        version: link:../../../packages/codegen
       '@react-email/preview-server':
         specifier: ^5.1.1
         version: 5.1.1(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sass@1.77.4)
@@ -1051,6 +1082,46 @@ importers:
       vite:
         specifier: ^7.1.12
         version: 7.3.0(@types/node@22.19.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.21.0)(yaml@2.8.2)
+      vite-tsconfig-paths:
+        specifier: ^5.1.4
+        version: 5.1.4(typescript@5.9.3)(vite@7.3.0(@types/node@22.19.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.21.0)(yaml@2.8.2))
+
+  services/test/node:
+    dependencies:
+      '@boswaves-inc/dsvc':
+        specifier: workspace:*
+        version: link:../../../packages/dsvc
+      '@boswaves-inc/log':
+        specifier: workspace:*
+        version: link:../../../packages/log
+      zod:
+        specifier: ^4.3.4
+        version: 4.3.4
+      zod-form-data:
+        specifier: ^3.0.1
+        version: 3.0.1(zod@4.3.4)
+    devDependencies:
+      '@types/lodash':
+        specifier: ^4.17.20
+        version: 4.17.21
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
+      '@types/node':
+        specifier: ^22.19.3
+        version: 22.19.3
+      dotenv-cli:
+        specifier: ^10.0.0
+        version: 10.0.0
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vite:
+        specifier: ^7.3.0
+        version: 7.3.0(@types/node@22.19.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.21.0)(yaml@2.8.2)
+      vite-node:
+        specifier: ^5.2.0
+        version: 5.2.0(@types/node@22.19.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.21.0)(yaml@2.8.2)
       vite-tsconfig-paths:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.9.3)(vite@7.3.0(@types/node@22.19.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.21.0)(yaml@2.8.2))

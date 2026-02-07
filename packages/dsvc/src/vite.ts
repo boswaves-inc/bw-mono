@@ -13,7 +13,7 @@ const __file = readdirSync(__cwd)
     .find((file) => file.replace(__ext, '') === 'dsvc.config');
 
 if (!__file) {
-    throw new Error('No nats config found');
+    throw new Error('No dsvc config found');
 }
 
 const config = await (async () => {

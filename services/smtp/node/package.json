@@ -12,8 +12,6 @@
     "db:mig": "dotenv -- drizzle-kit migrate"
   },
   "dependencies": {
-    "@boswaves-inc/nats-router": "workspace:*",
-    "@boswaves-inc/codegen": "workspace:*",
     "@boswaves-inc/dsvc": "workspace:*",
     "@boswaves-inc/log": "workspace:*",
     "@react-email/components": "1.0.3",
@@ -24,7 +22,6 @@
     "drizzle-orm": "^0.45.1",
     "drizzle-zod": "^0.8.3",
     "express": "^5.1.0",
-    "kafkajs": "^2.2.4",
     "lodash-es": "^4.17.21",
     "lucide-react": "^0.545.0",
     "morgan": "^1.10.1",
@@ -44,6 +41,7 @@
     "zod-to-ts": "^2.0.0"
   },
   "devDependencies": {
+    "@boswaves-inc/codegen": "workspace:*",
     "@react-email/preview-server": "^5.1.1",
     "@tailwindcss/vite": "^4.1.13",
     "@types/compression": "^1.8.1",

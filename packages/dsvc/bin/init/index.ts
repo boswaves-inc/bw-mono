@@ -1,76 +1,58 @@
 #!/usr/bin/env tsx
 
-import { dirname, join, resolve } from "path"
-import { toKebabCase, toSnakeCase } from "string-transform";
+import { dirname, join} from "path"
+import { toKebabCase } from "string-transform";
 import { fileURLToPath } from "url"
 import * as readline from 'readline';
-import { promisify } from 'util';
-import { exec as child } from 'child_process';
-import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { cpSync, existsSync, mkdirSync, writeFileSync } from "fs";
+import node from "./node";
 
 const __cwd = process.cwd()
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
-const exec = promisify(child);
 
-const node_project = (name: string) => ({
-    "name": `@boswaves-inc/${toKebabCase(`${name}-sdk`)}`,
-    "type": "module",
-    "exports": {
-        ".": "./src/index.ts"
-    },
-    "dependencies": {
-        "nats": "^2.29.3"
-    },
-    "devDependencies": {
-        "typescript": "^5.9.2"
-    }
-})
 
-const sdk_project = (name: string) => ({
-    "name": `@boswaves-inc/${toKebabCase(`${name}-sdk`)}`,
-    "type": "module",
-    "exports": {
-        ".": "./src/index.ts"
-    },
-    "dependencies": {
-        "nats": "^2.29.3"
-    },
-    "devDependencies": {
-        "typescript": "^5.9.2"
-    }
-})
+// const sdk_project = (name: string) => ({
+//     "name": `@boswaves-inc/${toKebabCase(`${name}-sdk`)}`,
+//     "type": "module",
+//     "exports": {
+//         ".": "./src/index.ts"
+//     },
+//     "dependencies": {
+//         "nats": "^2.29.3"
+//     },
+//     "devDependencies": {
+//         "typescript": "^5.9.2"
+//     }
+// })
 
-const sdk_tsconfig = () => ({
-    "include": [
-        "src/**/*"
-    ],
-    "compilerOptions": {
-        "target": "ES2022",
-        "composite": true,
-        "strict": true,
-        "jsx": "react-jsx",
-        "module": "ES2022",
-        "moduleResolution": "bundler",
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "resolveJsonModule": true,
-        "outDir": "dist",
-        "rootDir": "./src",
-        "declarationMap": true,
-        "declaration": true,
-        "noEmit": false,
-        "lib": [
-            "DOM",
-            "DOM.Iterable",
-            "ES2022"
-        ]
-    }
-})
+// const sdk_tsconfig = () => ({
+//     "include": [
+//         "src/**/*"
+//     ],
+//     "compilerOptions": {
+//         "target": "ES2022",
+//         "composite": true,
+//         "strict": true,
+//         "jsx": "react-jsx",
+//         "module": "ES2022",
+//         "moduleResolution": "bundler",
+//         "esModuleInterop": true,
+//         "skipLibCheck": true,
+//         "resolveJsonModule": true,
+//         "outDir": "dist",
+//         "rootDir": "./src",
+//         "declarationMap": true,
+//         "declaration": true,
+//         "noEmit": false,
+//         "lib": [
+//             "DOM",
+//             "DOM.Iterable",
+//             "ES2022"
+//         ]
+//     }
+// })
 
-const run = async () => {
-
+export default async () => {
     const target = process.argv[2] || '.';
     const reader = readline.createInterface({
         input: process.stdin,
@@ -80,9 +62,6 @@ const run = async () => {
     reader.question("Enter project name: ", async (name: string) => {
         const trimmed = name.trim()
         const path = join(__cwd, target, trimmed);
-
-        const sdkPath = join(path, 'sdk')
-        const nodePath = join(path, 'node')
 
         if (!trimmed) {
             console.error('Error: Project name cannot be empty');
@@ -98,14 +77,12 @@ const run = async () => {
             process.exit(1);
         }
 
-        mkdirSync(path)
-        mkdirSync(nodePath)
+        await node(path, trimmed)
 
-        mkdirSync(sdkPath)
-        mkdirSync(join('src'))
+        // mkdirSync(sdkPath)
+        // mkdirSync(join(sdkPath, 'src'))
 
-        writeFileSync(join(sdkPath, 'package.json'), JSON.stringify(sdk_project(trimmed)))
+        // writeFileSync(join(sdkPath, 'package.json'), JSON.stringify(sdk_project(trimmed)))
     })
 }
 
-run()
