@@ -14,7 +14,7 @@ if (!__file) {
 
 const config = await (async () => {
     const args = await import(pathToFileURL(join(__cwd, __file)).href)
-    const { namespace, routes,  sdk } = args.default as NatsConfig
+    const { namespace, routes, types } = args.default as NatsConfig
 
     if (!namespace) {
         throw new Error('Config missing: namespace');
@@ -26,7 +26,7 @@ const config = await (async () => {
 
     return {
         input: routes,
-        output: join(process.cwd(), '.nats-router'),
+        output: join(process.cwd(), types ?? '.nats-router'),
         namespace,
     }
 })()

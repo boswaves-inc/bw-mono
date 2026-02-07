@@ -6,8 +6,11 @@ import { factory } from 'typescript'
 export default defineConfig({
     namespace: 'smtp',
     routes: './src',
+    types: '.nats-router',
     sdk: {
+        name: 'Smtp',
         out: '../sdk/src',
+        pkg: '@boswaves-inc/smtp-sdk',
         build: async ({ store, remap, imports, write }) => {
             const { default: elements } = await import('./src/components/elements')
             const { element } = await import('./src/components/utils.ts')

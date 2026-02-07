@@ -48,8 +48,11 @@ export interface NatsHeaders {
 export interface NatsConfig {
     namespace: string
     routes: string
+    types?: string
     sdk: {
         out: string,
+        name: string,
+        pkg: string,
         build?: (args: NatsBuildContext & { write: typeof write }) => any
     }
 }

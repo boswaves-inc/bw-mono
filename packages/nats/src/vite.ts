@@ -22,6 +22,7 @@ const config = await (async () => {
     const {
         namespace,
         routes,
+        types
     } = args.default as NatsConfig
 
     if (!namespace) {
@@ -34,7 +35,7 @@ const config = await (async () => {
 
     return {
         routes,
-        output: join(process.cwd(), '.nats-router'),
+        output: join(process.cwd(), types ?? '.nats-router'),
         namespace,
     }
 })()
