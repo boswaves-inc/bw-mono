@@ -1,6 +1,9 @@
 {
   "name": "@boswaves-inc/nats-router",
   "type": "module",
+  "bin": {
+    "nats-sdk": "./sdk/index.ts"
+  },
   "exports": {
     ".": "./src/index.ts",
     "./config": "./src/config.ts",
@@ -11,9 +14,7 @@
     "@boswaves-inc/codegen": "workspace:*",
     "compression": "^1.8.1",
     "esbuild": "^0.27.2",
-    "kafkajs": "^2.2.4",
     "lodash": "^4.17.21",
-    "morgan": "^1.10.1",
     "nats": "^2.29.3",
     "pino": "^10.1.0",
     "ts-morph": "^27.0.2",
@@ -25,9 +26,9 @@
     "@types/compression": "^1.8.1",
     "@types/express": "^5.0.3",
     "@types/lodash": "^4.17.20",
-    "@types/morgan": "^1.9.10",
     "@types/node": "^22.18.10",
     "dotenv-cli": "^10.0.0",
+    "string-transform": "^21.9.19",
     "tsup": "^8.5.1",
     "tsx": "^4.20.6",
     "typescript": "^5.9.2",

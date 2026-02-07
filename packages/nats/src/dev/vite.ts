@@ -6,6 +6,7 @@ import { pathToFileURL } from 'url';
 import _ from 'lodash';
 import { ModuleDeclarationKind } from 'ts-morph';
 import { write } from '@boswaves-inc/codegen';
+import { createAuxiliaryTypeStore } from 'zod-to-ts';
 
 const __ext = /\.(ts|tsx|jsx|js|mjs|cjs)$/;
 const __cwd = process.cwd();
@@ -16,8 +17,14 @@ if (!__file) {
     throw new Error('No nats config found');
 }
 
-const path = join(__cwd, __file);
-const config = await import(pathToFileURL(path).href).then(({ default: { namespace, routes, out } }: { default: Partial<NatsConfig> }) => {
+const config = await (async () => {
+    const args = await import(pathToFileURL(join(__cwd, __file)).href)
+    
+    const {
+        namespace,
+        routes,
+    } = args.default as NatsConfig
+
     if (!namespace) {
         throw new Error('Config missing: namespace');
     }
@@ -27,15 +34,14 @@ const config = await import(pathToFileURL(path).href).then(({ default: { namespa
     }
 
     return {
-        out: join(process.cwd(), out ?? '.nats-router'),
-        routes: join(process.cwd(), routes),
-        input: routes,
+        routes,
+        output: join(process.cwd(), '.nats-router'),
         namespace,
     }
-});
+})()
 
 export const natsRouterPlugin = (): Plugin => {
-    const routes = join(__cwd, config.input, 'routes')
+    const routes = join(__cwd, config.routes, 'routes')
 
     return {
         name: 'nats-router',
@@ -69,8 +75,8 @@ export const natsRouterPlugin = (): Plugin => {
         },
 
         buildStart: async () => {
-            const types = join(config.out, 'types')
-            const routes = join(__cwd, config.input, 'routes')
+            const types = join(config.output, 'types')
+            const routes = join(__cwd, config.routes, 'routes')
 
             // Read the provided routes diectory
             const files = readdirSync(routes)
@@ -119,7 +125,7 @@ export const natsRouterPlugin = (): Plugin => {
 
                 // Generate individual route files
                 for (const { key } of subjects) {
-                    await write(join(types, config.input, 'routes', '+types', `${key}.ts`), async ({ file }) => {
+                    await write(join(types, config.routes, 'routes', '+types', `${key}.ts`), async ({ file }) => {
                         file.addImportDeclaration({
                             moduleSpecifier: '@boswaves-inc/nats-router',
                             namedImports: [

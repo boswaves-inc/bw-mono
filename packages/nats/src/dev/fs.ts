@@ -12,8 +12,10 @@ if (!__file) {
     throw new Error('No nats config found');
 }
 
-const path = join(__cwd, __file);
-const config = await import(pathToFileURL(path).href).then(({ default: { namespace, routes, out } }: { default: Partial<NatsConfig> }) => {
+const config = await (async () => {
+    const args = await import(pathToFileURL(join(__cwd, __file)).href)
+    const { namespace, routes,  sdk } = args.default as NatsConfig
+
     if (!namespace) {
         throw new Error('Config missing: namespace');
     }
@@ -23,12 +25,12 @@ const config = await import(pathToFileURL(path).href).then(({ default: { namespa
     }
 
     return {
-        out: join(process.cwd(), out ?? '.nats-router'),
-        routes: join(process.cwd(), routes),
         input: routes,
+        output: join(process.cwd(), '.nats-router'),
         namespace,
     }
-});
+})()
+
 
 export const flatRoutes = async () => {
     const routes = join(__cwd, config.input, 'routes')
@@ -43,7 +45,6 @@ export const flatRoutes = async () => {
         return {
             module,
             key: file.replace(__ext, ''),
-            // topic: `${config.namespace}.${file.replace(__ext, '')}`,
             subject: `${config.namespace}.${file.replace(__ext, '')}`,
         }
     }))

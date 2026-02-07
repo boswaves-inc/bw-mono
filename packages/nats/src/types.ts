@@ -44,7 +44,14 @@ export interface NatsHeaders {
 export interface NatsConfig {
     namespace: string
     routes: string
-    out?: string
+    // out?: string,
+    sdk: {
+        out: string,
+        factory: (args: {
+            routes: typeof import('virtual:nats-router/server-build').routes
+            // write: (store: ZodToTsOptions['auxiliaryTypeStore']) => any
+        }) => void
+    }
 }
 
 export interface NatsLoadContext { }

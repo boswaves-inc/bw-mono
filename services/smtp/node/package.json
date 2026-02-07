@@ -5,7 +5,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "dotenv -- vite-node --watch src/index.ts",
-    "sdk": "vite-node scripts/gen_sdk.ts",
+    "sdk": "nats-sdk",
     "start": "dotenv -- node dist/index.js",
     "studio": "email dev --dir src/emails --port 8080",
     "db:gen": "dotenv -- drizzle-kit generate",

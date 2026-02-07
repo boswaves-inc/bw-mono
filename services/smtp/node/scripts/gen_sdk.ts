@@ -4,7 +4,7 @@ import { createAuxiliaryTypeStore, ZodToTsOptions, printNode, zodToTs } from 'zo
 import { toCamelCase, toPascalCase, } from 'string-transform';
 import { write } from '@boswaves-inc/codegen';
 import { element } from '../src/components/utils'
-import elements from '../src/components/elements'
+import { elements } from 'virtual:smtp/elements'
 import routes from '../src/routes'
 import { factory } from 'typescript'
 import { Scope } from 'ts-morph';
