@@ -14,11 +14,6 @@ import { fileURLToPath, pathToFileURL } from "url"
 import type { ModuleInfo, NatsConfig } from "../src/types"
 import { createServer } from "vite"
 
-const __ext = /\.(ts|tsx|jsx|js|mjs|cjs)$/;
-const __cwd = process.cwd();
-const __file = readdirSync(__cwd)
-    .find((file) => file.replace(__ext, '') === 'nats.config');
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -173,13 +168,6 @@ const gen_client = async <T extends { key: string, subject: string }>(output: st
 }
 
 const run = async () => {
-    if (!__file) {
-        throw new Error('No nats config found');
-    }
-
-    const args = await import(pathToFileURL(join(__cwd, __file)).href)
-    const { namespace, routes, sdk } = args.default as NatsConfig;
-
     const server = await createServer({
         logLevel: 'error',
         server: {
@@ -209,8 +197,6 @@ const run = async () => {
     })
 
     await client.executeFile(resolve(__dirname, './codegen.ts'))
-    
-    // const output = join(__dirname, '../../sdk/src/index.ts');
     await server.close()
 }
 

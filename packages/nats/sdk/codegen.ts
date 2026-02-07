@@ -5,10 +5,6 @@ import { Scope } from 'ts-morph';
 import { routes, config } from 'virtual:nats-router/server-build'
 import { createAuxiliaryTypeStore, printNode, zodToTs, type ZodToTsOptions } from 'zod-to-ts';
 
-console.log('tst')
-console.log(routes)
-console.log(config)
-
 const __cwd = process.cwd();
 
 const gen_routes = async (store: ZodToTsOptions['auxiliaryTypeStore']) => {
@@ -61,15 +57,33 @@ const run = async () => {
     // const elements = await gen_elements(store)
     const routes = await gen_routes(store)
 
-    await write(output, async ({ file }) => {
+    await write(join(__cwd, config.sdk.out, 'nats', 'types.ts'), async ({ file }) => {
         file.addImportDeclaration({
             namedImports: [
+                'ConnectionOptions',
+                'JetStreamOptions',
+            ],
+            moduleSpecifier: 'nats'
+        })
+
+        file.addTypeAlias({
+            isExported: true,
+            name: 'NatsConfig',
+            type: `ConnectionOptions & { 
+                jetstream?: JetStreamOptions; 
+            }`
+        })
+    })
+
+    await write(join(__cwd, config.sdk.out, 'nats', 'index.ts'), async ({ file }) => {
+        file.addImportDeclaration({
+            namedImports: [
+                'Codec',
                 'NatsConnection',
                 'RequestOptions',
-                'ConnectionOptions',
-                'connect as natsConnect',
-                'JetStreamOptions',
-                'JetStreamClient'
+                'JetStreamClient',
+                'JSONCodec',
+                'connect',
             ],
             moduleSpecifier: 'nats'
         })
@@ -80,10 +94,21 @@ const run = async () => {
             moduleSpecifier: './routes'
         })
 
+        file.addImportDeclaration({
+            isTypeOnly: true,
+            namedImports: ['NatsConfig'],
+            moduleSpecifier: './types'
+        })
+
         file.addClass({
             isExported: true,
             name: 'Smtp',
             properties: [
+                {
+                    name: '_codec',
+                    type: 'Codec<unknown>',
+                    scope: Scope.Private,
+                },
                 {
                     name: '_connection',
                     type: 'NatsConnection',
@@ -108,8 +133,9 @@ const run = async () => {
                     }
                 ],
                 statements: [
+                    'this._codec = JSONCodec();',
+                    'this._jetstream = jetsream;',
                     'this._connection = connection;',
-                    'this._jetstream = jetsream;'
                 ]
             }],
             methods: [
@@ -122,7 +148,10 @@ const run = async () => {
                         { name: 'body', type: 'T' },
                         { name: 'opts?', type: 'RequestOptions' }
                     ],
-                    statements: 'await this._connection.request(topic, JSON.stringify(body), opts)'
+                    statements: [
+                        'const payload = this._codec.encode(body)',
+                        'await this._connection.request(topic, payload, opts)'
+                    ]
                 },
                 ...routes.map(({ key, subject }) => {
                     const argsType = toPascalCase(`${key}_args`)
@@ -135,9 +164,7 @@ const run = async () => {
                             { name: 'body', type: argsType },
                             { name: 'opts?', type: 'RequestOptions' }
                         ],
-                        statements: `
-                            return await this._request('${subject}', body, opts);
-                        `.trim()
+                        statements: `return await this._request('${subject}', body, opts)`
                     }
                 }),
                 {
@@ -148,15 +175,14 @@ const run = async () => {
                     parameters: [
                         {
                             name: `{ jetstream, ...args }`,
-                            type: ' ConnectionOptions & { jetstream?: JetStreamOptions }'
+                            type: 'NatsConfig'
                         }
                     ],
-                    statements: `
-                        const connection = await natsConnect(args)
-                        const stream = connection.jetstream(jetstream)
-
-                        return new Smtp(connection, stream)
-                    `.trim(),
+                    statements: [
+                        'const connection = await connect({ ...args })',
+                        'const stream = connection.jetstream(jetstream)',
+                        'return new Smtp(connection, stream)'
+                    ],
                     returnType: 'Promise<Smtp>',
                 },
             ]

@@ -1,7 +1,7 @@
 import {
     connect,
-    type NatsConnection,
     JSONCodec,
+    type NatsConnection,
     type Subscription,
     type Codec,
     type MsgHdrs,

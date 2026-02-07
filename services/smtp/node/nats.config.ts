@@ -1,4 +1,4 @@
-import { defineConfig } from "@boswaves-inc/nats-router";
+import { defineConfig } from "@boswaves-inc/nats-router/config";
 
 export default defineConfig({
     namespace: 'smtp',

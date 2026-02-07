@@ -6,7 +6,9 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./vite": "./src/vite.ts"
+    "./fs": "./src/route.ts",
+    "./vite": "./src/vite.ts",
+    "./config": "./src/config.ts"
   },
   "dependencies": {
     "@boswaves-inc/codegen": "workspace:*",
