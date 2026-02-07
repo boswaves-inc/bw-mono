@@ -2,7 +2,6 @@ import { Nats } from "@boswaves-inc/nats-router";
 import { Logger } from "./services/logger";
 import { Postgres } from './services/postgres';
 import { Smtp } from "./services/smtp";
-import { Kafka } from "@boswaves-inc/kafka-router";
 
 if (!process.env.SMTP_HOST) {
     throw new Error('SMTP_HOST variable not set')
@@ -55,13 +54,7 @@ const router = new Nats({
     ],
 })
 
-// const router = new Kafka({
-//     logger: log_client,
-//     group: 'boswaves-inc/smtp',
-//     brokers: [
-//         'host.docker.internal:9092'
-//     ],
-// })
+
 
 const main = async () => {
     // const elements = await loadElementMap()
@@ -106,7 +99,7 @@ const main = async () => {
     // Handle unhandled promise rejections
     process.on('unhandledRejection', async (reason, promise) => {
         console.error('Unhandled rejection at:', promise, 'reason:', reason);
-        // await router.disconnect()
+        await router.disconnect()
 
         process.exit(1);
     });
@@ -120,7 +113,8 @@ const main = async () => {
 // Start the worker
 main().catch(async (err) => {
     console.error('Failed to start worker:', err);
-    // await kafka_client.disconnect()
+
+    await router.disconnect()
 
     process.exit(1);
 });

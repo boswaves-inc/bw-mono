@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@boswaves-inc/codegen": "workspace:*",
-    "@boswaves-inc/kafka-router": "workspace:*",
     "@boswaves-inc/nats-router": "workspace:*",
     "@react-email/components": "1.0.3",
     "@react-email/render": "^1.0.1",
@@ -43,7 +42,6 @@
     "zod-to-ts": "^2.0.0"
   },
   "devDependencies": {
-    "@boswaves-inc/kafka-router": "workspace:*",
     "@react-email/preview-server": "^5.1.1",
     "@tailwindcss/vite": "^4.1.13",
     "@types/compression": "^1.8.1",
