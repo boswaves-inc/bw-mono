@@ -1,4 +1,6 @@
+import { write } from "@boswaves-inc/codegen";
 import type pino from "pino";
+import type { ZodToTsOptions } from "zod-to-ts";
 import z from "zod/v4";
 
 type ResultType<T> = T extends (...args: any) => any
@@ -20,6 +22,8 @@ type CreateActionArgs<T extends ModuleInfo = ModuleInfo> = {
     logger: pino.Logger;
     context: NatsLoadContext;
 };
+
+export type AuxStore = ZodToTsOptions['auxiliaryTypeStore']
 
 export type ModuleMeta = {
     // beginning?: boolean;
@@ -44,15 +48,15 @@ export interface NatsHeaders {
 export interface NatsConfig {
     namespace: string
     routes: string
-    // out?: string,
     sdk: {
         out: string,
-        factory: (args: { route: () => void }) => void
-        // factory: (args: {
-        //     routes: typeof import('virtual:nats-router/server-build').routes
-        //     // write: (store: ZodToTsOptions['auxiliaryTypeStore']) => any
-        // }) => void
+        load?: (args: { store: AuxStore, remap: Map<string, string>, write: typeof write }) => any
     }
+}
+
+export interface NatsBuildContext {
+    store: AuxStore,
+    remap: Map<string, string>
 }
 
 export interface NatsLoadContext { }

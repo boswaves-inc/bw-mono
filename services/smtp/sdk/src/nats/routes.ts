@@ -9,13 +9,7 @@ export type ScheduleArgs = {
 
 export type SendArgs = {
   subject: string;
-  content: (Auxiliary_2 | Auxiliary_4 | {
-    content: string[];
-    type: "html";
-  } | Auxiliary_8 | {
-    content: string[];
-    type: "markdown";
-  } | Auxiliary_14 | Auxiliary_20)[];
+  content: (ButtonProps | HeadingProps | HtmlProps | LeadProps | MarkdownProps | SubHeadingProps | TextProps)[];
   to_emails: string[];
   cc_emails: string[] | undefined;
   bcc_emails: string[] | undefined;

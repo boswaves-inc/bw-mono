@@ -1,14 +1,11 @@
 import '@boswaves-inc/nats-router'
-
-import { Smtp } from './services/smtp'
-import { Logger } from './services/logger'
-import { Postgres } from './services/postgres'
+import 'virtual:smtp/elements'
 
 
 declare module "@boswaves-inc/nats-router" {
     interface NatsLoadContext {
-        smtp: Smtp
-        postgres: Postgres
+        smtp: import('./services/smtp').Smtp
+        postgres: import('./services/postgres').Postgres
     }
 }
 
