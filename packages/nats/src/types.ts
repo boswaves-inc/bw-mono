@@ -50,13 +50,14 @@ export interface NatsConfig {
     routes: string
     sdk: {
         out: string,
-        load?: (args: { store: AuxStore, remap: Map<string, string>, write: typeof write }) => any
+        build?: (args: NatsBuildContext & { write: typeof write }) => any
     }
 }
 
 export interface NatsBuildContext {
     store: AuxStore,
     remap: Map<string, string>
+    imports: Array<{ module: string, statements: string[] }>
 }
 
 export interface NatsLoadContext { }

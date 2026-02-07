@@ -1,6 +1,6 @@
 import { defineConfig } from "@boswaves-inc/nats-router/config";
 import { printNode, zodToTs } from 'zod-to-ts';
-import { toCamelCase, toPascalCase, } from 'string-transform';
+import { toPascalCase, } from 'string-transform';
 import { factory } from 'typescript'
 
 export default defineConfig({
@@ -8,7 +8,7 @@ export default defineConfig({
     routes: './src',
     sdk: {
         out: '../sdk/src',
-        load: async ({ store, remap, write }) => {
+        build: async ({ store, remap, imports, write }) => {
             const { default: elements } = await import('./src/components/elements')
             const { element } = await import('./src/components/utils.ts')
 
@@ -94,12 +94,11 @@ export default defineConfig({
                     }
                 })
             })
-        }
-        // factory: ({ route }) => {
 
-        // }
-        // factory: ({ routes }) => {
-        //     console.log('test')
-        // }
+            imports.push({
+                module: 'elements',
+                statements: elements.map(({ key }) => toPascalCase(`${key}_props`))
+            })
+        }
     }
 })

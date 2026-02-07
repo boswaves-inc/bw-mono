@@ -8,15 +8,16 @@ import type { NatsBuildContext } from '../src/types';
 
 const __cwd = process.cwd();
 
-const gen_routes = async ({ store, remap }: NatsBuildContext) => {
-    const output = join(__cwd, config.sdk.out, 'nats', 'routes.ts');
+const gen_routes = async ({ store, remap, imports }: NatsBuildContext) => {
+    const output = join(__cwd, config.sdk.out, 'routes.ts');
 
     await write(output, async ({ file }) => {
-        // file.addImportDeclaration({
-        //     isTypeOnly: true,
-        //     namedImports: elements.keys.map(x => toPascalCase(`${x}_props`)),
-        //     moduleSpecifier: './elements'
-        // })
+        imports.forEach(({ module, statements }) => {
+            file.addImportDeclaration({
+                namedImports: statements,
+                moduleSpecifier: `./${module}`
+            })
+        })
 
         const nodes = await Promise.all(routes.map(async ({ module, ...args }) => {
             const meta = module.meta?.({})
@@ -47,16 +48,18 @@ const gen_routes = async ({ store, remap }: NatsBuildContext) => {
 const run = async () => {
     const store = createAuxiliaryTypeStore()
     const remap = new Map()
+    const imports = new Array<{ module: string, statements: string[] }>
 
-    await config.sdk.load?.({
+    await config.sdk.build?.({
         store,
         remap,
-        write: (output, tx) => write(join(__cwd, config.sdk.out, 'nats', output), tx)
+        imports,
+        write: (output, tx) => write(join(__cwd, config.sdk.out, output), tx)
     })
 
-    await gen_routes({ store, remap })
+    await gen_routes({ store, remap, imports })
 
-    await write(join(__cwd, config.sdk.out, 'nats', 'types.ts'), async ({ file }) => {
+    await write(join(__cwd, config.sdk.out, 'types.ts'), async ({ file }) => {
         file.addImportDeclaration({
             namedImports: [
                 'ConnectionOptions',
@@ -74,7 +77,7 @@ const run = async () => {
         })
     })
 
-    await write(join(__cwd, config.sdk.out, 'nats', 'index.ts'), async ({ file }) => {
+    await write(join(__cwd, config.sdk.out, 'index.ts'), async ({ file }) => {
         file.addImportDeclaration({
             namedImports: [
                 'Codec',

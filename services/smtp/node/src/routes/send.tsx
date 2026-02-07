@@ -7,23 +7,11 @@ import { render } from "@react-email/components";
 import { Layout } from "~/components/layout";
 import Heading from "~/components/elements/heading";
 import { element } from "~/components/utils";
-import { createAuxiliaryTypeStore, printNode, zodToTs } from 'zod-to-ts'
 
 export const meta = ({ }: NatsRoute.MetaArgs) => ({
 })
 
 export const schema = async ({ }: NatsRoute.SchemaArgs) => {
-    // const store = createAuxiliaryTypeStore()
-    // const { node } = zodToTs(z.array(element()), {
-    //     auxiliaryTypeStore: store
-    // })
-
-    // store.definitions.forEach(({ node }) => {
-    //     console.log(printNode(node))
-    // })
-
-    // console.log(printNode(node))
-
     return z.object({
         subject: z.string(),
         content: z.array(element()),
