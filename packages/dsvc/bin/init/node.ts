@@ -1,6 +1,14 @@
 import { join } from "path"
 import { toKebabCase } from "string-transform";
 import { cpSync, mkdirSync, writeFileSync } from "fs";
+import { write } from "@boswaves-inc/codegen";
+import { VariableDeclarationKind } from "ts-morph";
+
+const config = (namespace: string) => ({
+    namespace,
+    routes: './src',
+    output: '../sdk/src',
+})
 
 const project = (name: string) => ({
     "name": `@boswaves-inc/${toKebabCase(`${name}`)}`,
@@ -21,9 +29,12 @@ const project = (name: string) => ({
         "zod": "^4.3.4",
     },
     "devDependencies": {
+        "zod-to-ts": "^2.0.0",
         "@types/lodash": "^4.17.20",
         "@types/lodash-es": "^4.17.12",
         "@types/node": "^22.19.3",
+        "ts-morph": "^27.0.2",
+        "string-transform": "^21.9.19",
         "vite-tsconfig-paths": "^5.1.4",
         "dotenv-cli": "^10.0.0",
         "typescript": "^5.9.2",
@@ -67,12 +78,31 @@ const tsconfig = () => ({
     },
 })
 
-export default async (path: string, name: string) => {
-    const sdkPath = join(path, 'sdk')
-    const nodePath = join(path, 'node')
 
-    mkdirSync(path)
+export default async (path: string, name: string) => {
+    const nodePath = join(path, 'node')
     mkdirSync(nodePath)
+
+    writeFileSync(join(nodePath, 'tsconfig.json'), JSON.stringify(tsconfig()))
+    writeFileSync(join(nodePath, 'package.json'), JSON.stringify(project(name)))
+
+    await write(join(nodePath, 'dsvc.config.ts'), async ({ file }) => {
+        file.addImportDeclaration({
+            namedImports: ['defineConfig'],
+            moduleSpecifier: '@boswaves-inc/dsvc/config'
+        })
+
+        file.addExportAssignment({
+            isExportEquals: false,
+            expression: `defineConfig({ namespace: 'smtp', routes: './src', output: '../sdk/src' })`
+        })
+    })
+
+    // writeFileSync(join(nodePath, 'dsvc.config.ts'), JSON.stringify(config(name)))
+
+    cpSync(join(import.meta.dirname, '../../templates/node'), nodePath, {
+        recursive: true
+    })
 
     writeFileSync(join(nodePath, 'package.json'), JSON.stringify(project(name)))
     writeFileSync(join(nodePath, 'tsconfig.json'), JSON.stringify(tsconfig()))
@@ -80,11 +110,5 @@ export default async (path: string, name: string) => {
     cpSync(join(import.meta.dirname, '../../templates/node'), nodePath, {
         recursive: true
     })
-
-
-    // mkdirSync(sdkPath)
-    // mkdirSync(join(sdkPath, 'src'))
-
-    // writeFileSync(join(sdkPath, 'package.json'), JSON.stringify(sdk_project(trimmed)))
 }
 

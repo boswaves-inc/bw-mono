@@ -1,7 +1,7 @@
 import { write } from '@boswaves-inc/codegen';
 import { join } from 'path';
-import { toCamelCase, toPascalCase } from 'string-transform';
 import { Scope } from 'ts-morph';
+import { toCamelCase, toPascalCase } from 'string-transform';
 import { routes, config } from 'virtual:dsvc/server-build'
 import { createAuxiliaryTypeStore, printNode, zodToTs } from 'zod-to-ts';
 import type { DsvcBuildContext } from '../../src/types';
@@ -9,7 +9,7 @@ import type { DsvcBuildContext } from '../../src/types';
 const __cwd = process.cwd();
 
 const gen_routes = async ({ store, remap, imports }: DsvcBuildContext) => {
-    const output = join(__cwd, config.sdk.out, 'routes.ts');
+    const output = join(__cwd, config.output, 'routes.ts');
 
     await write(output, async ({ file }) => {
         imports.forEach(({ module, statements }) => {
@@ -50,16 +50,20 @@ const run = async () => {
     const remap = new Map()
     const imports = new Array<{ module: string, statements: string[] }>
 
-    await config.sdk.build?.({
+    await config.build?.({
         store,
         remap,
         imports,
-        write: (output, tx) => write(join(__cwd, config.sdk.out, output), tx)
+        write: (output, tx) => write(join(__cwd, config.output, output), tx)
     })
 
-    await gen_routes({ store, remap, imports })
+    await gen_routes({
+        store,
+        remap,
+        imports
+    })
 
-    await write(join(__cwd, config.sdk.out, 'types.ts'), async ({ file }) => {
+    await write(join(__cwd, config.output, 'types.ts'), async ({ file }) => {
         file.addImportDeclaration({
             namedImports: [
                 'ConnectionOptions',
@@ -77,7 +81,9 @@ const run = async () => {
         })
     })
 
-    await write(join(__cwd, config.sdk.out, 'index.ts'), async ({ file }) => {
+    await write(join(__cwd, config.output, 'index.ts'), async ({ file }) => {
+        const name = toPascalCase(config.namespace)
+
         file.addImportDeclaration({
             namedImports: [
                 'Codec',
@@ -103,8 +109,8 @@ const run = async () => {
         })
 
         file.addClass({
+            name,
             isExported: true,
-            name: 'Smtp',
             properties: [
                 {
                     name: '_codec',
@@ -183,9 +189,9 @@ const run = async () => {
                     statements: [
                         'const connection = await connect({ ...args })',
                         'const stream = connection.jetstream(jetstream)',
-                        'return new Smtp(connection, stream)'
+                        `return new ${name}(connection, stream)`
                     ],
-                    returnType: 'Promise<Smtp>',
+                    returnType: `Promise<${name}>`,
                 },
             ]
         })

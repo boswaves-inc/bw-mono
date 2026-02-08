@@ -49,12 +49,10 @@ export interface DsvcConfig {
     namespace: string
     routes: string
     types?: string
-    sdk: {
-        out: string,
-        name: string,
-        pkg: string,
-        build?: (args: DsvcBuildContext & { write: typeof write }) => any
-    }
+    output: string,
+    build?: (args: DsvcBuildContext & { write: typeof write }) => any
+    // sdk: {
+    // }
 }
 
 export interface DsvcBuildContext {
