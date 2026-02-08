@@ -2,13 +2,6 @@ import { join } from "path"
 import { toKebabCase } from "string-transform";
 import { cpSync, mkdirSync, writeFileSync } from "fs";
 import { write } from "@boswaves-inc/codegen";
-import { VariableDeclarationKind } from "ts-morph";
-
-const config = (namespace: string) => ({
-    namespace,
-    routes: './src',
-    output: '../sdk/src',
-})
 
 const project = (name: string) => ({
     "name": `@boswaves-inc/${toKebabCase(`${name}`)}`,
@@ -78,9 +71,9 @@ const tsconfig = () => ({
     },
 })
 
-
 export default async (path: string, name: string) => {
     const nodePath = join(path, 'node')
+
     mkdirSync(nodePath)
 
     writeFileSync(join(nodePath, 'tsconfig.json'), JSON.stringify(tsconfig()))
@@ -94,11 +87,9 @@ export default async (path: string, name: string) => {
 
         file.addExportAssignment({
             isExportEquals: false,
-            expression: `defineConfig({ namespace: 'smtp', routes: './src', output: '../sdk/src' })`
+            expression: `defineConfig({ namespace: '${name}', routes: './src', output: '../sdk/src' })`
         })
     })
-
-    // writeFileSync(join(nodePath, 'dsvc.config.ts'), JSON.stringify(config(name)))
 
     cpSync(join(import.meta.dirname, '../../templates/node'), nodePath, {
         recursive: true
