@@ -108,12 +108,14 @@ export class Dsvc {
         });
 
         await Promise.all(routes.map(async ({ subject, module }) => {
-            const meta = await module.meta?.({ })
+            const meta = await module.meta?.({})
             const schema = await module.schema({ meta })
 
+
             const subscription = connection.subscribe(subject, {
-                callback: async (error, { sid, data, headers, reply, ...rest }) => {
+                callback: async (error, { respond, sid, data, headers, reply, ...rest }) => {
                     const instant = performance.now();
+                    const request = !isEmpty(reply);
                     const trace_id = randomUUID();
 
                     const logger = this._logger.child(omitBy({
@@ -160,17 +162,26 @@ export class Dsvc {
                             })
 
                             logger.info({
-                                result,
+                                data: body.data,
                                 stats: this._parseStats(instant, data)
                             }, 'Successfully processed message');
+
+                            if (request) {
+                                respond(this._codec.encode(result ?? { success: true }))
+                            }
                         }
                         catch (err) {
-                            const details = err instanceof Error ? err : new Error(String(err))
+                            const details = this._parseError(err instanceof Error ? err : new Error(String(err)))
 
                             logger.error({
-                                details: this._parseError(details),
+                                details,
                                 stats: this._parseStats(instant, data)
                             }, 'Failed to process message');
+
+                            respond(this._codec.encode({
+                                error: 'HANDLER_ERROR',
+                                details
+                            }))
                         }
                     }
                     else {
@@ -180,11 +191,20 @@ export class Dsvc {
                             message: iss.message,
                         })).properties ?? {})
 
+                        const details = properties.flatMap(x => x?.errors ?? []).slice(0, 5);
+
                         logger.warn({
+                            details,
                             headers: this._parseHeaders(headers),
-                            details: properties.flatMap(x => x?.errors ?? []).slice(0, 5),
                             stats: this._parseStats(instant, data)
                         }, 'Schema validation failed')
+
+                        if (request) {
+                            respond(this._codec.encode({
+                                error: 'VALIDATION_ERROR',
+                                details
+                            }))
+                        }
                     }
                 }
             })

@@ -33,7 +33,7 @@ export type ModuleMeta = {
 export type ModuleInfo<S extends z.ZodObject = z.ZodObject> = {
     meta?: (args: CreateMetaArgs) => ModuleMeta | Promise<ModuleMeta>;
     schema: (args: Omit<CreateSchemaArgs, 'meta'> & { meta: ModuleMeta | undefined }) => S | Promise<S>;
-    default: (args: Omit<CreateActionArgs, 'meta'> & { meta: ModuleMeta | undefined }) => void | Promise<void>;
+    default: (args: Omit<CreateActionArgs, 'meta'> & { meta: ModuleMeta | undefined }) => any | Promise<any>;
 };
 
 export type GetAnnotations<T extends ModuleInfo> = {
