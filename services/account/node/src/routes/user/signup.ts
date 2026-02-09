@@ -1,5 +1,5 @@
 import z from "zod/v4";
-import { SvcRoute } from "./+types/edit";
+import { SvcRoute } from "./+types/signup";
 
 export const meta = ({ }: SvcRoute.MetaArgs) => ({
 

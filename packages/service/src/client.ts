@@ -110,6 +110,12 @@ export class Svc {
 
         await Promise.all(routes.map(async ({ subject, module }) => {
             const meta = await module.meta?.({})
+
+            // TODO add proper schema detection
+            // if(module.schema == undefined){
+            //     // throw new Error()
+            // }
+            
             const schema = await module.schema({ meta })
 
             const subscription = connection.subscribe(subject, {
