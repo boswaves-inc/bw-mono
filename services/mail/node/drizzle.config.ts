@@ -13,7 +13,7 @@ if (!process.env.PG_PASSWORD) {
 }
 
 export default defineConfig({
-    out: '../../../.drizzle/smtp',
+    out: './drizzle',
     schema: './src/schema/*',
     dialect: 'postgresql',
     migrations: {

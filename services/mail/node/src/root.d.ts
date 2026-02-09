@@ -1,9 +1,8 @@
-import '@boswaves-inc/dsvc'
+import '@boswaves-inc/svc'
 import 'virtual:smtp/elements'
 
-
-declare module "@boswaves-inc/dsvc" {
-    interface DsvcLoadContext {
+declare module "@boswaves-inc/svc" {
+    interface SvcLoadContext {
         smtp: import('./services/smtp').Smtp
         postgres: import('./services/postgres').Postgres
     }

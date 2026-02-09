@@ -1,7 +1,7 @@
 {
   "include": [
     ".codegen/types/**/*",
-    ".dsvc/types/**/*",
+    ".svc/types/**/*",
     "scripts/**/*",
     "src/**/*",
   ],
@@ -18,7 +18,7 @@
     "outDir": "dist",
     "rootDirs": [
       "./",
-      "./.dsvc/types",
+      "./.svc/types",
       "./.codegen/types",
     ],
     "lib": [

@@ -2,20 +2,20 @@ import z from "zod/v4";
 import { gen_fingerprint } from "~/utils";
 import { Email } from '~/schema/index'
 import { eq } from "drizzle-orm";
-import { DsvcRoute } from "./+types/schedule";
+import { SvcRoute } from "./+types/schedule";
 
-export const meta = ({  }: DsvcRoute.MetaArgs) => ({
+export const meta = ({  }: SvcRoute.MetaArgs) => ({
     
 })
 
-export const schema = async ({  }: DsvcRoute.SchemaArgs) => z.object({
+export const schema = async ({  }: SvcRoute.SchemaArgs) => z.object({
     subject: z.string(),
     to_emails: z.string().array(),
     cc_emails: z.string().array().optional().default([]),
     bcc_emails: z.string().array().optional().default([]),
 })
 
-export default async ({ body, meta, logger, context: { postgres, smtp } }: DsvcRoute.ActionArgs) => {
+export default async ({ body, meta, logger, context: { postgres, smtp } }: SvcRoute.ActionArgs) => {
     try {
         // generate the body hash
         const fingerprint = gen_fingerprint(body)

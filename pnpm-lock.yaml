@@ -567,6 +567,9 @@ importers:
 
   services/mail/node:
     dependencies:
+      '@boswaves-inc/postgres':
+        specifier: workspace:*
+        version: link:../../../packages/postgres
       '@boswaves-inc/svc':
         specifier: workspace:*
         version: link:../../../packages/service

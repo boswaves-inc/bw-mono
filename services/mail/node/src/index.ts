@@ -1,5 +1,5 @@
 import { Logger } from "@boswaves-inc/tracing";
-import { Dsvc } from "@boswaves-inc/dsvc";
+import { Svc } from "@boswaves-inc/svc";
 import { Postgres } from './services/postgres';
 import { Smtp } from "./services/smtp";
 
@@ -46,7 +46,7 @@ const smtp_client = new Smtp({
     }
 })
 
-const router = new Dsvc({
+const router = new Svc({
     logger: log_client,
     group: 'boswaves-inc/mail',
     servers: [

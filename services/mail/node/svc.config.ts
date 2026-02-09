@@ -1,4 +1,4 @@
-import { defineConfig } from "@boswaves-inc/dsvc/config";
+import { defineConfig } from "@boswaves-inc/svc/config";
 import { printNode, zodToTs } from 'zod-to-ts';
 import { toPascalCase, } from 'string-transform';
 import { factory } from 'typescript'

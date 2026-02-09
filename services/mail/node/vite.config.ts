@@ -2,7 +2,7 @@
 import path from 'path'
 import { defineConfig } from 'vite';
 import { elementsPlugin } from './src/vite'
-import { dsvcPlugin } from '@boswaves-inc/dsvc/vite';
+import { svcPlugin } from '@boswaves-inc/svc/vite';
 
 import tsconfigPaths from 'vite-tsconfig-paths'
 
@@ -26,6 +26,6 @@ export default defineConfig({
         elementsPlugin({
             input: './src/components'
         }),
-        dsvcPlugin(),
+        svcPlugin(),
     ],
 });

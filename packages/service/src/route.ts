@@ -1,7 +1,7 @@
 import type { SvcConfig, ModuleInfo } from "./types"
 import { pathToFileURL } from "url";
 import { readdirSync, statSync } from "fs";
-import { join, relative } from "path";
+import { join } from "path";
 
 const __ext = /\.(ts|tsx|jsx|js|mjs|cjs)$/;
 const __cwd = process.cwd();
