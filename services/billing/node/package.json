@@ -1,5 +1,5 @@
 {
-  "name": "@boswaves-inc/account",
+  "name": "@boswaves-inc/billing",
   "private": true,
   "type": "module",
   "scripts": {
