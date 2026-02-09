@@ -4,15 +4,15 @@
   "type": "module",
   "scripts": {
     "dev": "dotenv -- vite-node --watch src/index.ts",
-    "sdk": "dsvc-sdk",
-    "build": "dsvc-build",
+    "sdk": "svc-sdk",
+    "build": "svc-build",
     "start": "dotenv -- node dist/index.js",
     "db:gen": "dotenv -- drizzle-kit generate",
     "db:mig": "dotenv -- drizzle-kit migrate"
   },
   "dependencies": {
     "@boswaves-inc/tracing": "workspace:*",
-    "@boswaves-inc/dsvc": "workspace:*",
+    "@boswaves-inc/svc": "workspace:*",
     "drizzle-orm": "^0.45.1",
     "drizzle-zod": "^0.8.3",
     "postgres": "^3.4.7",

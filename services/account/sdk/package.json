@@ -1,1 +1,13 @@
-{"name":"@boswaves-inc/account-sdk","type":"module","exports":{".":"./src/index.ts"},"dependencies":{"nats":"^2.29.3"},"devDependencies":{"typescript":"^5.9.2"}}
+{
+    "name": "@boswaves-inc/account-sdk",
+    "type": "module",
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "dependencies": {
+        "nats": "^2.29.3"
+    },
+    "devDependencies": {
+        "typescript": "^5.9.2"
+    }
+}

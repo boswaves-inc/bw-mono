@@ -1,4 +1,4 @@
-import { Dsvc } from "@boswaves-inc/dsvc";
+import { Svc } from "@boswaves-inc/svc";
 import { Logger } from "@boswaves-inc/tracing";
 import { Postgres } from "./services/postgres";
 
@@ -8,7 +8,7 @@ const log_client = new Logger({
     level: 'debug'
 })
 
-const router = new Dsvc({
+const router = new Svc({
     logger: log_client,
     group: 'boswaves-inc/xxx',
     servers: [

@@ -1,9 +1,9 @@
 {
-  "name": "@boswaves-inc/dsvc",
+  "name": "@boswaves-inc/svc",
   "type": "module",
   "bin": {
-    "dsvc-init": "./bin/init/index.ts",
-    "dsvc-sdk": "./bin/sdk/index.ts"
+    "svc-init": "./bin/init/index.ts",
+    "svc-sdk": "./bin/sdk/index.ts"
   },
   "exports": {
     ".": "./src/index.ts",

@@ -23,7 +23,7 @@ type CreateActionArgs<T extends ModuleInfo = ModuleInfo> = {
     body: ResultType<T['schema']> extends infer U extends z.ZodObject ? z.output<U> : never;
     // method: Method,
     logger: pino.Logger;
-    context: DsvcLoadContext;
+    context: SvcLoadContext;
 };
 
 export type ModuleMeta = {
@@ -42,22 +42,22 @@ export type GetAnnotations<T extends ModuleInfo> = {
     ActionArgs: CreateActionArgs<T>;
 };
 
-export interface DsvcHeaders {
+export interface SvcHeaders {
     [key: string]: Buffer | string | (Buffer | string)[] | undefined
 }
 
-export interface DsvcConfig {
+export interface SvcConfig {
     namespace: string
     routes: string
     types?: string
     output: string,
-    build?: (args: DsvcBuildContext & { write: typeof write }) => any
+    build?: (args: SvcBuildContext & { write: typeof write }) => any
 }
 
-export interface DsvcBuildContext {
+export interface SvcBuildContext {
     remap: Map<string, string>
     store: ZodToTsOptions['auxiliaryTypeStore'],
     imports: Array<{ module: string, statements: string[] }>
 }
 
-export interface DsvcLoadContext { }
+export interface SvcLoadContext { }

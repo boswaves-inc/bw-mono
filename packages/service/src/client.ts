@@ -6,13 +6,13 @@ import {
     type Codec,
     type MsgHdrs,
 } from 'nats';
-import type { DsvcLoadContext } from './types';
+import type { SvcLoadContext } from './types';
 import z from 'zod/v4';
 import pino from 'pino'
 import { randomUUID } from 'crypto';
 import { attempt, isEmpty, omitBy, isUndefined } from 'lodash';
 
-export interface DsvcConfig {
+export interface SvcConfig {
     servers: string | string[];
     group: string,    
     name?: string;
@@ -37,16 +37,16 @@ interface RouterConfig {
     }
 }
 
-export class Dsvc {
+export class Svc {
     private _logger: pino.Logger;
     private _codec: Codec<unknown>;
-    private _config: DsvcConfig;
+    private _config: SvcConfig;
     private _subscriptions: Subscription[];
 
     private _connection: NatsConnection | null = null
 
     constructor({ servers, connection, logger, group }: RouterConfig) {
-        this._logger = logger.child({ mod: 'dsvc' })
+        this._logger = logger.child({ mod: 'ssvc' })
         this._config = { servers, group, ...connection };
         this._codec = JSONCodec()
 
@@ -76,8 +76,8 @@ export class Dsvc {
         }, isUndefined)
     }
 
-    public async listen(context: DsvcLoadContext) {
-        const { routes } = await import("virtual:dsvc/server-build");
+    public async listen(context: SvcLoadContext) {
+        const { routes } = await import("virtual:svc/server-build");
 
         this._logger.info({
             count: routes.length,

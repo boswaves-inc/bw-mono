@@ -1,9 +1,8 @@
 import { join } from "path"
 import { toKebabCase } from "string-transform";
 import { cpSync, mkdirSync, writeFileSync } from "node:fs";
-import { edit, write } from "@boswaves-inc/codegen";
-import { getActiveResourcesInfo } from "node:process";
-import { Project, SyntaxKind } from "ts-morph";
+import { edit } from "@boswaves-inc/codegen";
+import { SyntaxKind } from "ts-morph";
 
 const project = (name: string) => ({
     "name": `@boswaves-inc/${toKebabCase(`${name}`)}`,
@@ -11,15 +10,15 @@ const project = (name: string) => ({
     "type": "module",
     "scripts": {
         "dev": "dotenv -- vite-node --watch src/index.ts",
-        "sdk": "dsvc-sdk",
-        "build": "dsvc-build",
+        "sdk": "svc-sdk",
+        "build": "svc-build",
         "start": "dotenv -- node dist/index.js",
         "db:gen": "dotenv -- drizzle-kit generate",
         "db:mig": "dotenv -- drizzle-kit migrate"
     },
     "dependencies": {
         "@boswaves-inc/tracing": "workspace:*",
-        "@boswaves-inc/dsvc": "workspace:*",
+        "@boswaves-inc/svc": "workspace:*",
         "zod-form-data": "^3.0.1",
         "drizzle-orm": "^0.45.1",
         "drizzle-zod": "^0.8.3",
@@ -43,7 +42,7 @@ const project = (name: string) => ({
 
 const tsconfig = () => ({
     "include": [
-        ".dsvc/types/**/*",
+        ".svc/types/**/*",
         "src/**/*",
     ],
     "compilerOptions": {
@@ -59,7 +58,7 @@ const tsconfig = () => ({
         "outDir": "dist",
         "rootDirs": [
             "./",
-            "./.dsvc/types",
+            "./.svc/types",
         ],
         "lib": [
             "DOM",
@@ -80,6 +79,8 @@ const tsconfig = () => ({
 export default async (path: string, name: string) => {
     const nodePath = join(path, 'node')
 
+    console.log(path)
+
     mkdirSync(nodePath)
 
     writeFileSync(join(nodePath, 'tsconfig.json'), JSON.stringify(tsconfig(), null, 2))
@@ -89,7 +90,7 @@ export default async (path: string, name: string) => {
         recursive: true
     })
 
-    await edit(join(nodePath, 'dsvc.config.ts'), async ({ file }) => {
+    await edit(join(nodePath, 'svc.config.ts'), async ({ file }) => {
         const config = file.getExportAssignmentOrThrow(a => !a.isExportEquals());
         const expr = config.getExpressionIfKindOrThrow(SyntaxKind.CallExpression);
         const args = expr.getArguments().at(0)

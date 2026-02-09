@@ -5,7 +5,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "dotenv -- vite-node --watch src/index.ts",
-    "sdk": "dsvc-sdk",
+    "sdk": "svc-sdk",
     "start": "dotenv -- node dist/index.js",
     "studio": "email dev --dir src/emails --port 8080",
     "db:gen": "dotenv -- drizzle-kit generate",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@boswaves-inc/tracing": "workspace:*",
-    "@boswaves-inc/dsvc": "workspace:*",
+    "@boswaves-inc/svc": "workspace:*",
     "@react-email/components": "1.0.3",
     "@react-email/render": "^1.0.1",
     "@tailwindcss/postcss": "^4.1.18",

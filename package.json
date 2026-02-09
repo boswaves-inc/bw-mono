@@ -6,7 +6,7 @@
         "clean": "rm -rf node_modules **/node_modules **/.turbo **/dist **/.next"
     },
     "devDependencies": {
-        "@boswaves-inc/dsvc": "workspace:*",
+        "@boswaves-inc/svc": "workspace:*",
         "dotenv-cli": "^10.0.0",
         "drizzle-kit": "^0.31.8",
         "tsx": "^4.20.6",

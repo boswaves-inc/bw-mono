@@ -2,13 +2,13 @@ import { write } from '@boswaves-inc/codegen';
 import { join } from 'path';
 import { Scope } from 'ts-morph';
 import { toCamelCase, toPascalCase } from 'string-transform';
-import { routes, config } from 'virtual:dsvc/server-build'
+import { routes, config } from 'virtual:svc/server-build'
 import { createAuxiliaryTypeStore, printNode, zodToTs } from 'zod-to-ts';
-import type { DsvcBuildContext } from '../../src/types';
+import type { SvcBuildContext } from '../../src/types';
 
 const __cwd = process.cwd();
 
-const gen_routes = async ({ store, remap, imports }: DsvcBuildContext) => {
+const gen_routes = async ({ store, remap, imports }: SvcBuildContext) => {
     const output = join(__cwd, config.output, 'routes.ts');
 
     await write(output, async ({ file }) => {
@@ -74,7 +74,7 @@ const run = async () => {
 
         file.addTypeAlias({
             isExported: true,
-            name: 'DsvcConfig',
+            name: 'SvcConfig',
             type: `ConnectionOptions & { 
                 jetstream?: JetStreamOptions; 
             }`
@@ -104,7 +104,7 @@ const run = async () => {
 
         file.addImportDeclaration({
             isTypeOnly: true,
-            namedImports: ['DsvcConfig'],
+            namedImports: ['SvcConfig'],
             moduleSpecifier: './types'
         })
 
@@ -183,7 +183,7 @@ const run = async () => {
                     parameters: [
                         {
                             name: `{ jetstream, ...args }`,
-                            type: 'DsvcConfig'
+                            type: 'SvcConfig'
                         }
                     ],
                     statements: [

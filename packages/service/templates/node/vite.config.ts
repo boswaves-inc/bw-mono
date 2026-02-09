@@ -1,6 +1,6 @@
 import path from 'path'
 import { defineConfig } from 'vite';
-import { dsvcPlugin } from '@boswaves-inc/dsvc/vite';
+import { dsvcPlugin } from '@boswaves-inc/svc/vite';
 
 import tsconfigPaths from 'vite-tsconfig-paths'
 

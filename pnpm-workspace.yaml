@@ -1,7 +1,9 @@
 packages:
+- packages/postgres
 - packages/codegen
+- packages/service
 - packages/tracing
-- packages/dsvc
+# - packages/dsvc
 
 - services/*
 - services/**/*

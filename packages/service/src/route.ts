@@ -1,4 +1,4 @@
-import type { DsvcConfig, ModuleInfo } from "./types"
+import type { SvcConfig, ModuleInfo } from "./types"
 import { pathToFileURL } from "url";
 import { readdirSync, statSync } from "fs";
 import { join, relative } from "path";
@@ -6,15 +6,15 @@ import { join, relative } from "path";
 const __ext = /\.(ts|tsx|jsx|js|mjs|cjs)$/;
 const __cwd = process.cwd();
 const __file = readdirSync(__cwd)
-    .find((file) => file.replace(__ext, '') === 'dsvc.config');
+    .find((file) => file.replace(__ext, '') === 'svc.config');
 
 if (!__file) {
-    throw new Error('No dsvc config found');
+    throw new Error('No svc config found');
 }
 
 const config = await (async () => {
     const args = await import(pathToFileURL(join(__cwd, __file)).href)
-    const { namespace, routes, types } = args.default as DsvcConfig
+    const { namespace, routes, types } = args.default as SvcConfig
 
     if (!namespace) {
         throw new Error('Config missing: namespace');
@@ -26,7 +26,7 @@ const config = await (async () => {
 
     return {
         input: routes,
-        output: join(process.cwd(), types ?? '.dsvc-router'),
+        output: join(process.cwd(), types ?? '.svc-router'),
         namespace,
     }
 })()
