@@ -3,7 +3,7 @@ import type pino from "pino";
 import type { ZodToTsOptions } from "zod-to-ts";
 import z from "zod/v4";
 
-type Method = 'patch' | 'put' | 'post' | 'delete' | 'get'
+// type Method = 'patch' | 'put' | 'post' | 'delete' | 'get'
 
 type ResultType<T> = T extends (...args: any) => any
     ? Awaited<ReturnType<T>>
