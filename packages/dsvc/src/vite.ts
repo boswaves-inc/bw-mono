@@ -112,8 +112,6 @@ export const dsvcPlugin = (): Plugin => {
                 key,
             })))
 
-            console.log(subjects)
-
             if (subjects.length > 0) {
                 mkdirSync(types, { recursive: true })
 
