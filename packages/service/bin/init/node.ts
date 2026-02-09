@@ -17,6 +17,7 @@ const project = (name: string) => ({
         "db:mig": "dotenv -- drizzle-kit migrate"
     },
     "dependencies": {
+        "@boswaves-inc/postgres": "workspace:*",
         "@boswaves-inc/tracing": "workspace:*",
         "@boswaves-inc/svc": "workspace:*",
         "zod-form-data": "^3.0.1",

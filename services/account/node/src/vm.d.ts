@@ -1,9 +1,10 @@
 import '@boswaves-inc/svc'
 
-import { Postgres } from './services/postgres'
+import schema from '~/schema'
+import { Postgres } from '@boswaves-inc/postgres'
 
 declare module "@boswaves-inc/svc" {
-    interface DsvcLoadContext {
-        postgres: Postgres
+    interface SvcLoadContext {
+        postgres: Postgres<typeof schema>
     }
 }

@@ -1,7 +1,8 @@
 import { Svc } from "@boswaves-inc/svc";
 import { Logger } from "@boswaves-inc/tracing";
-import { Postgres } from "./services/postgres";
+import { Postgres } from "@boswaves-inc/postgres";
 
+import schema from './schema'
 import config from './config'
 
 const log_client = new Logger({
@@ -18,6 +19,7 @@ const router = new Svc({
 
 
 const pg_client = new Postgres({
+    schema,
     logger: log_client,
     config: config.postgres
 });

@@ -12,21 +12,19 @@ export const schema = async ({ }: SvcRoute.SchemaArgs) => z.object({
     first_name: z.email(),
 })
 
-export default async ({ body, logger, context }: SvcRoute.ActionArgs) => {
+export default async ({ body, context }: SvcRoute.ActionArgs) => {
 
     //     const data = await schema.parseAsync(req.body)
     const [result] = await context.postgres.insert(User)
         .values(body)
         .returning()
 
-    await chargebee.customer.create({
-        id: result.uid,
-        email: result.email,
-        first_name: result.first_name,
-        last_name: result.last_name,
-    });
+    // await chargebee.customer.create({
+    //     id: result.uid,
+    //     email: result.email,
+    //     first_name: result.first_name,
+    //     last_name: result.last_name,
+    // });
 
-    //     return res.json(result).sendStatus(200)
-
-    logger.info({}, 'Hello world')
+    return result
 }
