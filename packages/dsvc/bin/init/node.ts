@@ -1,6 +1,6 @@
 import { join } from "path"
 import { toKebabCase } from "string-transform";
-import { cpSync, mkdirSync, writeFileSync } from "fs";
+import { cpSync, mkdirSync, writeFileSync } from "node:fs";
 import { write } from "@boswaves-inc/codegen";
 
 const project = (name: string) => ({
@@ -18,6 +18,8 @@ const project = (name: string) => ({
     "dependencies": {
         "@boswaves-inc/dsvc": "workspace:*",
         "@boswaves-inc/log": "workspace:*",
+        "drizzle-orm": "^0.45.1",
+        "drizzle-zod": "^0.8.3",
         "zod-form-data": "^3.0.1",
         "zod": "^4.3.4",
     },
@@ -77,9 +79,6 @@ export default async (path: string, name: string) => {
 
     mkdirSync(nodePath)
 
-    writeFileSync(join(nodePath, 'tsconfig.json'), JSON.stringify(tsconfig()))
-    writeFileSync(join(nodePath, 'package.json'), JSON.stringify(project(name)))
-
     await write(join(nodePath, 'drizzle.config.ts'), async ({ file }) => {
         file.addImportDeclaration({
             namedImports: ['defineConfig'],
@@ -128,7 +127,7 @@ export default async (path: string, name: string) => {
 
         file.addExportAssignment({
             isExportEquals: false,
-            expression: `defineConfig({ namespace: '${name}', routes: './src', output: '../sdk/src' })`
+            expression: `defineConfig({ namespace: '${name}', output: '../sdk/src', routes: './src' })`
         })
     })
 
@@ -136,8 +135,8 @@ export default async (path: string, name: string) => {
         recursive: true
     })
 
-    writeFileSync(join(nodePath, 'package.json'), JSON.stringify(project(name)))
-    writeFileSync(join(nodePath, 'tsconfig.json'), JSON.stringify(tsconfig()))
+    writeFileSync(join(nodePath, 'tsconfig.json'), JSON.stringify(tsconfig(), null, 2))
+    writeFileSync(join(nodePath, 'package.json'), JSON.stringify(project(name), null, 2))
 
     cpSync(join(import.meta.dirname, '../../templates/node'), nodePath, {
         recursive: true
