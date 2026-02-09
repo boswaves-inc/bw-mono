@@ -1,7 +1,7 @@
 import { join } from "path"
 import { toKebabCase } from "string-transform";
 import { cpSync, mkdirSync, writeFileSync } from "node:fs";
-import { write } from "@boswaves-inc/codegen";
+import { edit, write } from "@boswaves-inc/codegen";
 import { getActiveResourcesInfo } from "node:process";
 import { Project, SyntaxKind } from "ts-morph";
 
@@ -18,11 +18,12 @@ const project = (name: string) => ({
         "db:mig": "dotenv -- drizzle-kit migrate"
     },
     "dependencies": {
+        "@boswaves-inc/tracing": "workspace:*",
         "@boswaves-inc/dsvc": "workspace:*",
-        "@boswaves-inc/log": "workspace:*",
+        "zod-form-data": "^3.0.1",
         "drizzle-orm": "^0.45.1",
         "drizzle-zod": "^0.8.3",
-        "zod-form-data": "^3.0.1",
+        "postgres": "^3.4.7",
         "zod": "^4.3.4",
     },
     "devDependencies": {
@@ -88,33 +89,31 @@ export default async (path: string, name: string) => {
         recursive: true
     })
 
-    await write(join(nodePath, 'dsvc.config.ts'), async ({ file }) => {
-        file.addImportDeclaration({
-            namedImports: ['defineConfig'],
-            moduleSpecifier: '@boswaves-inc/dsvc/config'
-        })
+    await edit(join(nodePath, 'dsvc.config.ts'), async ({ file }) => {
+        const config = file.getExportAssignmentOrThrow(a => !a.isExportEquals());
+        const expr = config.getExpressionIfKindOrThrow(SyntaxKind.CallExpression);
+        const args = expr.getArguments().at(0)
 
-        file.addExportAssignment({
-            isExportEquals: false,
-            expression: `defineConfig({ namespace: '${name}', output: '../sdk/src', routes: './src' })`
-        })
+        if (args?.isKind(SyntaxKind.ObjectLiteralExpression)) {
+            const group = args.getPropertyOrThrow('namespace')
+            if (group.isKind(SyntaxKind.PropertyAssignment)) {
+                group.setInitializer(`'${name}'`)
+            }
+        }
     })
 
-    const index = new Project();
-    const source = index.addSourceFileAtPath(join(nodePath, 'src/index.ts'))
-    const router = source.getVariableDeclarationOrThrow('router')
+    await edit(join(nodePath, 'src/index.ts'), async ({ file, project }) => {
+        const router = file.getVariableDeclarationOrThrow('router')
 
-    const expr = router.getInitializerIfKindOrThrow(SyntaxKind.NewExpression);
-    const args = expr.getArguments().at(0)
+        const expr = router.getInitializerIfKindOrThrow(SyntaxKind.NewExpression);
+        const args = expr.getArguments().at(0)
 
-    if (args?.isKind(SyntaxKind.ObjectLiteralExpression)) {
-        const group = args.getPropertyOrThrow('group')
-        if (group.isKind(SyntaxKind.PropertyAssignment)) {
-            group.setInitializer(`'@boswaves-inc/${name}'`)
+        if (args?.isKind(SyntaxKind.ObjectLiteralExpression)) {
+            const group = args.getPropertyOrThrow('group')
+            if (group.isKind(SyntaxKind.PropertyAssignment)) {
+                group.setInitializer(`'@boswaves-inc/${name}'`)
+            }
         }
-    }
-
-    await source.save()
-
+    })
 }
 

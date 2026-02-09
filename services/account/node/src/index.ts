@@ -1,5 +1,7 @@
 import { Dsvc } from "@boswaves-inc/dsvc";
-import { Logger } from "@boswaves-inc/log";
+import { Logger } from "@boswaves-inc/tracing";
+import { Postgres } from "./services/postgres";
+import config from "./config";
 
 const log_client = new Logger({
     level: 'debug'
@@ -12,6 +14,11 @@ const router = new Dsvc({
         'host.docker.internal:4222'
     ],
 })
+
+const pg_client = new Postgres({
+    logger: log_client,
+    config: config.postgres
+});
 
 const main = async () => {
     process.on('uncaughtException', async (err) => {
@@ -30,7 +37,7 @@ const main = async () => {
     });
 
     await router.listen({
-        // ... add your context here
+        postgres: pg_client
     })
 }
 

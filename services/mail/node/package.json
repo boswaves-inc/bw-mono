@@ -12,8 +12,8 @@
     "db:mig": "dotenv -- drizzle-kit migrate"
   },
   "dependencies": {
+    "@boswaves-inc/tracing": "workspace:*",
     "@boswaves-inc/dsvc": "workspace:*",
-    "@boswaves-inc/log": "workspace:*",
     "@react-email/components": "1.0.3",
     "@react-email/render": "^1.0.1",
     "@tailwindcss/postcss": "^4.1.18",

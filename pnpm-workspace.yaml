@@ -1,8 +1,7 @@
 packages:
 - packages/codegen
+- packages/tracing
 - packages/dsvc
-- packages/log
+
 - services/*
 - services/**/*
-
-- '!packages/templates'

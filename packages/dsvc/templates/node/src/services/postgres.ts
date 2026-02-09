@@ -1,4 +1,3 @@
-
 import { drizzle, PostgresJsDatabase, type PostgresJsQueryResultHKT } from "drizzle-orm/postgres-js";
 import type { ExtractTablesWithRelations, SQL, SQLWrapper, WithSubquery, Assume, ColumnsSelection, WithSubqueryWithoutSelection } from "drizzle-orm";
 import type { PgSession, PgTable, PgSelectBuilder, SelectedFields, PgColumn, PgUpdateBuilder, PgInsertBuilder, PgDeleteBase, PgMaterializedView, PgRefreshMaterializedView, PgTransaction, PgTransactionConfig, QueryBuilder, WithSubqueryWithSelection } from "drizzle-orm/pg-core";
@@ -8,9 +7,9 @@ import type { PgViewBase } from "drizzle-orm/pg-core/view-base";
 import type { TypedQueryBuilder } from "drizzle-orm/query-builders/query-builder";
 import type { RowList, Row } from "postgres";
 
-import postgres from 'postgres';
-import schema from "~/schema/index";
 import { Logger } from "@boswaves-inc/tracing";
+import schema from "~/schema/index";
+import postgres from 'postgres';
 
 export class Postgres {
     private _store: PostgresJsDatabase<typeof schema>

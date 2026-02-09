@@ -1,4 +1,4 @@
-import { Logger } from "@boswaves-inc/log";
+import { Logger } from "@boswaves-inc/tracing";
 import { Dsvc } from "@boswaves-inc/dsvc";
 import { Postgres } from './services/postgres';
 import { Smtp } from "./services/smtp";

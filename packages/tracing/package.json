@@ -1,5 +1,5 @@
 {
-  "name": "@boswaves-inc/log",
+  "name": "@boswaves-inc/tracing",
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
