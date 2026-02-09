@@ -2,6 +2,8 @@ import { join } from "path"
 import { toKebabCase } from "string-transform";
 import { cpSync, mkdirSync, writeFileSync } from "node:fs";
 import { write } from "@boswaves-inc/codegen";
+import { getActiveResourcesInfo } from "node:process";
+import { Project, SyntaxKind } from "ts-morph";
 
 const project = (name: string) => ({
     "name": `@boswaves-inc/${toKebabCase(`${name}`)}`,
@@ -79,44 +81,11 @@ export default async (path: string, name: string) => {
 
     mkdirSync(nodePath)
 
-    await write(join(nodePath, 'drizzle.config.ts'), async ({ file }) => {
-        file.addImportDeclaration({
-            namedImports: ['defineConfig'],
-            moduleSpecifier: 'drizzle-kit'
-        })
+    writeFileSync(join(nodePath, 'tsconfig.json'), JSON.stringify(tsconfig(), null, 2))
+    writeFileSync(join(nodePath, 'package.json'), JSON.stringify(project(name), null, 2))
 
-        file.addStatements([
-            `if (!process.env.PG_DATABASE) {
-                throw new Error("PG_DATABASE is not defined");
-            }`,
-            `if (!process.env.PG_USERNAME) {
-                throw new Error("PG_USERNAME is not defined");
-            }`,
-            `if (!process.env.PG_PASSWORD) {
-                throw new Error("PG_PASSWORD is not defined");
-            }`
-        ])
-
-        file.addExportAssignment({
-            isExportEquals: false,
-            expression: `defineConfig({
-                out: '../../../.drizzle/${name}',
-                schema: './src/schema/*',
-                dialect: 'postgresql',
-                migrations: {
-                    table: '_migrations',
-                    schema: 'public',
-                },
-                dbCredentials: {
-                    host: process.env.PG_HOST ?? 'localhost',
-                    port: process.env.PG_PORT ? Number(process.env.PG_PORT) : 5432,
-                    user: process.env.PG_USERNAME,
-                    password: process.env.PG_PASSWORD,
-                    database: process.env.PG_DATABASE,
-                    ssl: false,
-                }
-            })`
-        })
+    cpSync(join(import.meta.dirname, '../../templates/node'), nodePath, {
+        recursive: true
     })
 
     await write(join(nodePath, 'dsvc.config.ts'), async ({ file }) => {
@@ -131,15 +100,21 @@ export default async (path: string, name: string) => {
         })
     })
 
-    cpSync(join(import.meta.dirname, '../../templates/node'), nodePath, {
-        recursive: true
-    })
+    const index = new Project();
+    const source = index.addSourceFileAtPath(join(nodePath, 'src/index.ts'))
+    const router = source.getVariableDeclarationOrThrow('router')
 
-    writeFileSync(join(nodePath, 'tsconfig.json'), JSON.stringify(tsconfig(), null, 2))
-    writeFileSync(join(nodePath, 'package.json'), JSON.stringify(project(name), null, 2))
+    const expr = router.getInitializerIfKindOrThrow(SyntaxKind.NewExpression);
+    const args = expr.getArguments().at(0)
 
-    cpSync(join(import.meta.dirname, '../../templates/node'), nodePath, {
-        recursive: true
-    })
+    if (args?.isKind(SyntaxKind.ObjectLiteralExpression)) {
+        const group = args.getPropertyOrThrow('group')
+        if (group.isKind(SyntaxKind.PropertyAssignment)) {
+            group.setInitializer(`'@boswaves-inc/${name}'`)
+        }
+    }
+
+    await source.save()
+
 }
 

@@ -7,7 +7,7 @@ const log_client = new Logger({
 
 const router = new Dsvc({
     logger: log_client,
-    group: 'boswaves-inc/smtp',
+    group: 'boswaves-inc/account',
     servers: [
         'host.docker.internal:4222'
     ],
@@ -29,7 +29,9 @@ const main = async () => {
         process.exit(1);
     });
 
-    await router.listen({})
+    await router.listen({
+        // ... add your context here
+    })
 }
 
 // Start the worker

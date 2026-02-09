@@ -7,7 +7,7 @@ const log_client = new Logger({
 
 const router = new Dsvc({
     logger: log_client,
-    group: 'boswaves-inc/smtp',
+    group: 'boswaves-inc/xxx',
     servers: [
         'host.docker.internal:4222'
     ],

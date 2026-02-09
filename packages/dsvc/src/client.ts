@@ -14,6 +14,7 @@ import { attempt, isEmpty, omitBy, isUndefined } from 'lodash';
 
 export interface DsvcConfig {
     servers: string | string[];
+    group: string,    
     name?: string;
     token?: string;
     user?: string;
@@ -44,9 +45,9 @@ export class Dsvc {
 
     private _connection: NatsConnection | null = null
 
-    constructor({ servers, connection, logger }: RouterConfig) {
+    constructor({ servers, connection, logger, group }: RouterConfig) {
         this._logger = logger.child({ mod: 'dsvc' })
-        this._config = { servers, ...connection };
+        this._config = { servers, group, ...connection };
         this._codec = JSONCodec()
 
         this._subscriptions = []
@@ -111,8 +112,8 @@ export class Dsvc {
             const meta = await module.meta?.({})
             const schema = await module.schema({ meta })
 
-
             const subscription = connection.subscribe(subject, {
+                queue: this._config.group,
                 callback: async (error, { respond, sid, data, headers, reply, ...rest }) => {
                     const instant = performance.now();
                     const request = !isEmpty(reply);
@@ -147,6 +148,10 @@ export class Dsvc {
                             stats: this._parseStats(instant, data)
                         }, 'Failed to decode message payload');
 
+                        if (request) {
+                            respond(this._codec.encode({ error: 'DECODE_ERROR', message: payload.message }));
+                        }
+
                         return
                     }
 
@@ -178,10 +183,12 @@ export class Dsvc {
                                 stats: this._parseStats(instant, data)
                             }, 'Failed to process message');
 
-                            respond(this._codec.encode({
-                                error: 'HANDLER_ERROR',
-                                details
-                            }))
+                            if (request) {
+                                respond(this._codec.encode({
+                                    error: 'HANDLER_ERROR',
+                                    details
+                                }))
+                            }
                         }
                     }
                     else {
