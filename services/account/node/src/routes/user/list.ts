@@ -1,13 +1,13 @@
 import z from "zod/v4";
-import { DsvcRoute } from "./+types/list";
+import { SvcRoute } from "./+types/list";
 
-export const meta = ({ }: DsvcRoute.MetaArgs) => ({
+export const meta = ({ }: SvcRoute.MetaArgs) => ({
 
 })
 
-export const schema = async ({ }: DsvcRoute.SchemaArgs) => z.object({
+export const schema = async ({ }: SvcRoute.SchemaArgs) => z.object({
 })
 
-export default async ({ body, meta, logger, context }: DsvcRoute.ActionArgs) => {
+export default async ({ body, meta, logger, context }: SvcRoute.ActionArgs) => {
     logger.info({}, 'Hello world')
 }

@@ -46,7 +46,7 @@ export class Svc {
     private _connection: NatsConnection | null = null
 
     constructor({ servers, connection, logger, group }: RouterConfig) {
-        this._logger = logger.child({ mod: 'ssvc' })
+        this._logger = logger.child({ mod: 'svc' })
         this._config = { servers, group, ...connection };
         this._codec = JSONCodec()
 

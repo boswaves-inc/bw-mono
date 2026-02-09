@@ -1,6 +1,6 @@
 {
   "include": [
-    ".dsvc/types/**/*",
+    ".svc/types/**/*",
     "src/**/*"
   ],
   "compilerOptions": {
@@ -16,7 +16,7 @@
     "outDir": "dist",
     "rootDirs": [
       "./",
-      "./.dsvc/types"
+      "./.svc/types"
     ],
     "lib": [
       "DOM",

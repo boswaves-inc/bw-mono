@@ -1,18 +1,18 @@
 import z from "zod/v4";
-import { DsvcRoute } from "./+types/create";
+import { SvcRoute } from "./+types/create";
 import { User } from "~/schema/user";
 
-export const meta = ({ }: DsvcRoute.MetaArgs) => ({
+export const meta = ({ }: SvcRoute.MetaArgs) => ({
 
 })
 
-export const schema = async ({ }: DsvcRoute.SchemaArgs) => z.object({
+export const schema = async ({ }: SvcRoute.SchemaArgs) => z.object({
     email: z.email(),
     last_name: z.email(),
     first_name: z.email(),
 })
 
-export default async ({ body, logger, context }: DsvcRoute.ActionArgs) => {
+export default async ({ body, logger, context }: SvcRoute.ActionArgs) => {
 
     //     const data = await schema.parseAsync(req.body)
     const [result] = await context.postgres.insert(User)

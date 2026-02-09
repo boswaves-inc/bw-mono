@@ -9,4 +9,5 @@
 /.codegen/
 /.drizzle/
 /.dsvc/
+/.svc/
 /build/

@@ -1,3 +1,3 @@
-import { flatRoutes } from '@boswaves-inc/dsvc/fs'
+import { flatRoutes } from '@boswaves-inc/svc/fs'
 
 export default await flatRoutes()

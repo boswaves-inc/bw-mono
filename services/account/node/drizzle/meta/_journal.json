@@ -8,13 +8,6 @@
       "when": 1770663945931,
       "tag": "0000_init",
       "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1770664908344,
-      "tag": "0001_bitter_scrambler",
-      "breakpoints": true
     }
   ]
 }
