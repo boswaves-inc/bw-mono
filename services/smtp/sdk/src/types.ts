@@ -2,7 +2,7 @@
 
 import { ConnectionOptions, JetStreamOptions } from "nats";
 
-export type NatsConfig = ConnectionOptions & {
+export type DsvcConfig = ConnectionOptions & {
   jetstream?: JetStreamOptions;
 };
 

@@ -2,7 +2,7 @@
 
 import { Codec, NatsConnection, RequestOptions, JetStreamClient, JSONCodec, connect } from "nats";
 import type { Subject, ScheduleArgs, SendArgs } from "./routes";
-import type { NatsConfig } from "./types";
+import type { DsvcConfig } from "./types";
 
 export class Smtp {
   private _codec: Codec<unknown>;
@@ -28,7 +28,7 @@ export class Smtp {
     return await this._request('smtp.send', body, opts);
   }
 
-  public static async connect({ jetstream, ...args }: NatsConfig): Promise<Smtp> {
+  public static async connect({ jetstream, ...args }: DsvcConfig): Promise<Smtp> {
     const connection = await connect({ ...args });
     const stream = connection.jetstream(jetstream);
     return new Smtp(connection, stream);
