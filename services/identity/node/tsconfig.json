@@ -1,0 +1,35 @@
+{
+  "include": [
+    ".svc/types/**/*",
+    "src/**/*"
+  ],
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "composite": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "bundler",
+    "target": "ES2022",
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "outDir": "dist",
+    "rootDirs": [
+      "./",
+      "./.svc/types"
+    ],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2022"
+    ],
+    "paths": {
+      "~/*": [
+        "./src/*"
+      ],
+      "~/schema/*": [
+        "./src/schema/*"
+      ]
+    }
+  }
+}

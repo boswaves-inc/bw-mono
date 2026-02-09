@@ -1,4 +1,4 @@
-import type { DsvcConfig } from './types';
+import type { SvcConfig } from './types';
 import { type Plugin } from 'vite';
 import { join, relative } from 'path';
 import { mkdirSync, readdirSync, statSync } from 'fs';
@@ -10,10 +10,10 @@ import { write } from '@boswaves-inc/codegen';
 const __ext = /\.(ts|tsx|jsx|js|mjs|cjs)$/;
 const __cwd = process.cwd();
 const __file = readdirSync(__cwd)
-    .find((file) => file.replace(__ext, '') === 'dsvc.config');
+    .find((file) => file.replace(__ext, '') === 'svc.config');
 
 if (!__file) {
-    throw new Error('No dsvc config found');
+    throw new Error('No svc config found');
 }
 
 const config = await (async () => {
@@ -23,7 +23,7 @@ const config = await (async () => {
         namespace,
         routes,
         types
-    } = args.default as DsvcConfig
+    } = args.default satisfies SvcConfig
 
     if (!namespace) {
         throw new Error('Config missing: namespace');
@@ -35,7 +35,7 @@ const config = await (async () => {
 
     return {
         routes,
-        output: join(process.cwd(), types ?? '.dsvc'),
+        output: join(process.cwd(), types ?? '.svc'),
         namespace,
     }
 })()
@@ -62,11 +62,11 @@ const discoverRoutes = (dir: string, matches: string[] = []): { folder: string, 
     }).filter(x => x != undefined)
 }
 
-export const dsvcPlugin = (): Plugin => {
+export const svcPlugin = (): Plugin => {
     const routes = join(__cwd, config.routes, 'routes')
 
     return {
-        name: 'dsvc',
+        name: 'svc',
         enforce: 'pre',
 
         config() {
@@ -77,19 +77,19 @@ export const dsvcPlugin = (): Plugin => {
                     },
                 },
                 ssr: {
-                    noExternal: ['@boswaves-inc/dsvc'],
+                    noExternal: ['@boswaves-inc/svc'],
                 },
             };
         },
 
         resolveId(id) {
-            if (id === 'virtual:dsvc/server-build') {
-                return '\0dsvc/server-build';
+            if (id === 'virtual:svc/server-build') {
+                return '\0svc/server-build';
             }
         },
 
         load(id) {
-            if (id === '\0dsvc/server-build') {
+            if (id === '\0svc/server-build') {
                 return `
                 export { default as routes } from "${routes.replace(/\\/g, '/')}";
                 export { default as config } from "${join(__cwd, __file).replace(/\\/g, '/')}";
@@ -143,7 +143,7 @@ export const dsvcPlugin = (): Plugin => {
                 for (const { key, folder, name } of subjects) {
                     await write(join(types, config.routes, 'routes', folder, '+types', `${name}.ts`), async ({ file }) => {
                         file.addImportDeclaration({
-                            moduleSpecifier: '@boswaves-inc/dsvc',
+                            moduleSpecifier: '@boswaves-inc/svc',
                             namedImports: [
                                 { name: 'GetAnnotations', isTypeOnly: true },
                             ]
@@ -160,7 +160,7 @@ export const dsvcPlugin = (): Plugin => {
                         })
 
                         const moduleDeclaration = file.addModule({
-                            name: "DsvcRoute",
+                            name: "SvcRoute",
                             isExported: true,
                             declarationKind: ModuleDeclarationKind.Namespace
                         });
