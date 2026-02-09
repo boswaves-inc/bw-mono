@@ -3,6 +3,8 @@ import type pino from "pino";
 import type { ZodToTsOptions } from "zod-to-ts";
 import z from "zod/v4";
 
+type Method = 'patch' | 'put' | 'post' | 'delete' | 'get'
+
 type ResultType<T> = T extends (...args: any) => any
     ? Awaited<ReturnType<T>>
     : never;
@@ -19,11 +21,10 @@ type CreateSchemaArgs<T extends ModuleInfo = ModuleInfo> = {
 type CreateActionArgs<T extends ModuleInfo = ModuleInfo> = {
     meta: ResultType<T['meta']> extends infer U extends ModuleMeta ? U : never,
     body: ResultType<T['schema']> extends infer U extends z.ZodObject ? z.output<U> : never;
+    // method: Method,
     logger: pino.Logger;
     context: DsvcLoadContext;
 };
-
-export type AuxStore = ZodToTsOptions['auxiliaryTypeStore']
 
 export type ModuleMeta = {
     // beginning?: boolean;
@@ -51,13 +52,11 @@ export interface DsvcConfig {
     types?: string
     output: string,
     build?: (args: DsvcBuildContext & { write: typeof write }) => any
-    // sdk: {
-    // }
 }
 
 export interface DsvcBuildContext {
-    store: AuxStore,
     remap: Map<string, string>
+    store: ZodToTsOptions['auxiliaryTypeStore'],
     imports: Array<{ module: string, statements: string[] }>
 }
 

@@ -1,7 +1,7 @@
 import type { DsvcConfig } from './types';
 import { type Plugin } from 'vite';
 import { join, relative } from 'path';
-import { mkdirSync, readdirSync } from 'fs';
+import { mkdirSync, readdirSync, statSync } from 'fs';
 import { pathToFileURL } from 'url';
 import _ from 'lodash';
 import { ModuleDeclarationKind } from 'ts-morph';
@@ -39,6 +39,28 @@ const config = await (async () => {
         namespace,
     }
 })()
+
+const discoverRoutes = (dir: string, matches: string[] = []): { folder: string, name: string, key: string, path: string }[] => {
+    return readdirSync(dir).flatMap(match => {
+        const path = join(dir, match);
+        const stat = statSync(path);
+
+        if (stat.isDirectory()) {
+            return discoverRoutes(path, matches.concat(match))
+        }
+        else if (__ext.test(match)) {
+            const entries = matches.concat(match.replace(__ext, ''))
+
+            return {
+                name: match,
+                matches: entries,
+                key: entries.join('.'),
+                folder: matches.join('/'),
+                path: path.replace(dir + '/', ''),
+            }
+        }
+    }).filter(x => x != undefined)
+}
 
 export const dsvcPlugin = (): Plugin => {
     const routes = join(__cwd, config.routes, 'routes')
@@ -78,24 +100,19 @@ export const dsvcPlugin = (): Plugin => {
         buildStart: async () => {
             const types = join(config.output, 'types')
             const routes = join(__cwd, config.routes, 'routes')
-
-            // Read the provided routes diectory
-            const files = readdirSync(routes)
-                .filter((file) => __ext.test(file))
-                .filter((file) => !file.startsWith('_'))
+            const files = discoverRoutes(routes)
 
             // Load the route topic
-            const subjects = await Promise.all(files.map(async (file) => {
-                // const filePath = join(routes, file)
+            const subjects = await Promise.all(files.map(async ({ key, path, folder, name }) => ({
+                rel: './' + relative(routes, path).replace(/\\/g, '/'),
+                subject: `${config.namespace}.${key}`,
+                name: name.replace(__ext, ''),
+                folder,
+                path,
+                key,
+            })))
 
-                return {
-                    file,
-                    key: file.replace(__ext, ''),
-                    // topic: `${config.namespace}.${file.replace(__ext, '')}`,
-                    subject: `${config.namespace}.${file.replace(__ext, '')}`,
-                    rel: './' + join(relative(__cwd, routes), file).replace(/\\/g, '/'),
-                }
-            }))
+            console.log(subjects)
 
             if (subjects.length > 0) {
                 mkdirSync(types, { recursive: true })
@@ -105,8 +122,8 @@ export const dsvcPlugin = (): Plugin => {
                     file.addTypeAlias({
                         name: 'RouteFiles',
                         type: `{\n
-                            ${subjects.map(({ subject, file, key }) => `
-                                '${file}': { 
+                            ${subjects.map(({ subject, rel, key }) => `
+                                '${rel}': { 
                                     subject: "${subject}";\n 
                                     key: "${key}";\n
                                 }
@@ -118,15 +135,15 @@ export const dsvcPlugin = (): Plugin => {
                         name: 'RouteModules',
                         type: `{\n
                             ${subjects.map(({ rel, key }) => `
-                                '${key}': typeof import('${rel}')
+                                '${key}': typeof import('./${join(config.routes, 'routes', rel).replace(/\\/g, '/')}')
                             `).join('\n')}\n
                         }`
                     })
                 })
 
                 // Generate individual route files
-                for (const { key } of subjects) {
-                    await write(join(types, config.routes, 'routes', '+types', `${key}.ts`), async ({ file }) => {
+                for (const { key, folder, name } of subjects) {
+                    await write(join(types, config.routes, 'routes', folder, '+types', `${name}.ts`), async ({ file }) => {
                         file.addImportDeclaration({
                             moduleSpecifier: '@boswaves-inc/dsvc',
                             namedImports: [
@@ -136,7 +153,7 @@ export const dsvcPlugin = (): Plugin => {
 
                         file.addTypeAlias({
                             name: 'Module',
-                            type: `typeof import('../${key}')`
+                            type: `typeof import('../${name}')`
                         })
 
                         file.addTypeAlias({

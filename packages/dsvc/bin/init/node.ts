@@ -31,6 +31,7 @@ const project = (name: string) => ({
         "vite-tsconfig-paths": "^5.1.4",
         "dotenv-cli": "^10.0.0",
         "typescript": "^5.9.2",
+        "vite-node": "^5.2.0",
         "vite": "^7.3.0"
     }
 })
@@ -78,6 +79,46 @@ export default async (path: string, name: string) => {
 
     writeFileSync(join(nodePath, 'tsconfig.json'), JSON.stringify(tsconfig()))
     writeFileSync(join(nodePath, 'package.json'), JSON.stringify(project(name)))
+
+    await write(join(nodePath, 'drizzle.config.ts'), async ({ file }) => {
+        file.addImportDeclaration({
+            namedImports: ['defineConfig'],
+            moduleSpecifier: 'drizzle-kit'
+        })
+
+        file.addStatements([
+            `if (!process.env.PG_DATABASE) {
+                throw new Error("PG_DATABASE is not defined");
+            }`,
+            `if (!process.env.PG_USERNAME) {
+                throw new Error("PG_USERNAME is not defined");
+            }`,
+            `if (!process.env.PG_PASSWORD) {
+                throw new Error("PG_PASSWORD is not defined");
+            }`
+        ])
+
+        file.addExportAssignment({
+            isExportEquals: false,
+            expression: `defineConfig({
+                out: '../../../.drizzle/${name}',
+                schema: './src/schema/*',
+                dialect: 'postgresql',
+                migrations: {
+                    table: '_migrations',
+                    schema: 'public',
+                },
+                dbCredentials: {
+                    host: process.env.PG_HOST ?? 'localhost',
+                    port: process.env.PG_PORT ? Number(process.env.PG_PORT) : 5432,
+                    user: process.env.PG_USERNAME,
+                    password: process.env.PG_PASSWORD,
+                    database: process.env.PG_DATABASE,
+                    ssl: false,
+                }
+            })`
+        })
+    })
 
     await write(join(nodePath, 'dsvc.config.ts'), async ({ file }) => {
         file.addImportDeclaration({

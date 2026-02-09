@@ -1,5 +1,5 @@
 {
-  "name": "@boswaves-inc/smtp",
+  "name": "@boswaves-inc/mail",
   "private": true,
   "type": "module",
   "scripts": {

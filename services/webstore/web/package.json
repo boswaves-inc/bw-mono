@@ -8,7 +8,7 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "@boswaves-inc/smtp-sdk": "workspace:*",
+    "@boswaves-inc/mail-sdk": "workspace:*",
     "@boswaves-inc/webstore-core": "workspace:*",
     "@coingecko/cryptoformat": "^0.8.2",
     "@directus/sdk": "^20.3.0",

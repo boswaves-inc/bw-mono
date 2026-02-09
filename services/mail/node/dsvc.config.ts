@@ -4,7 +4,7 @@ import { toPascalCase, } from 'string-transform';
 import { factory } from 'typescript'
 
 export default defineConfig({
-    namespace: 'smtp',
+    namespace: 'mail',
     routes: './src',
     output: '../sdk/src',
     build: async ({ store, remap, imports, write }) => {

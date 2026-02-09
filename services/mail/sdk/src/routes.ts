@@ -17,5 +17,5 @@ export type SendArgs = {
   bcc_emails: string[] | undefined;
 };
 
-export type Subject = 'smtp.schedule' | 'smtp.send';
+export type Subject = 'mail.schedule' | 'mail.send';
 

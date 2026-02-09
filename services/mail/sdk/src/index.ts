@@ -4,7 +4,7 @@ import { Codec, NatsConnection, RequestOptions, JetStreamClient, JSONCodec, conn
 import type { Subject, ScheduleArgs, SendArgs } from "./routes";
 import type { DsvcConfig } from "./types";
 
-export class Smtp {
+export class Mail {
   private _codec: Codec<unknown>;
   private _connection: NatsConnection;
   private _jetstream: JetStreamClient;
@@ -21,17 +21,17 @@ export class Smtp {
   }
 
   public async schedule(body: ScheduleArgs, opts?: RequestOptions) {
-    return await this._request('smtp.schedule', body, opts);
+    return await this._request('mail.schedule', body, opts);
   }
 
   public async send(body: SendArgs, opts?: RequestOptions) {
-    return await this._request('smtp.send', body, opts);
+    return await this._request('mail.send', body, opts);
   }
 
-  public static async connect({ jetstream, ...args }: DsvcConfig): Promise<Smtp> {
+  public static async connect({ jetstream, ...args }: DsvcConfig): Promise<Mail> {
     const connection = await connect({ ...args });
     const stream = connection.jetstream(jetstream);
-    return new Smtp(connection, stream);
+    return new Mail(connection, stream);
   }
 
 }

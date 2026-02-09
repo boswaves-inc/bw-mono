@@ -10,7 +10,7 @@
     "db:mig": "dotenv -- drizzle-kit migrate"
   },
   "dependencies": {
-    "@boswaves-inc/smtp-sdk": "workspace:*",
+    "@boswaves-inc/mail-sdk": "workspace:*",
     "@coingecko/cryptoformat": "^0.8.2",
     "@directus/sdk": "^20.3.0",
     "@directus/visual-editing": "^1.1.0",

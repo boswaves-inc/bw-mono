@@ -48,7 +48,7 @@ const smtp_client = new Smtp({
 
 const router = new Dsvc({
     logger: log_client,
-    group: 'boswaves-inc/smtp',
+    group: 'boswaves-inc/mail',
     servers: [
         'host.docker.internal:4222'
     ],
