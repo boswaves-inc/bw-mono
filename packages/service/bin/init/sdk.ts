@@ -48,9 +48,6 @@ export default async (path: string, name: string) => {
 
     mkdirSync(target)
 
-    writeFileSync(join(target, 'package.json'), JSON.stringify(project(name)))
-    writeFileSync(join(target, 'tsconfig.json'), JSON.stringify(tsconfig()))
-
     cpSync(join(import.meta.dirname, '../../templates/sdk'), target, {
         recursive: true
     })
