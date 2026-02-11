@@ -156,21 +156,87 @@ const run = async () => {
         })
     })
 
-    await write(join(__cwd, config.output, 'test.ts'), async ({ file }) => {
+    await write(join(__cwd, config.output, 'index.ts'), async ({ file }) => {
+        type RouteNode = {
+            routes: typeof routes,
+            children: Map<string, RouteNode>
+        }
+
         const name = toPascalCase(config.namespace)
 
-        const groups = routes.reduce((prev, route) => {
+        const tree = routes.reduce<RouteNode>((tree, route) => {
             const parts = route.subject.split('.')
-            const resource = parts.slice(1, -1).join('.')
+            const segments = parts.slice(1, -1) // Everything between namespace and action
 
-            if (!prev.has(resource)) {
-                prev.set(resource, [])
+            // Navigate/create tree path
+            const leaf = segments.reduce<RouteNode>((current, segment, index) => {
+                if (!current.children.has(segment)) {
+                    current.children.set(segment, { routes: [], children: new Map() })
+                }
+
+                const next = current.children.get(segment)!
+
+                // If this is the last segment, add the route
+                if (index === segments.length - 1) {
+                    next.routes.push(route)
+                }
+
+                return next
+            }, tree)
+
+            return tree
+        }, { routes: [], children: new Map() })
+
+        const generate = (node: RouteNode, path = new Array<string>(), root = false) => {
+            const subname = root ? name : `${name}$${path.map(toPascalCase).join('$')}`
+            const leafs = node.routes.length > 0
+
+            if (leafs || node.children.size > 0) {
+                file.addClass({
+                    name: subname,
+                    isExported: root,
+                    extends: leafs ? `SvcClient<\`${config.namespace}.${path.join('.')}.\${string}\`>` : 'SvcClient',
+                    methods: [
+                        ...node.routes.map(({ key, subject }) => ({
+                            name: toCamelCase(key.split('.').at(-1)!),
+                            scope: Scope.Public,
+                            isAsync: true,
+                            parameters: [
+                                { name: 'body', type: toPascalCase(`${key}_args`) },
+                                { name: 'opts?', type: 'RequestOptions' },
+                            ],
+                            statements: [
+                                `return await this._request('${subject}', body, opts)`
+                            ]
+                        })),
+                        ...(root ? [{
+                            name: 'connect',
+                            scope: Scope.Public,
+                            isStatic: true,
+                            isAsync: true,
+                            parameters: [{ name: `{ jetstream, ...args }`, type: 'SvcConfig' }],
+                            statements: [
+                                'const connection = await connect({ ...args })',
+                                'const stream = connection.jetstream(jetstream)',
+                                `return new ${name}(connection, stream)`
+                            ],
+                            returnType: `Promise<${name}>`,
+                        }] : [])
+                    ],
+                    getAccessors: Array.from(node.children.keys()).map(key => ({
+                        name: toCamelCase(key),
+                        scope: Scope.Public,
+                        returnType: `${name}$${[...path, key].map(toPascalCase).join('$')}`,
+                        statements: `return new ${name}$${[...path, key].map(toPascalCase).join('$')}(this._connection, this._jetstream)`
+                    }))
+                })
+
+                // Use forEach for side effects (recursive generation)
+                node.children.forEach((node, key) => {
+                    generate(node, [...path, key], false)
+                })
             }
-
-            prev.get(resource)!.push(route)
-
-            return prev
-        }, new Map<string, typeof routes>)
+        }
 
         file.addImportDeclaration({
             namedImports: [
@@ -190,218 +256,13 @@ const run = async () => {
             moduleSpecifier: './client'
         })
 
-        groups.forEach((routes, resource) => {
-            const subname = `${name}$${toPascalCase(resource.replace(/\./g, '_'))}`
-
-            file.addImportDeclarations(routes.map(({ key }) => ({
-                namedImports: [toPascalCase(`${key}_args`)],
-                moduleSpecifier: './routes'
-            })))
-
-            file.addClass({
-                name: subname,
-                extends: `SvcClient<\`${config.namespace}.${resource}.\${string}\`>`,
-                methods: routes.map(({ key, subject }) => {
-                    const args = toPascalCase(`${key}_args`)
-                    const name = toCamelCase(key.split('.').at(-1)!)
-
-                    return {
-                        name: name,
-                        scope: Scope.Public,
-                        isAsync: true,
-                        parameters: [
-                            { name: 'body', type: args },
-                            { name: 'opts?', type: 'RequestOptions' }
-                        ],
-                        statements: `return await this._request('${subject}', body, opts)`
-                    }
-                }),
-            })
-        })
-
-        file.addClass({
-            name,
-            isExported: true,
-            extends: 'SvcClient',
-            methods: [
-                // ...routes.map(({ key, subject }) => {
-                //     const argsType = toPascalCase(`${key}_args`)
-
-                //     return {
-                //         name: toCamelCase(key),
-                //         scope: Scope.Public,
-                //         isAsync: true,
-                //         parameters: [
-                //             { name: 'body', type: argsType },
-                //             { name: 'opts?', type: 'RequestOptions' }
-                //         ],
-                //         statements: `return await this._request('${subject}', body, opts)`
-                //     }
-                // }),
-                {
-                    name: 'connect',
-                    scope: Scope.Public,
-                    isStatic: true,
-                    isAsync: true,
-                    parameters: [
-                        {
-                            name: `{ jetstream, ...args }`,
-                            type: 'SvcConfig'
-                        }
-                    ],
-                    statements: [
-                        'const connection = await connect({ ...args })',
-                        'const stream = connection.jetstream(jetstream)',
-                        `return new ${name}(connection, stream)`
-                    ],
-                    returnType: `Promise<${name}>`,
-                },
-            ],
-            getAccessors: Array.from(groups.keys()).map((resource) => {
-                return {
-                    name: toSnakeCase(resource),
-                    scope: Scope.Public,
-                    statements: `return new ${name}$${toPascalCase(resource.replace(/\./g, '_'))}(this._connection, this._jetstream)`
-                }
-            })
-        })
-    })
-
-
-
-
-
-
-
-
-
-    await write(join(__cwd, config.output, 'index.ts'), async ({ file }) => {
-        const name = toPascalCase(config.namespace)
-
-        file.addImportDeclaration({
-            namedImports: [
-                'Codec',
-                'NatsConnection',
-                'RequestOptions',
-                'JetStreamClient',
-                'JSONCodec',
-                'connect',
-            ],
-            moduleSpecifier: 'nats'
-        })
-
-        file.addImportDeclaration({
-            isTypeOnly: true,
-            namedImports: ['Subject', ...routes.map(({ key }) => toPascalCase(`${key}_args`))],
+        file.addImportDeclarations(routes.map(({ key }) => ({
+            namedImports: [toPascalCase(`${key}_args`)],
             moduleSpecifier: './routes'
-        })
+        })))
 
-        file.addImportDeclaration({
-            isTypeOnly: true,
-            namedImports: ['SvcConfig'],
-            moduleSpecifier: './types'
-        })
+        generate(tree, [], true)
 
-        const groups = routes.reduce((prev, route) => {
-            const parts = route.subject.split('.')
-            const resource = parts.slice(1, -1).join('.')
-
-            if (!prev.has(resource)) {
-                prev.set(resource, [])
-            }
-
-            prev.get(resource)!.push(route)
-
-            return prev
-        }, new Map<string, typeof routes>)
-
-        file.addClass({
-            name,
-            isExported: true,
-            properties: [
-                {
-                    name: '_codec',
-                    type: 'Codec<unknown>',
-                    scope: Scope.Private,
-                },
-                {
-                    name: '_connection',
-                    type: 'NatsConnection',
-                    scope: Scope.Private,
-                },
-                {
-                    name: '_jetstream',
-                    type: 'JetStreamClient',
-                    scope: Scope.Private,
-                }
-            ],
-            ctors: [{
-                scope: Scope.Private,
-                parameters: [
-                    {
-                        name: 'connection',
-                        type: 'NatsConnection'
-                    },
-                    {
-                        name: 'jetsream',
-                        type: 'JetStreamClient'
-                    }
-                ],
-                statements: [
-                    'this._codec = JSONCodec();',
-                    'this._jetstream = jetsream;',
-                    'this._connection = connection;',
-                ]
-            }],
-            methods: [
-                {
-                    name: '_request<T>',
-                    scope: Scope.Private,
-                    isAsync: true,
-                    parameters: [
-                        { name: 'topic', type: 'Subject' },
-                        { name: 'body', type: 'T' },
-                        { name: 'opts?', type: 'RequestOptions' }
-                    ],
-                    statements: [
-                        'const payload = this._codec.encode(body)',
-                        'await this._connection.request(topic, payload, opts)'
-                    ]
-                },
-                ...routes.map(({ key, subject }) => {
-                    const argsType = toPascalCase(`${key}_args`)
-
-                    return {
-                        name: toCamelCase(key),
-                        scope: Scope.Public,
-                        isAsync: true,
-                        parameters: [
-                            { name: 'body', type: argsType },
-                            { name: 'opts?', type: 'RequestOptions' }
-                        ],
-                        statements: `return await this._request('${subject}', body, opts)`
-                    }
-                }),
-                {
-                    name: 'connect',
-                    scope: Scope.Public,
-                    isStatic: true,
-                    isAsync: true,
-                    parameters: [
-                        {
-                            name: `{ jetstream, ...args }`,
-                            type: 'SvcConfig'
-                        }
-                    ],
-                    statements: [
-                        'const connection = await connect({ ...args })',
-                        'const stream = connection.jetstream(jetstream)',
-                        `return new ${name}(connection, stream)`
-                    ],
-                    returnType: `Promise<${name}>`,
-                },
-            ]
-        })
     })
 }
 
